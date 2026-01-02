@@ -107,6 +107,14 @@ export function UserProfileCard() {
 
                 </div>
 
+                {/* Money Section - Middle */}
+                <div className="flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 pl-0 md:pl-6 pr-0 md:pr-6 w-full md:w-auto min-w-[100px]">
+                    <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Dinheiro</div>
+                    <div className="font-mono font-bold text-2xl text-green-400">
+                        R$ {user.money}
+                    </div>
+                </div>
+
                 {/* Attributes Section - Right Side */}
                 <div className="flex flex-row md:flex-col gap-4 md:gap-2 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6 w-full md:w-auto justify-center">
                     <div className="flex items-center gap-3">
@@ -141,6 +149,6 @@ export function UserProfileCard() {
                 </div>
 
             </CardBody>
-        </Card>
+        </Card >
     )
 }
