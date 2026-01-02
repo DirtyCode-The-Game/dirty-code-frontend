@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { api, User } from '../services/api';
-import { GAME_ACTIONS } from '../services/game_data';
 import { useRouter } from 'next/navigation';
 
 
@@ -11,7 +10,7 @@ interface GameContextType {
     isLoading: boolean;
     login: () => Promise<void>;
     logout: () => void;
-    performFakeAction: (actionName: string) => Promise<void>;
+    performAction: (actionName: string) => Promise<void>;
     refreshUser: (updates: Partial<User>) => void;
 }
 
@@ -66,46 +65,46 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
 
 
-    const performFakeAction = async (actionId: string) => {
-        const action = GAME_ACTIONS[actionId];
+    const performAction = async (actionId: string) => {
+        const action = {
+            id: actionId,
+            title: "Ação",
+            risk: 50,
+            moneyReward: 100,
+            energyCost: 10,
+            reputationReward: 5,
+        }
         if (!user || !action) {
             console.error("Action not found or user not logged in.");
             return;
         }
 
-        // Check energy
-        if (action.energyCost > 0 && user.energy < action.energyCost) {
+        if (action.energyCost > 0 && user.stamina < action.energyCost) {
             alert("Você está exausto! Recupere energias na Vida Noturna.");
             return;
         }
 
-        // Check money (if it's a cost)
         if (action.moneyReward < 0 && user.money < Math.abs(action.moneyReward)) {
             alert("Fundos insuficientes.");
             return;
         }
 
-        // Optimistic update (optional, skipping for simplicity/safety to match API)
-        // calling API
         try {
             const result = await api.performAction(actionId);
             if (result.success && result.rewards) {
                 const newStats = {
                     ...user,
-                    energy: Math.min(100, Math.max(0, user.energy + (result.rewards.energy || 0))),
+                    stamina: Math.min(100, Math.max(0, user.stamina + (result.rewards.stamina || 0))),
                     money: user.money + (result.rewards.money || 0),
-                    reputation: user.reputation + (result.rewards.reputation || 0),
+                    karma: user.karma + (result.rewards.karma || 0),
                 };
                 setUser(newStats);
                 localStorage.setItem('dirty_user', JSON.stringify(newStats));
-
-                // Simple interaction feedback can go here (Toast)
             } else {
-                // Failure handling
                 if (result.rewards) {
                     const newStats = {
                         ...user,
-                        energy: Math.min(100, Math.max(0, user.energy + (result.rewards.energy || 0))),
+                        stamina: Math.min(100, Math.max(0, user.stamina + (result.rewards.stamina || 0))),
                     };
                     setUser(newStats);
                     localStorage.setItem('dirty_user', JSON.stringify(newStats));
@@ -125,7 +124,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <GameContext.Provider value={{ user, isLoading, login, logout, performFakeAction, refreshUser }}>
+        <GameContext.Provider value={{ user, isLoading, login, logout, performAction, refreshUser }}>
             {children}
         </GameContext.Provider>
     );

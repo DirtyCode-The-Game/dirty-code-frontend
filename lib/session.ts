@@ -1,14 +1,5 @@
 import { cookies } from 'next/headers';
-
-type User = {
-    id: string;
-    name: string;
-    level: number;
-    energy: number;
-    money: number;
-    reputation: number;
-    burnout: number;
-};
+import { User } from '@/services/api';
 
 export async function getCurrentUser(): Promise<User | null> {
     const cookieStore = await cookies();
@@ -19,11 +10,11 @@ export async function getCurrentUser(): Promise<User | null> {
     try {
         const backendUrl = process.env.BACKEND_URL || 'http://localhost:8080';
         // Attempt to fetch from real backend
-        const res = await fetch(`${backendUrl}/user/me`, {
+        const res = await fetch(`${backendUrl}/v1/user`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
-            next: { revalidate: 0 } // Don't cache user profile aggressively
+            next: { revalidate: 0 }
         });
 
         if (res.ok) {
@@ -40,9 +31,17 @@ export async function getCurrentUser(): Promise<User | null> {
             id: "1",
             name: "Leo Dev (Server)",
             level: 1,
-            energy: 100,
+
+            life: 100,
+            stamina: 100,
+            addiction: 0,
+            karma: 50,
+
+            strength: 10,
+            intelligence: 80,
+            charisma: 25,
+
             money: 500,
-            reputation: 0,
             burnout: 0,
         };
     }

@@ -1,12 +1,21 @@
-import { GAME_ACTIONS } from "./game_data";
-
 export type User = {
     id: string;
     name: string;
     level: number;
-    energy: number;
+
+    // Bars
+    life: number;
+    stamina: number; // energy
+    addiction: number;
+    karma: number; // reputation
+
+    // Stats
+    strength: number;
+    intelligence: number;
+    charisma: number;
+
+    // Resources
     money: number;
-    reputation: number;
     burnout: number;
 };
 
@@ -20,9 +29,17 @@ export const api = {
                 id: "1",
                 name: "Leo Dev",
                 level: 1,
-                energy: 100,
+
+                life: 100,
+                stamina: 100,
+                addiction: 0,
+                karma: 50,
+
+                strength: 10,
+                intelligence: 80,
+                charisma: 25,
+
                 money: 500,
-                reputation: 0,
                 burnout: 0,
             },
         };
@@ -45,7 +62,7 @@ export const api = {
                 message: `Falha em ${action.title}! Algo deu errado.`,
                 rewards: {
                     // Penalidade opcional na falha
-                    energy: -5
+                    stamina: -5
                 }
             };
         }
@@ -64,8 +81,8 @@ export const api = {
             message: `${action.title} concluído!`,
             rewards: {
                 money: moneyDelta,
-                energy: energyDelta,
-                reputation: action.reputationReward
+                stamina: energyDelta, // Mapped to stamina
+                karma: action.reputationReward // Mapped to karma
             }
         };
     }
