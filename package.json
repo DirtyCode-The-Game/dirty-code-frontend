@@ -12,17 +12,20 @@
     "@heroui/progress": "^2.2.24",
     "@heroui/react": "^2.8.7",
     "@heroui/theme": "^2.4.25",
+    "@stomp/stompjs": "^7.2.1",
     "framer-motion": "^12.23.26",
     "js-cookie": "^3.0.5",
     "next": "16.1.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "sockjs-client": "^1.6.1"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/sockjs-client": "^1.5.4",
     "autoprefixer": "^10.4.23",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
