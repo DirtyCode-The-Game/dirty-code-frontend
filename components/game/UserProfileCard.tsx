@@ -25,7 +25,7 @@ export function UserProfileCard() {
                         </div>
                     </div>
                     <h3 className="font-bold text-center text-lg leading-none mt-2">{user?.activeAvatar?.name}</h3>
-                    <p className="text-xs text-gray-500 font-mono">Dev Júnior</p>
+                    <p className="text-xs text-gray-500 font-mono">Iniciante</p>
                 </div>
 
                 {/* Main Stats Bars */}

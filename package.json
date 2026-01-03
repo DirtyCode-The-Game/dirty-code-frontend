@@ -9,9 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@heroui/progress": "^2.2.24",
-    "@heroui/react": "^2.8.7",
-    "@heroui/theme": "^2.4.25",
+    "@heroui/progress": "2.2.18",
+    "@heroui/react": "2.7.11",
+    "@heroui/theme": "2.4.17",
     "@stomp/stompjs": "^7.2.1",
     "framer-motion": "^12.23.26",
     "js-cookie": "^3.0.5",
