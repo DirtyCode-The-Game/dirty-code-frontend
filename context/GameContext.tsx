@@ -1,8 +1,8 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { api, User } from '../services/api';
-import { useRouter } from 'next/navigation';
+import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
+import {api, User} from '../services/api';
+import {useRouter} from 'next/navigation';
 
 
 interface GameContextType {
@@ -60,8 +60,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setIsLoading(true);
         try {
             // Redirect to Backend Login
-            const target = process.env.LOGIN_FULL_URL || 'http://localhost:8080/login';
-            window.location.href = target;
+            window.location.href = process.env.LOGIN_FULL_URL || 'http://localhost:8080/dirty-code/v1/gmail/auth-page';
         } catch (error) {
             console.error("Login redirect failed", error);
             setIsLoading(false);

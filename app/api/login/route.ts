@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const token = searchParams.get('token');
-    const refreshToken = searchParams.get('refresh-token');
+    const refreshToken = searchParams.get('refresh-token') || searchParams.get('refreshToken');
 
     if (!token || !refreshToken) {
         return NextResponse.json({ error: 'Token is missing' }, { status: 400 });
