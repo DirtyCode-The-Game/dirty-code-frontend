@@ -48,14 +48,16 @@ export default function Home() {
         <div className="relative bg-zinc-900/60 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-3xl shadow-2xl flex flex-col items-center text-center space-y-8">
 
           {/* Logo Section */}
-          <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden shadow-xl border border-white/5 bg-black">
-            <Image
-              src="/logo.jpeg"
-              alt="DirtyCode Logo"
-              fill
-              className="object-cover"
-              priority
-            />
+          <div className="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center">
+            <div className="absolute w-80 h-80 md:w-96 md:h-96 rounded-2xl overflow-hidden transition-transform duration-500 group-hover:scale-110">
+              <Image
+                src="/logo.png"
+                alt="DirtyCode Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </div>
 
           <div className="space-y-4">

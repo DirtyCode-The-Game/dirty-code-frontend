@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "DirtyCode - The Game",
   description: "A vida real do dev não é clean.",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
