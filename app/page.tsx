@@ -48,7 +48,7 @@ export default function Home() {
         <div className="relative bg-zinc-900/60 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-3xl shadow-2xl flex flex-col items-center text-center space-y-8">
 
           {/* Logo Section */}
-          <div className="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center">
+          <div className="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center transition-transform duration-500 hover:scale-110">
               <Image
                 src="/logo.png"
                 alt="DirtyCode Logo"
