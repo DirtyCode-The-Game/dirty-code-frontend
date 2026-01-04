@@ -49,7 +49,7 @@ export default function Home() {
 
           {/* Logo Section */}
           <div className="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center">
-            <div className="absolute w-80 h-80 md:w-96 md:h-96 rounded-2xl overflow-hidden transition-transform duration-500 group-hover:scale-110">
+            <div className="absolute w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden transition-transform duration-500 group-hover:scale-110">
               <Image
                 src="/logo.png"
                 alt="DirtyCode Logo"
