@@ -6,7 +6,6 @@ import { GameMenuCarousel, MenuItem } from "@/components/game/GameMenuCarousel";
 import { GlobalChat } from "@/components/game/pages/GlobalChat";
 import { WorkPage } from "@/components/game/pages/WorkPage";
 import { HackingPage } from "@/components/game/pages/HackingPage";
-import { StartupPage } from "@/components/game/pages/StartupPage";
 import { TrainingPage } from "@/components/game/pages/TrainingPage";
 import { NightlifePage } from "@/components/game/pages/NightlifePage";
 
