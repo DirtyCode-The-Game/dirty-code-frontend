@@ -8,6 +8,7 @@ import { WorkPage } from "@/components/game/pages/WorkPage";
 import { HackingPage } from "@/components/game/pages/HackingPage";
 import { TrainingPage } from "@/components/game/pages/TrainingPage";
 import { NightlifePage } from "@/components/game/pages/NightlifePage";
+import { DefaultPage } from "@/components/game/pages/DefaultPage";
 
 // Define Menu Items
 const MENU_ITEMS: MenuItem[] = [
@@ -77,13 +78,11 @@ export default function GameDashboard() {
                 />
 
                 {/* 3. Dynamic Content Area */}
-                <div className="min-h-96 bg-black/50 border border-white/10 rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                <div className="bg-black/50 border border-white/10 rounded-2xl p-6 md:p-8 relative overflow-hidden">
                     {content ? (
                         content.component
                     ) : (
-                        <div className="flex items-center justify-center h-full text-gray-500 font-mono">
-                            Selecione uma atividade...
-                        </div>
+                        <DefaultPage />
                     )}
                 </div>
             </div>

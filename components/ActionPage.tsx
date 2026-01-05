@@ -10,7 +10,7 @@ export type ActionItem = {
     energyCost: number;
     moneyReward?: number;
     risk?: number;
-    type?: 'work' | 'crime' | 'business' | 'training' | 'lifestyle';
+    type?: 'work' | 'crime' | 'training';
 }
 
 export function ActionPage({ title, description, actions, color = "primary" }: { title: string, description: string, actions: ActionItem[], color?: "primary" | "secondary" | "success" | "warning" | "danger" }) {

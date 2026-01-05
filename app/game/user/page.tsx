@@ -64,7 +64,6 @@ export default function AvatarEdit() {
             setName(avatar.name || user.name || '');
             setSelectedAvatar(avatar.picture || AVATAR_OPTIONS[0]);
 
-
             setStats({
                 intelligence: avatar.intelligence || 0,
                 charisma: avatar.charisma || 0,
@@ -96,47 +95,24 @@ export default function AvatarEdit() {
 
         setIsLoading(true);
         try {
-            // Prepare payload
-            // We need to map our UI stats back to what the backend likely expects.
-            // Since we don't have perfect knowledge of the backend DTO for update, we send what we have.
-            // However, standard flow is: send delta or send absolute? 
-            // Usually absolute for a "Setting" page.
-
             const payload: any = {
                 name,
-                picture: selectedAvatar,
-                // If it's an update, we might want to send stats only if we modified them?
-                // Or send all.
+                picture: selectedAvatar
             };
-
-            // If we have points distributed, we should include the new stats values.
-            // Backend should validate if the total points match.
-            // Mapping UI 'str' back to... ? 
-            // Mapping UI 'karma' back to... ?
-            // Let's send them as is and hope backend handles or ignores extra fields.
-            // Mapped payload for new stats
-            payload.intelligence = stats.intelligence;
-            payload.charisma = stats.charisma;
-            payload.streetIntelligence = stats.streetIntelligence;
-            payload.stealth = stats.stealth;
-
-            // Important: Send availablePoints so backend knows it decreased?
-            // Or backend calculates based on diff?
-            // Safest is to define the specific fields we are changing.
 
             let newAvatar: Avatar;
 
             if (user?.activeAvatar) {
-                // Update
+                payload.intelligence = stats.intelligence;
+                payload.charisma = stats.charisma;
+                payload.streetIntelligence = stats.streetIntelligence;
+                payload.stealth = stats.stealth;
+
                 newAvatar = await api.updateAvatar(payload);
-                // Toast success?
             } else {
-                // Create
                 newAvatar = await api.createAvatar(payload);
             }
 
-            // Update GameProvider state immediately
-            // We merge the new avatar into the user
             refreshUser({ activeAvatar: newAvatar });
 
             router.push('/game');

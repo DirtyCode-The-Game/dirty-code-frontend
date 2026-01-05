@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { User } from '@/services/api';
 
-const getBackendUrl = () => process.env.BACKEND_URL || 'http://localhost:8080/dirty-code';
+const getBackendUrl = () => process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080/dirty-code';
 
 export async function createAvatarAction(data: any) {
     const cookieStore = await cookies();
