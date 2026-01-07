@@ -93,17 +93,17 @@ export function GlobalChat() {
                     )}
                     {messages.map((msg, idx) => (
                         <div key={idx} className="flex items-baseline gap-2 text-sm">
+                            {msg.timestamp && (
+                              <span className="text-[10px] text-gray-700 font-mono">
+                                      {msg.timestamp}
+                                  </span>
+                            )}
                             <span className={`font-mono font-bold whitespace-nowrap ${msg.avatarName === user?.name ? 'text-primary' : 'text-gray-500'}`}>
                                 {msg.avatarName}:
                             </span>
                             <span className="text-gray-300 break-words">
                                 {msg.message}
                             </span>
-                            {msg.timestamp && (
-                                <span className="text-[10px] text-gray-700 font-mono ml-auto">
-                                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </span>
-                            )}
                         </div>
                     ))}
                 </ScrollShadow>
