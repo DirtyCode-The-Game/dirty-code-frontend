@@ -1,13 +1,49 @@
 'use client'
 
 import { useGame } from "@/context/GameContext";
-import { Avatar, Card, CardBody, Progress } from "@heroui/react";
+import { Avatar, Card, CardBody, Progress, Tooltip } from "@heroui/react";
 
 export function UserProfileCard() {
     const { user } = useGame();
 
-    console.log(user)
-    console.log(user?.activeAvatar?.picture)
+    const attributes = [
+        {
+            label: "Força",
+            short: "FOR",
+            value: user?.activeAvatar?.strength ?? 0,
+            color: "text-red-500",
+            bg: "bg-red-500/10",
+            ring: "ring-red-500/20",
+            description: "Alguém precisa crimpar os cabos de rede."
+        },
+        {
+            label: "Inteligência",
+            short: "INT",
+            value: user?.activeAvatar?.intelligence ?? 0,
+            color: "text-blue-500",
+            bg: "bg-blue-500/10",
+            ring: "ring-blue-500/20",
+            description: "Entende por que o bug sumiu com um console.log."
+        },
+        {
+            label: "Carisma",
+            short: "CHA",
+            value: user?.activeAvatar?.charisma ?? 0,
+            color: "text-fuchsia-500",
+            bg: "bg-fuchsia-500/10",
+            ring: "ring-fuchsia-500/20",
+            description: "Convence o cliente que o bug é uma feature."
+        },
+        {
+            label: "Discrição",
+            short: "DIS",
+            value: user?.activeAvatar?.stealth ?? 0,
+            color: "text-gray-500",
+            bg: "bg-gray-500/10",
+            ring: "ring-gray-500/20",
+            description: "Faz commit direto na master sem ninguém ver."
+        }
+    ];
 
     return (
         <Card className="w-full bg-black border border-white/10 p-0 overflow-hidden">
@@ -45,7 +81,7 @@ export function UserProfileCard() {
                         }}
                     />
 
-                    {/* Stamina - Blue */}
+                    {/* Stamina - Yellow */}
                     <Progress
                         label="Stamina"
                         value={user?.activeAvatar?.stamina ?? 0}
@@ -53,7 +89,21 @@ export function UserProfileCard() {
                         showValueLabel={true}
                         classNames={{
                             track: "bg-white/10",
-                            indicator: "!bg-blue-500",
+                            indicator: "!bg-yellow-500",
+                            label: "text-xs uppercase font-bold tracking-wider text-gray-400",
+                            value: "text-xs uppercase font-bold tracking-wider text-gray-400"
+                        }}
+                    />
+
+                    {/* XP - Purple */}
+                    <Progress
+                        label="Experiência"
+                        value={user?.activeAvatar?.experience ?? 0}
+                        size="md"
+                        showValueLabel={true}
+                        classNames={{
+                            track: "bg-white/10",
+                            indicator: "!bg-purple-500",
                             label: "text-xs uppercase font-bold tracking-wider text-gray-400",
                             value: "text-xs uppercase font-bold tracking-wider text-gray-400"
                         }}
@@ -69,46 +119,26 @@ export function UserProfileCard() {
                 </div>
 
                 {/* Attributes Section - Right Side */}
-                <div className="flex flex-row md:flex-col gap-4 md:gap-2 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6 w-full md:w-auto justify-center">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-blue-500/10 flex items-center justify-center text-blue-500 font-bold text-xs ring-1 ring-blue-500/20">
-                            MAL
+                <div className="flex flex-row md:flex-col gap-4 md:gap-3 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6 w-full md:w-auto justify-center">
+                    {attributes.map((attr) => (
+                        <div key={attr.short} className="flex items-center gap-2">
+                            <Tooltip
+                                content={
+                                    <div className="px-1 py-2">
+                                        <div className="text-small font-bold">{attr.label}</div>
+                                        <div className="text-tiny">{attr.description}</div>
+                                    </div>
+                                }
+                                placement="left"
+                                closeDelay={0}
+                            >
+                                <div className={`w-8 h-8 rounded ${attr.bg} flex items-center justify-center ${attr.color} font-bold text-xs ring-1 ${attr.ring} cursor-help`}>
+                                    {attr.short}
+                                </div>
+                            </Tooltip>
+                            <div className="font-mono font-bold text-sm">{attr.value}</div>
                         </div>
-                        <div>
-                            <div className="text-[10px] text-gray-500 uppercase tracking-widest">Malandragem</div>
-                            <div className="font-mono font-bold text-sm">{user?.activeAvatar?.streetIntelligence ?? 0}</div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-cyan-500/10 flex items-center justify-center text-cyan-500 font-bold text-xs ring-1 ring-cyan-500/20">
-                            INT
-                        </div>
-                        <div>
-                            <div className="text-[10px] text-gray-500 uppercase tracking-widest">Inteligência</div>
-                            <div className="font-mono font-bold text-sm">{user?.activeAvatar?.intelligence ?? 0}</div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-pink-500/10 flex items-center justify-center text-pink-500 font-bold text-xs ring-1 ring-pink-500/20">
-                            CHA
-                        </div>
-                        <div>
-                            <div className="text-[10px] text-gray-500 uppercase tracking-widest">Carisma</div>
-                            <div className="font-mono font-bold text-sm">{user?.activeAvatar?.charisma ?? 0}</div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-pink-500/10 flex items-center justify-center text-pink-500 font-bold text-xs ring-1 ring-pink-500/20">
-                            DIS
-                        </div>
-                        <div>
-                            <div className="text-[10px] text-gray-500 uppercase tracking-widest">Discrição</div>
-                            <div className="font-mono font-bold text-sm">{user?.activeAvatar?.stealth ?? 0}</div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
             </CardBody>

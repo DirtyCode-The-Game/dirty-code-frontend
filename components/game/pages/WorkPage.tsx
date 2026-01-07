@@ -1,15 +1,22 @@
 'use client'
 
 import { ActionCard } from "@/components/game/ActionCard";
-import { ActionItem } from "@/components/ActionPage";
-
-const WORK_ACTIONS: ActionItem[] = [
-    { id: "freelance_bug", title: "Corrigir Bug Crítico", description: "Cliente está desesperado. O sistema caiu.", energyCost: 10, moneyReward: 50, risk: 10 },
-    { id: "create_landing", title: "Criar Landing Page", description: "Mais uma LP genérica para vender curso.", energyCost: 20, moneyReward: 120, risk: 5 },
-    { id: "maintain_legacy", title: "Manter Legado COBOL", description: "O código tem 30 anos e cheira a naftalina.", energyCost: 35, moneyReward: 300, risk: 30 },
-];
+import { useEffect, useState } from "react";
+import { api, GameAction, GameActionType } from "@/services/api";
 
 export function WorkPage() {
+    const [actions, setActions] = useState<GameAction[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchActions = async () => {
+            const data = await api.getActionsByType(GameActionType.WORK);
+            setActions(data);
+            setIsLoading(false);
+        };
+        fetchActions();
+    }, []);
+
     return (
         <div>
             <div>
@@ -19,10 +26,17 @@ export function WorkPage() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
-                {WORK_ACTIONS.map(action => (
-                    <ActionCard key={action.id} action={action} color="primary" />
-                ))}
+            <div className="grid grid-cols-1 gap-4 mt-6">
+                {isLoading ? (
+                    <p className="text-gray-500 font-mono">Carregando trabalhos...</p>
+                ) : (
+                    actions.map(action => (
+                        <ActionCard key={action.id} action={action} />
+                    ))
+                )}
+                {!isLoading && actions.length === 0 && (
+                    <p className="text-gray-500 font-mono italic">Nenhum trabalho disponível no momento.</p>
+                )}
             </div>
         </div>
     )

@@ -26,10 +26,6 @@ export function GameShell({ children, user: serverUser }: GameShellProps) {
             <main className="flex-1 container mx-auto p-2 fade-in">
                 {children}
             </main>
-
-            <footer className="fixed bottom-0 left-0 right-0 p-2 text-[10px] text-gray-600 font-mono text-center">
-                CONNECTED TO: {serverUser ? 'SERVER::SECURE' : 'LOCAL::UNVERIFIED'}
-            </footer>
         </div>
     );
 }

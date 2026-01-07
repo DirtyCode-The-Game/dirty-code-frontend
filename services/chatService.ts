@@ -48,6 +48,7 @@ class ChatWebSocketService {
             this.client?.subscribe('/app/global-messages', (message) => {
                 if (message.body && this.onMessageReceived) {
                     const parsedMessages = JSON.parse(message.body);
+                    console.log(message.body);
                     this.onMessageReceived(parsedMessages);
                 }
             });
