@@ -13,6 +13,8 @@ export function ActionCard({ action }: ActionCardProps) {
     const { performAction, user } = useGame();
     const [isLoading, setIsLoading] = useState(false);
 
+    console.log(action.actionImage)
+    
     const handleAction = async () => {
         if (isDisabled) return;
         setIsLoading(true);
@@ -41,6 +43,8 @@ export function ActionCard({ action }: ActionCardProps) {
     const hasMissingRequirements = requirements.some(req => req.current < req.value);
     const isDisabled = isStaminaInsufficient || hasMissingRequirements || isLoading;
 
+    console.log(`Renderizando imagem: /actions/images/${action.actionImage}`);
+    
     return (
         <Card 
             isPressable={!isDisabled}
@@ -48,6 +52,15 @@ export function ActionCard({ action }: ActionCardProps) {
             className={`bg-black border border-white/10 hover:border-white/20 transition-all group w-full ${isLoading ? 'cursor-wait' : ''}`}
         >
             <CardBody className="flex flex-row items-center justify-between p-6 gap-6">
+                {action.actionImage && (
+                    <div className="flex-shrink-0 w-32 h-32 rounded-lg overflow-hidden border border-white/5">
+                        <img 
+                            src={`/actions/images/${action.actionImage}`}
+                            alt={action.title}
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                )}
                 <div className="flex-1 space-y-4">
                     <div className="space-y-1">
                         <div className="flex items-center gap-2">

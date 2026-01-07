@@ -27,13 +27,9 @@ export function HackingPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-4 mt-6">
-                {isLoading ? (
-                    <p className="text-gray-500 font-mono">Carregando missões...</p>
-                ) : (
-                    actions.map(action => (
-                        <ActionCard key={action.id} action={action} />
-                    ))
-                )}
+                {actions.map(action => (
+                    <ActionCard key={action.id} action={action} />
+                ))}
                 {!isLoading && actions.length === 0 && (
                     <p className="text-gray-500 font-mono italic">Nenhuma missão disponível no momento.</p>
                 )}
