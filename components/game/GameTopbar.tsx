@@ -28,7 +28,7 @@ export function GameTopbar() {
                     <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
                         <Link href="/game/user" className="hover:text-white transition-colors">Perfil</Link>
                         <Link href="/game/ranking" className="hover:text-white transition-colors">Ranking</Link>
-                        <Link href="#" className="hover:text-white transition-colors">Notícias</Link>
+                        <Link href="/game/news" className="hover:text-white transition-colors">Notícias</Link>
                     </div>
                 </div>
 
@@ -91,11 +91,11 @@ export function GameTopbar() {
                             Comunidade
                         </Link>
                         <Link
-                            href="#"
+                            href="/game/news"
                             className="p-2 hover:bg-white/5 rounded-lg text-gray-300 hover:text-white transition-colors font-medium"
                             onClick={() => setIsMenuOpen(false)}
                         >
-                            Patch Notes
+                            Notícias
                         </Link>
                     </nav>
 

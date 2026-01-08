@@ -3,6 +3,7 @@ import { Button } from "@heroui/react";
 import { useGame } from "@/context/GameContext";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { CURRENT_VERSION } from "@/data/changelog";
 
 export default function Home() {
   const { login, isLoading } = useGame();
@@ -15,7 +16,7 @@ export default function Home() {
         const response = await fetch(`${backendUrl}/actuator/health`, {
           cache: 'no-store'
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           setSystemStatus(data.status === 'UP' ? 'ONLINE' : 'OFFLINE');
@@ -49,13 +50,13 @@ export default function Home() {
 
           {/* Logo Section */}
           <div className="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
-              <Image
-                src="/logo.png"
-                alt="DirtyCode Logo"
-                fill
-                className="object-contain"
-                priority
-              />
+            <Image
+              src="/logo.png"
+              alt="DirtyCode Logo"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
 
           <div className="space-y-4">
@@ -92,19 +93,19 @@ export default function Home() {
             <span className={systemStatus === 'ONLINE' ? 'text-green-500' : systemStatus === 'OFFLINE' ? 'text-red-500' : ''}>
               SYSTEM_STATUS: {systemStatus}
             </span>
-            <span>ALPHA v0.1.1</span>
+            <span>ALPHA v{CURRENT_VERSION}</span>
             <a
               href="https://www.youtube.com/@CanalCodigoSujo"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-2 flex items-center gap-2 px-3 py-2 bg-zinc-800/50 hover:bg-red-600/20 border border-white/5 hover:border-red-600/50 rounded-lg transition-all duration-300 group/yt"
             >
-              <svg 
-                viewBox="0 0 24 24" 
-                fill="currentColor" 
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
                 className="w-4 h-4 text-gray-400 group-hover/yt:text-red-500 transition-colors"
               >
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
               </svg>
               <span className="text-[10px] uppercase tracking-wider text-gray-400 group-hover/yt:text-gray-200 transition-colors">
                 Inscreva-se no canal
