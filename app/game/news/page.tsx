@@ -1,4 +1,4 @@
-import { NewsPage } from "@/components/game/pages/NewsPage";
+import { NewsPage } from "@/components/NewsPage";
 
 export default function Page() {
     return (

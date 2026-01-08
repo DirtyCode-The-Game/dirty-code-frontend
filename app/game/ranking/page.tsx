@@ -1,4 +1,4 @@
-import { RankingPage } from "@/components/game/pages/RankingPage";
+import { RankingPage } from "@/components/RankingPage";
 
 export default function Page() {
     return (

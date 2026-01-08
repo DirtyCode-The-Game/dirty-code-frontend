@@ -32,7 +32,7 @@ export function RankingPage() {
                 <div>
                     <h1 className="text-4xl font-bold uppercase text-white mb-2">Ranking Global</h1>
                     <p className="text-gray-400 text-lg border-l-2 border-primary pl-4">
-                        Os maiores criminosos do submundo.
+                        Os maiores devs do submundo sujo.
                     </p>
                 </div>
                 <div className="hidden md:block">
