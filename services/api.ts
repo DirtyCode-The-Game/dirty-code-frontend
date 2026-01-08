@@ -121,9 +121,9 @@ export const api = {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                return { 
-                    success: false, 
-                    message: errorData.message || 'Falha ao executar ação.' 
+                return {
+                    success: false,
+                    message: errorData.message || 'Falha ao executar ação.'
                 };
             }
 
@@ -147,5 +147,24 @@ export const api = {
     updateAvatar: async (data: any) => {
         const { updateAvatarAction } = await import('@/app/actions/avatar');
         return await updateAvatarAction(data);
+        return await updateAvatarAction(data);
+    },
+
+    getRanking: async (): Promise<Avatar[]> => {
+        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080/dirty-code';
+        try {
+            const token = await api.getToken();
+
+            const response = await fetch(`${baseUrl}/v1/avatars/ranking`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) throw new Error('Failed to fetch ranking');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching ranking:', error);
+            return [];
+        }
     }
 };
