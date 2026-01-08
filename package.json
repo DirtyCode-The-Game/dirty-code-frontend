@@ -13,6 +13,7 @@
     "@heroui/react": "^2.7.11",
     "@heroui/theme": "2.4.17",
     "@stomp/stompjs": "^7.2.1",
+    "firebase": "^12.7.0",
     "framer-motion": "^12.23.26",
     "js-cookie": "^3.0.5",
     "next": "16.1.1",
