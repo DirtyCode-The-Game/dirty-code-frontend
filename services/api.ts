@@ -14,6 +14,7 @@ export interface Avatar {
     stealth: number;
     active: boolean;
     burnout: number;
+    story?: string;
 }
 
 export enum GameActionType {

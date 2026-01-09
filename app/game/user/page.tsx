@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Input, Button, Progress } from "@heroui/react";
+import { Input, Button, Progress, Textarea } from "@heroui/react";
 import { api } from '@/services/api';
 import Image from 'next/image';
 import { useGame } from "@/context/GameContext";
@@ -46,6 +46,7 @@ export default function AvatarEdit() {
 
     // UI State
     const [name, setName] = useState('');
+    const [story, setStory] = useState('');
     const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0]);
     const [stats, setStats] = useState<Stats>({
         intelligence: 0,
@@ -59,25 +60,43 @@ export default function AvatarEdit() {
 
     // Load data from context
     useEffect(() => {
-        if (user && user.activeAvatar && !isInitialized) {
-            const avatar = user.activeAvatar;
-            setName(avatar.name || user.name || '');
-            setSelectedAvatar(avatar.picture || AVATAR_OPTIONS[0]);
+        const fetchInitialData = async () => {
+            if (user && user.activeAvatar && !isInitialized) {
+                const avatar = user.activeAvatar;
+                setName(avatar.name || user.name || '');
+                setStory(avatar.story || '');
+                setSelectedAvatar(avatar.picture || AVATAR_OPTIONS[0]);
 
-            setStats({
-                intelligence: avatar.intelligence || 0,
-                charisma: avatar.charisma || 0,
-                strength: avatar.strength || 0,
-                stealth: avatar.stealth || 0
-            });
+                setStats({
+                    intelligence: avatar.intelligence || 0,
+                    charisma: avatar.charisma || 0,
+                    strength: avatar.strength || 0,
+                    stealth: avatar.stealth || 0
+                });
 
-            setAvailablePoints(avatar.availablePoints || 0);
-            setIsInitialized(true);
-        } else if (user && !user.activeAvatar && !isInitialized) {
-            // New user defaults
-            if (user.name) setName(user.name);
-            setIsInitialized(true);
-        }
+                setAvailablePoints(avatar.availablePoints || 0);
+                setIsInitialized(true);
+            } else if (user && !user.activeAvatar && !isInitialized) {
+                // New user defaults
+                if (user.name) setName(user.name);
+
+                // Fetch default story from histories.json
+                try {
+                    const response = await fetch('/avatars/histories.json');
+                    const data = await response.json();
+                    if (data.stories && data.stories.length > 0) {
+                        const randomStory = data.stories[Math.floor(Math.random() * data.stories.length)];
+                        setStory(randomStory);
+                    }
+                } catch (error) {
+                    console.error('Error loading default stories:', error);
+                }
+
+                setIsInitialized(true);
+            }
+        };
+
+        fetchInitialData();
     }, [user, isInitialized]);
 
     const handleStatIncrease = (stat: StatKey) => {
@@ -97,6 +116,7 @@ export default function AvatarEdit() {
         try {
             const payload: any = {
                 name,
+                story,
                 picture: selectedAvatar
             };
 
@@ -140,18 +160,34 @@ export default function AvatarEdit() {
                         </p>
                     </div>
 
-                    {/* Name Input */}
-                    <div className="max-w-md">
+                    {/* Name & Story Input */}
+                    <div className="max-w-md space-y-4">
                         <Input
                             label="Nome do Personagem"
                             placeholder="Como você quer ser chamado?"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             variant="bordered"
+                            isDisabled={!!user?.activeAvatar}
+                            classNames={{
+                                inputWrapper: "bg-white/5 border-white/10 hover:border-white/20 focus-within:border-primary/50 h-12",
+                                label: "text-gray-400 font-medium",
+                                input: "text-white"
+                            }}
+                        />
+                        <Textarea
+                            label="Conte um pouco sobre você..."
+                            placeholder="Conte um pouco sobre sua trajetória..."
+                            value={story}
+                            onChange={(e) => setStory(e.target.value.slice(0, 200))}
+                            variant="bordered"
+                            minRows={4}
+                            description={`${story.length}/200 caracteres`}
                             classNames={{
                                 inputWrapper: "bg-white/5 border-white/10 hover:border-white/20 focus-within:border-primary/50",
-                                label: "text-gray-400",
-                                input: "text-white"
+                                label: "text-gray-400 font-medium",
+                                input: "text-white resize-none",
+                                description: "text-gray-500 text-right"
                             }}
                         />
                     </div>
@@ -164,10 +200,11 @@ export default function AvatarEdit() {
                                 <button
                                     key={idx}
                                     onClick={() => setSelectedAvatar(src)}
+                                    disabled={!!user?.activeAvatar}
                                     className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all duration-300 flex-shrink-0 group ${selectedAvatar === src
                                         ? 'border-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] scale-105'
                                         : 'border-white/10 opacity-60 hover:opacity-100 hover:scale-105'
-                                        }`}
+                                        } ${user?.activeAvatar ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                 >
                                     <Image
                                         src={src}
