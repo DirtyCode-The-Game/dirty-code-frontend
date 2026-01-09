@@ -40,6 +40,7 @@ export interface GameAction {
     requiredStealth?: number;
     textFile: string;
     actionImage: string;
+    failureChance: number;
 }
 
 export interface User {
@@ -108,7 +109,7 @@ export const api = {
         }
     },
 
-    performAction: async (actionId: string): Promise<{ success: boolean; message: string; rewards?: any }> => {
+    performAction: async (actionId: string): Promise<{ success: boolean; avatar: Avatar }> => {
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080/dirty-code';
         try {
             const token = await api.getToken();
@@ -123,23 +124,13 @@ export const api = {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                return {
-                    success: false,
-                    message: errorData.message || 'Falha ao executar ação.'
-                };
+                throw new Error(errorData.message || 'Falha ao executar ação.');
             }
 
-            const updatedAvatar = await response.json();
-            return {
-                success: true,
-                message: 'Ação concluída com sucesso!',
-                rewards: {
-                    activeAvatar: updatedAvatar
-                }
-            };
-        } catch (error) {
+            return await response.json();
+        } catch (error: any) {
             console.error('Error performing action:', error);
-            return { success: false, message: 'Erro de conexão ao executar ação.' };
+            throw error;
         }
     },
     createAvatar: async (data: any) => {

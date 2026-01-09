@@ -10,7 +10,7 @@ interface GameContextType {
     isLoading: boolean;
     login: () => Promise<void>;
     logout: () => void;
-    performAction: (actionName: string) => Promise<void>;
+    performAction: (action: any) => Promise<{ success: boolean; message: string }>;
     refreshUser: (updates: Partial<User>) => void;
 }
 
@@ -69,33 +69,49 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
 
 
-    const performAction = async (actionId: string) => {
+    const performAction = async (action: any): Promise<{ success: boolean; message: string }> => {
         if (!user) {
             console.error("User not logged in.");
-            return;
+            return { success: false, message: "Usuário não logado" };
         }
 
         try {
-            const result = await api.performAction(actionId);
-            if (result.success && result.rewards && result.rewards.activeAvatar) {
-                const updatedAvatar = result.rewards.activeAvatar;
+            const result = await api.performAction(action.id);
+            const updatedAvatar = result.avatar;
 
-                let newUser = { ...user };
-                if (newUser.activeAvatar) {
-                    newUser.activeAvatar = updatedAvatar;
-                }
+            setUser(prev => {
+                if (!prev) return null;
+                const updatedUser = {
+                    ...prev,
+                    activeAvatar: updatedAvatar
+                };
+                localStorage.setItem('dirty_user_info', JSON.stringify(updatedUser));
+                return updatedUser;
+            });
 
-                setUser(newUser as User);
-                localStorage.setItem('dirty_user_info', JSON.stringify(newUser));
-                if (result.message) {
-                    // Opcional: mostrar mensagem de sucesso
+            let finalMessage = result.success ? "Ação concluída com sucesso!" : "A ação falhou!";
+
+            // Load and show message
+            if (action.textFile) {
+                try {
+                    const response = await fetch(`/actions/descriptions/${action.textFile}`);
+                    if (response.ok) {
+                        const messages = await response.json();
+                        const pool = result.success ? messages.success : messages.failure;
+                        if (pool && pool.length > 0) {
+                            finalMessage = pool[Math.floor(Math.random() * pool.length)];
+                        }
+                    }
+                } catch (msgError) {
+                    console.error("Failed to load action message", msgError);
                 }
-            } else {
-                alert(result.message || "Erro ao realizar ação");
             }
-        } catch (e) {
+
+            router.refresh();
+            return { success: result.success, message: finalMessage };
+        } catch (e: any) {
             console.error(e);
-            alert("Erro de conexão ao realizar ação");
+            return { success: false, message: e.message || "Erro ao realizar ação" };
         }
     };
 

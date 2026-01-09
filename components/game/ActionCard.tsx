@@ -2,7 +2,7 @@
 
 import { useGame } from "@/context/GameContext";
 import { Card, CardBody, Tooltip } from "@heroui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GameAction } from "@/services/api";
 
 interface ActionCardProps {
@@ -12,13 +12,21 @@ interface ActionCardProps {
 export function ActionCard({ action }: ActionCardProps) {
     const { performAction, user } = useGame();
     const [isLoading, setIsLoading] = useState(false);
+    const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
 
-    console.log(action.actionImage)
+    useEffect(() => {
+        if (result) {
+            const timer = setTimeout(() => setResult(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [result]);
 
     const handleAction = async () => {
         if (isDisabled) return;
         setIsLoading(true);
-        await performAction(action.id);
+        setResult(null);
+        const res = await performAction(action);
+        setResult(res);
         setIsLoading(false);
     }
 
@@ -49,7 +57,15 @@ export function ActionCard({ action }: ActionCardProps) {
         <Card
             isPressable={!isDisabled}
             onPress={handleAction}
-            className={`bg-black border border-white/10 hover:border-white/20 transition-all group w-full ${isLoading ? 'cursor-wait' : ''}`}
+            className={`bg-black border transition-all group w-full ${
+                isLoading ? 'cursor-wait' : ''
+            } ${
+                result 
+                    ? result.success 
+                        ? 'border-green-500 bg-green-500/5 shadow-[0_0_15px_rgba(34,197,94,0.1)]' 
+                        : 'border-red-500 bg-red-500/5 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+                    : 'border-white/10 hover:border-white/20'
+            }`}
         >
             <CardBody className="p-3 md:p-6">
                 <div className="flex flex-row gap-3 md:gap-6">
@@ -79,17 +95,36 @@ export function ActionCard({ action }: ActionCardProps) {
                                 )}
                             </div>
 
-                            {moneyReward !== undefined && moneyReward !== 0 && (
-                                <div className={`text-sm md:text-2xl font-bold font-mono whitespace-nowrap ${moneyReward > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                    {formatValue(moneyReward)} R$
-                                </div>
-                            )}
+                            <div className="flex flex-col items-end gap-1">
+                                {action.failureChance !== undefined && (
+                                    <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
+                                        (action.failureChance * 100) < 20 
+                                            ? 'bg-green-500/10 text-green-500 border-green-500/20' 
+                                            : (action.failureChance * 100) === 20 
+                                                ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' 
+                                                : 'bg-red-500/10 text-red-500 border-red-500/20'
+                                    }`}>
+                                        Risco: {Math.round(action.failureChance * 100)}%
+                                    </div>
+                                )}
+                                {moneyReward !== undefined && moneyReward !== 0 && (
+                                    <div className={`text-sm md:text-2xl font-bold font-mono whitespace-nowrap ${moneyReward > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                        {formatValue(moneyReward)} R$
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Description */}
-                        <p className="text-xs md:text-sm text-gray-400 leading-relaxed line-clamp-2 md:line-clamp-none">
-                            {action.description}
-                        </p>
+                        {/* Description / Result Message */}
+                        <div className="min-h-[3rem] md:min-h-[4rem] flex items-center">
+                            <p className={`text-xs md:text-sm leading-relaxed transition-all duration-300 ${
+                                result 
+                                    ? result.success ? 'text-green-400 font-medium' : 'text-red-400 font-medium'
+                                    : 'text-gray-400'
+                            }`}>
+                                {result ? result.message : action.description}
+                            </p>
+                        </div>
 
                         {/* Footer: Stats & Requirements */}
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mt-auto">
