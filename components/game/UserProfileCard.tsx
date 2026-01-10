@@ -159,6 +159,7 @@ export function UserProfileCard() {
                             <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider text-gray-400 min-w-[65px]">Respeito:</span>
                             <Progress
                                 value={user?.activeAvatar?.experience ?? 0}
+                                maxValue={user?.activeAvatar?.nextLevelExperience ?? 100}
                                 size="sm"
                                 classNames={{
                                     track: "bg-white/10 h-1.5",
@@ -168,7 +169,7 @@ export function UserProfileCard() {
                                 }}
                                 className="flex-1"
                             />
-                            <span className="text-[10px] md:text-xs font-mono text-gray-500 min-w-[35px] text-right">{user?.activeAvatar?.experience ?? 0}/0</span>
+                            <span className="text-[10px] md:text-xs font-mono text-gray-500 min-w-[35px] text-right">{user?.activeAvatar?.experience ?? 0}/{user?.activeAvatar?.nextLevelExperience ?? 100}</span>
                         </div>
                     </Tooltip>
                 </div>

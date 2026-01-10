@@ -4,6 +4,7 @@ export interface Avatar {
     picture?: string;
     level: number;
     experience: number;
+    nextLevelExperience: number;
     stamina: number;
     life: number;
     money: number; // BigDecimal in backend, number in JS
@@ -64,6 +65,7 @@ export const api = {
                     name: "Leo Dev",
                     level: 1,
                     experience: 0,
+                    nextLevelExperience: 100,
                     life: 100,
                     stamina: 100,
                     money: 500,
