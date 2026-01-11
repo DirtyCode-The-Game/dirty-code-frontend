@@ -15,10 +15,15 @@ export function GameShell({ children, user: serverUser }: GameShellProps) {
 
     // Hydrate context with server user on mount or update
     useEffect(() => {
-        if (serverUser && JSON.stringify(serverUser) !== JSON.stringify(contextUser)) {
-            refreshUser(serverUser);
+        if (serverUser) {
+            const hasAvatarChanged = serverUser.activeAvatar?.id !== contextUser?.activeAvatar?.id;
+            const hasNameChanged = serverUser.name !== contextUser?.name;
+            
+            if (hasAvatarChanged || hasNameChanged) {
+                refreshUser(serverUser);
+            }
         }
-    }, [serverUser, contextUser, refreshUser]);
+    }, [serverUser, contextUser?.activeAvatar?.id, contextUser?.name, refreshUser]);
 
     return (
         <div className="flex flex-col min-h-screen bg-black">

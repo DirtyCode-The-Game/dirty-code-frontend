@@ -111,9 +111,17 @@ export async function increaseAttributeAction(attribute: string) {
         throw new Error("Unauthorized");
     }
 
-    const backendUrl = getBackendUrl();
+    const attributeMapping: { [key: string]: string } = {
+        'FOR': 'STRENGTH',
+        'INT': 'INTELLIGENCE',
+        'CHA': 'CHARISMA',
+        'DIS': 'STEALTH'
+    };
 
-    const res = await fetch(`${backendUrl}/v1/avatars/attributes/increase?attribute=${attribute}`, {
+    const backendAttribute = attributeMapping[attribute] || attribute;
+
+    const backendUrl = getBackendUrl();
+    const res = await fetch(`${backendUrl}/v1/avatars/attributes/increase?attribute=${backendAttribute}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -106,13 +106,17 @@ export const api = {
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080/dirty-code';
         try {
             const token = await api.getToken();
+            if (!token) return [];
 
             const response = await fetch(`${baseUrl}/v1/actions/type/${type}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (!response.ok) throw new Error('Failed to fetch actions');
+            if (!response.ok) {
+                console.warn(`Failed to fetch actions of type ${type}: ${response.status}`);
+                return [];
+            }
             return await response.json();
         } catch (error) {
             console.error(`Error fetching actions of type ${type}:`, error);

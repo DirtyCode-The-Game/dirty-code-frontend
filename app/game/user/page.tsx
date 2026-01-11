@@ -135,8 +135,11 @@ export default function AvatarEdit() {
 
             refreshUser({ activeAvatar: newAvatar });
 
-            router.push('/game');
-            router.refresh();
+            // Pequeno delay para garantir que o estado do contexto e cookies foram processados
+            setTimeout(() => {
+                router.push('/game');
+                router.refresh();
+            }, 100);
         } catch (error) {
             console.error(error);
             alert("Failed to save profile. Please try again.");

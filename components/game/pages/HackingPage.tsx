@@ -12,6 +12,8 @@ export function HackingPage() {
 
     useEffect(() => {
         const fetchActions = async () => {
+            if (!user?.activeAvatar) return;
+            
             setIsLoading(true);
             try {
                 const data = await api.getActionsByType(GameActionType.HACKING);

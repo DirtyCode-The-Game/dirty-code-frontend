@@ -215,7 +215,7 @@ export function ActionCard({ action }: ActionCardProps) {
                     <Chip
                         size="sm"
                         variant="flat"
-                        color={riskPercentage < 20 ? "success" : riskPercentage === 20 ? "warning" : "danger"}
+                        color={riskPercentage <= 10 ? "success" : riskPercentage <= 25 ? "warning" : "danger"}
                         className="font-bold font-mono"
                     >
                         RISCO: {riskPercentage}%

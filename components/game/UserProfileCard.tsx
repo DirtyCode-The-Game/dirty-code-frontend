@@ -166,6 +166,7 @@ export function UserProfileCard() {
                         <div className="w-full flex items-center gap-2">
                             <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider text-gray-400 min-w-[65px]">Vida:</span>
                             <Progress
+                                id="progress-life"
                                 value={user?.activeAvatar?.life ?? 0}
                                 color="danger"
                                 size="sm"
@@ -190,6 +191,7 @@ export function UserProfileCard() {
                         <div className="w-full flex items-center gap-2">
                             <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider text-gray-400 min-w-[65px]">Energia:</span>
                             <Progress
+                                id="progress-stamina"
                                 value={user?.activeAvatar?.stamina ?? 0}
                                 size="sm"
                                 classNames={{
@@ -213,6 +215,7 @@ export function UserProfileCard() {
                         <div className="w-full flex items-center gap-2">
                             <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider text-gray-400 min-w-[65px]">Respeito:</span>
                             <Progress
+                                id="progress-experience"
                                 value={user?.activeAvatar?.experience ?? 0}
                                 maxValue={user?.activeAvatar?.nextLevelExperience ?? 100}
                                 size="sm"

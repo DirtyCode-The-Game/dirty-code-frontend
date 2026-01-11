@@ -12,6 +12,8 @@ export function WorkPage() {
 
     useEffect(() => {
         const fetchActions = async () => {
+            if (!user?.activeAvatar) return;
+
             setIsLoading(true);
             const data = await api.getActionsByType(GameActionType.WORK);
             setActions(data);
