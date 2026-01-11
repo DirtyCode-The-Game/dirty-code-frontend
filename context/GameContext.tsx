@@ -1,8 +1,8 @@
 'use client'
 
-import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
-import {api, User} from '../services/api';
-import {useRouter} from 'next/navigation';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { api, User } from '../services/api';
+import { useRouter } from 'next/navigation';
 
 
 interface GameContextType {
@@ -10,9 +10,9 @@ interface GameContextType {
     isLoading: boolean;
     login: () => Promise<void>;
     logout: () => void;
-    performAction: (action: any) => Promise<{ 
-        success: boolean; 
-        message: string; 
+    performAction: (action: any) => Promise<{
+        success: boolean;
+        message: string;
         variations?: {
             experience?: number;
             life?: number;
@@ -21,6 +21,8 @@ interface GameContextType {
         } | null;
     }>;
     refreshUser: (updates: Partial<User>) => void;
+    onTimeoutRedirect?: () => void;
+    setOnTimeoutRedirect: (callback: () => void) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -28,6 +30,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export function GameProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [timeoutRedirectCallback, setTimeoutRedirectCallback] = useState<(() => void) | undefined>(undefined);
     const router = useRouter();
 
     // Self-healing: Fetch user from BFF if not present
@@ -78,8 +81,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
 
 
-    const performAction = async (action: any): Promise<{ 
-        success: boolean; 
+    const performAction = async (action: any): Promise<{
+        success: boolean;
         message: string;
         variations?: {
             experience?: number;
@@ -135,9 +138,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 money: updatedAvatar.money - oldAvatar.money,
             } : null);
 
+            // Check if user was sent to timeout (hospital or jail) and trigger redirect
+            if (updatedAvatar.timeoutType && updatedAvatar.timeout) {
+                if (timeoutRedirectCallback) {
+                    timeoutRedirectCallback();
+                }
+            }
+
             router.refresh();
-            return { 
-                success: result.success, 
+            return {
+                success: result.success,
                 message: finalMessage,
                 variations
             };
@@ -154,8 +164,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('dirty_user_info', JSON.stringify(updated));
     }
 
+    const setOnTimeoutRedirect = (callback: () => void) => {
+        setTimeoutRedirectCallback(() => callback);
+    }
+
     return (
-        <GameContext.Provider value={{ user, isLoading, login, logout, performAction, refreshUser }}>
+        <GameContext.Provider value={{
+            user,
+            isLoading,
+            login,
+            logout,
+            performAction,
+            refreshUser,
+            onTimeoutRedirect: timeoutRedirectCallback,
+            setOnTimeoutRedirect
+        }}>
             {children}
         </GameContext.Provider>
     );

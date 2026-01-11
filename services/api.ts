@@ -16,13 +16,16 @@ export interface Avatar {
     active: boolean;
     burnout: number;
     story?: string;
+    timeout?: string; // ISO datetime string when timeout expires
+    timeoutType?: string; // "HOSPITAL" or "JAIL"
 }
 
 export enum GameActionType {
     HACKING = 'hacking',
     WORK = 'work',
     TRAIN = 'training',
-    MARKET = 'market'
+    MARKET = 'market',
+    HOSPITAL = 'hospital'
 }
 
 export interface GameAction {
@@ -170,5 +173,15 @@ export const api = {
             console.error('Error fetching ranking:', error);
             return [];
         }
+    },
+
+    leaveTimeout: async (): Promise<{ success: boolean; avatar: Avatar; message?: string }> => {
+        const { leaveTimeoutAction } = await import('@/app/actions/avatar');
+        return await leaveTimeoutAction();
+    },
+
+    buyFreedom: async (): Promise<{ success: boolean; avatar: Avatar; message?: string }> => {
+        const { buyFreedomAction } = await import('@/app/actions/avatar');
+        return await buyFreedomAction();
     }
 };

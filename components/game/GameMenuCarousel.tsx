@@ -17,9 +17,10 @@ interface GameMenuCarouselProps {
     items: MenuItem[];
     activeId: string;
     onSelect: (id: string) => void;
+    lockedItems?: string[]; // IDs of items that are locked
 }
 
-export function GameMenuCarousel({ items, activeId, onSelect }: GameMenuCarouselProps) {
+export function GameMenuCarousel({ items, activeId, onSelect, lockedItems = [] }: GameMenuCarouselProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(true);
@@ -119,6 +120,7 @@ export function GameMenuCarousel({ items, activeId, onSelect }: GameMenuCarousel
             >
                 {items.map((item) => {
                     const isActive = activeId === item.id;
+                    const isLocked = lockedItems.includes(item.id);
                     return (
                         <Card
                             key={item.id}
@@ -126,11 +128,12 @@ export function GameMenuCarousel({ items, activeId, onSelect }: GameMenuCarousel
                             isPressable
                             onPress={() => onSelect(item.id)}
                             className={`
-                                flex-shrink-0 w-36 md:w-64 border bg-black transition-all duration-300 snap-center md:snap-start
+                                flex-shrink-0 w-36 md:w-64 border bg-black transition-all duration-300 snap-center md:snap-start relative
                                 ${isActive
                                     ? `bg-white/10 border-primary ring-1 ring-primary`
                                     : 'border-white/10 hover:border-white/30 hover:bg-white/5'
                                 }
+                                ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}
                             `}
                         >
                             <CardBody className="p-3 md:p-4 flex flex-col items-start gap-1 md:gap-2 overflow-hidden h-full">
@@ -154,6 +157,15 @@ export function GameMenuCarousel({ items, activeId, onSelect }: GameMenuCarousel
                                 {/* Active Indicator Bar */}
                                 {isActive && (
                                     <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-primary rounded-full shadow-glow"></div>
+                                )}
+
+                                {/* Locked Indicator */}
+                                {isLocked && (
+                                    <div className="absolute top-2 right-2 bg-red-500/80 rounded-full p-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3 md:w-4 md:h-4 text-white">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                        </svg>
+                                    </div>
                                 )}
                             </CardBody>
                         </Card>

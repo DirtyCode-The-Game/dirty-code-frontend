@@ -78,3 +78,55 @@ export async function updateAvatarAction(data: any) {
     const avatarData = await res.json();
     return avatarData;
 }
+
+export async function leaveTimeoutAction() {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('dirty_token')?.value;
+
+    if (!token) {
+        throw new Error("Unauthorized");
+    }
+
+    const backendUrl = getBackendUrl();
+
+    const res = await fetch(`${backendUrl}/v1/actions/timeout/leave?payForFreedom=false`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Failed to leave timeout");
+    }
+
+    return await res.json();
+}
+
+export async function buyFreedomAction() {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('dirty_token')?.value;
+
+    if (!token) {
+        throw new Error("Unauthorized");
+    }
+
+    const backendUrl = getBackendUrl();
+
+    const res = await fetch(`${backendUrl}/v1/actions/timeout/leave?payForFreedom=true`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Failed to buy freedom");
+    }
+
+    return await res.json();
+}
