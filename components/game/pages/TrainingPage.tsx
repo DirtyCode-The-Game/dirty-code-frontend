@@ -3,19 +3,22 @@
 import { ActionCard } from "@/components/game/ActionCard";
 import { useEffect, useState } from "react";
 import { api, GameAction, GameActionType } from "@/services/api";
+import { useGame } from "@/context/GameContext";
 
 export function TrainingPage() {
+    const { user } = useGame();
     const [actions, setActions] = useState<GameAction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchActions = async () => {
+            setIsLoading(true);
             const data = await api.getActionsByType(GameActionType.TRAIN);
             setActions(data);
             setIsLoading(false);
         };
         fetchActions();
-    }, []);
+    }, [user?.activeAvatar?.strength, user?.activeAvatar?.intelligence, user?.activeAvatar?.charisma, user?.activeAvatar?.stealth]);
 
     return (
         <div>

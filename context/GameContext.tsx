@@ -158,10 +158,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     };
 
     const refreshUser = (updates: Partial<User>) => {
-        const base = user || {} as User;
-        const updated = { ...base, ...updates };
-        setUser(updated);
-        localStorage.setItem('dirty_user_info', JSON.stringify(updated));
+        setUser(prev => {
+            const base = prev || {} as User;
+            const updated = { ...base, ...updates };
+            localStorage.setItem('dirty_user_info', JSON.stringify(updated));
+            return updated;
+        });
+        router.refresh();
     }
 
     const setOnTimeoutRedirect = (callback: () => void) => {

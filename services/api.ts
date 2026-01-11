@@ -13,6 +13,9 @@ export interface Avatar {
     charisma: number;
     strength: number;
     stealth: number;
+    hacking: number;
+    work: number;
+    focus: 'work' | 'hacking' | 'both';
     active: boolean;
     burnout: number;
     story?: string;
@@ -77,6 +80,9 @@ export const api = {
                     charisma: 25,
                     strength: 10,
                     stealth: 5,
+                    hacking: 0,
+                    work: 0,
+                    focus: 'both',
                     active: true,
                     burnout: 0,
                 },
@@ -154,7 +160,10 @@ export const api = {
     updateAvatar: async (data: any) => {
         const { updateAvatarAction } = await import('@/app/actions/avatar');
         return await updateAvatarAction(data);
-        return await updateAvatarAction(data);
+    },
+    increaseAttribute: async (attribute: string) => {
+        const { increaseAttributeAction } = await import('@/app/actions/avatar');
+        return await increaseAttributeAction(attribute);
     },
 
     getRanking: async (): Promise<Avatar[]> => {
