@@ -26,7 +26,6 @@ export function GameTopbar() {
                     </Link>
 
                     <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
-                        <Link href="/game/user" className="hover:text-white transition-colors">Perfil</Link>
                         <Link href="/game/ranking" className="hover:text-white transition-colors">Ranking</Link>
                         <Link href="/game/news" className="hover:text-white transition-colors">Notícias</Link>
                         <Link href="https://github.com/DirtyCode-The-Game" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Github</Link>
@@ -70,13 +69,6 @@ export function GameTopbar() {
             {isMenuOpen && (
                 <div className="md:hidden absolute top-16 left-0 w-full bg-black/95 backdrop-blur-xl border-b border-white/10 p-4 flex flex-col gap-4 animate-in slide-in-from-top-5 shadow-2xl">
                     <nav className="flex flex-col gap-2">
-                        <Link
-                            href="/game/user"
-                            className="p-2 hover:bg-white/5 rounded-lg text-gray-300 hover:text-white transition-colors font-medium"
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            Perfil
-                        </Link>
                         <Link
                             href="/game/ranking"
                             className="p-2 hover:bg-white/5 rounded-lg text-gray-300 hover:text-white transition-colors font-medium"

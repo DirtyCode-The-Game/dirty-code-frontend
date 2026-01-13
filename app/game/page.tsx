@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 import { UserProfileCard } from "@/components/game/UserProfileCard";
 import { GameMenuCarousel, MenuItem } from "@/components/game/GameMenuCarousel";
@@ -81,10 +82,18 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 export default function GameDashboard() {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState("Helldit");
     const { user, setOnTimeoutRedirect } = useGame();
 
     const content = MENU_ITEMS.find(item => item.id === activeTab);
+
+    // Redirect to onboarding if user doesn't have an avatar
+    useEffect(() => {
+        if (user && !user.activeAvatar) {
+            router.push('/game/onboarding');
+        }
+    }, [user, router]);
 
     // Check if user is in hospital/jail timeout
     const isInTimeout = user?.activeAvatar?.timeoutType && user?.activeAvatar?.timeout;
