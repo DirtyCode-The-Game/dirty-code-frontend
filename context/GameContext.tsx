@@ -10,9 +10,10 @@ interface GameContextType {
     isLoading: boolean;
     login: () => Promise<void>;
     logout: () => void;
-    performAction: (action: any) => Promise<{
+    performAction: (action: any, count?: number) => Promise<{
         success: boolean;
         message: string;
+        timesExecuted?: number;
         variations?: {
             experience?: number;
             life?: number;
@@ -21,6 +22,8 @@ interface GameContextType {
         } | null;
     }>;
     refreshUser: (updates: Partial<User>) => void;
+    actionCount: number;
+    setActionCount: (count: number) => void;
     onTimeoutRedirect?: () => void;
     setOnTimeoutRedirect: (callback: () => void) => void;
 }
@@ -30,6 +33,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export function GameProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [actionCount, setActionCount] = useState(1);
     const [timeoutRedirectCallback, setTimeoutRedirectCallback] = useState<(() => void) | undefined>(undefined);
     const router = useRouter();
 
@@ -81,9 +85,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
 
 
-    const performAction = async (action: any): Promise<{
+    const performAction = async (action: any, count: number = 1): Promise<{
         success: boolean;
         message: string;
+        timesExecuted?: number;
         variations?: {
             experience?: number;
             life?: number;
@@ -99,7 +104,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         const oldAvatar = user.activeAvatar;
 
         try {
-            const result = await api.performAction(action.id);
+            const result = await api.performAction(action.id, count);
             const updatedAvatar = result.avatar;
 
             setUser(prev => {
@@ -149,6 +154,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
             return {
                 success: result.success,
                 message: finalMessage,
+                timesExecuted: result.timesExecuted,
                 variations
             };
         } catch (e: any) {
@@ -158,10 +164,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     };
 
     const refreshUser = (updates: Partial<User>) => {
-        const base = user || {} as User;
-        const updated = { ...base, ...updates };
-        setUser(updated);
-        localStorage.setItem('dirty_user_info', JSON.stringify(updated));
+        setUser(prev => {
+            const base = prev || {} as User;
+            const updated = { ...base, ...updates };
+            localStorage.setItem('dirty_user_info', JSON.stringify(updated));
+            return updated;
+        });
+        router.refresh();
     }
 
     const setOnTimeoutRedirect = (callback: () => void) => {
@@ -176,6 +185,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
             logout,
             performAction,
             refreshUser,
+            actionCount,
+            setActionCount,
             onTimeoutRedirect: timeoutRedirectCallback,
             setOnTimeoutRedirect
         }}>

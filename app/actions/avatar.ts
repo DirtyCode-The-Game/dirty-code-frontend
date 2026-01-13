@@ -45,6 +45,13 @@ export async function createAvatarAction(data: any) {
     // Update activeAvatar with the response from createAvatar
     userData.activeAvatar = avatarData;
 
+    cookieStore.set('dirty_user_info', JSON.stringify(userData), {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7 // 1 week
+    });
+
     return avatarData;
 }
 
@@ -76,6 +83,75 @@ export async function updateAvatarAction(data: any) {
     }
 
     const avatarData = await res.json();
+
+    const currentUserCookie = cookieStore.get('dirty_user_info')?.value;
+    if (currentUserCookie) {
+        try {
+            const userData = JSON.parse(currentUserCookie);
+            userData.activeAvatar = avatarData;
+            cookieStore.set('dirty_user_info', JSON.stringify(userData), {
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 7 // 1 week
+            });
+        } catch (e) {
+            console.error("Failed to update user cookie", e);
+        }
+    }
+
+    return avatarData;
+}
+
+export async function increaseAttributeAction(attribute: string) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('dirty_token')?.value;
+
+    if (!token) {
+        throw new Error("Unauthorized");
+    }
+
+    const attributeMapping: { [key: string]: string } = {
+        'FOR': 'STRENGTH',
+        'INT': 'INTELLIGENCE',
+        'CHA': 'CHARISMA',
+        'DIS': 'STEALTH'
+    };
+
+    const backendAttribute = attributeMapping[attribute] || attribute;
+
+    const backendUrl = getBackendUrl();
+    const res = await fetch(`${backendUrl}/v1/avatars/attributes/increase?attribute=${backendAttribute}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Failed to increase attribute");
+    }
+
+    const avatarData = await res.json();
+
+    const currentUserCookie = cookieStore.get('dirty_user_info')?.value;
+    if (currentUserCookie) {
+        try {
+            const userData = JSON.parse(currentUserCookie);
+            userData.activeAvatar = avatarData;
+            cookieStore.set('dirty_user_info', JSON.stringify(userData), {
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 7 // 1 week
+            });
+        } catch (e) {
+            console.error("Failed to update user cookie", e);
+        }
+    }
+
     return avatarData;
 }
 

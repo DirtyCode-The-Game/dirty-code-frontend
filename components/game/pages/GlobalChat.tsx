@@ -110,6 +110,7 @@ export function GlobalChat() {
 
                 <form onSubmit={handleSendMessage} className="p-4 border-t border-white/5 flex gap-2">
                     <Input
+                        id="chat-input"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder={cooldown > 0 ? `Aguarde ${cooldown}s...` : "Digite sua mensagem cifrada..."}

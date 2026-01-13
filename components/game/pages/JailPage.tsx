@@ -1,5 +1,6 @@
 'use client'
 
+import { ActionQuantitySelector } from "@/components/game/ActionQuantitySelector";
 import { useEffect, useState } from "react";
 import { api } from "@/services/api";
 import { useGame } from "@/context/GameContext";
@@ -88,13 +89,15 @@ export function JailPage() {
         return (
             <div>
                 {/* Header */}
-                <div>
-                    <h1 className="text-2xl md:text-4xl font-bold uppercase text-white mb-2">
-                        🔒 Prisão
-                    </h1>
-                    <p className="text-gray-400 text-sm md:text-lg border-l-2 border-orange-500 pl-4">
-                        Você foi preso! Hackeou o sistema errado.
-                    </p>
+                <div className="flex justify-between items-start md:items-center">
+                    <div>
+                        <h1 className="text-2xl md:text-4xl font-bold uppercase text-white mb-2">
+                            🔒 Prisão
+                        </h1>
+                        <p className="text-gray-400 text-sm md:text-lg border-l-2 border-orange-500 pl-4">
+                            Você foi preso! Hackeou o sistema errado.
+                        </p>
+                    </div>
                 </div>
 
                 {/* Content area */}
@@ -207,13 +210,16 @@ export function JailPage() {
     // Normal jail page - show when not in timeout
     return (
         <div>
-            <div>
-                <h1 className="text-2xl md:text-4xl font-bold uppercase text-white mb-2">
-                    🔒 Prisão
-                </h1>
-                <p className="text-gray-400 text-sm md:text-lg border-l-2 border-orange-500 pl-4">
-                    Você está livre. Evite ações ilegais ou voltará aqui.
-                </p>
+            <div className="flex justify-between items-start md:items-center">
+                <div>
+                    <h1 className="text-2xl md:text-4xl font-bold uppercase text-white mb-2">
+                        🔒 Prisão
+                    </h1>
+                    <p className="text-gray-400 text-sm md:text-lg border-l-2 border-orange-500 pl-4">
+                        Você está livre. Evite ações ilegais ou voltará aqui.
+                    </p>
+                </div>
+                <ActionQuantitySelector />
             </div>
 
             <div className="grid grid-cols-1 gap-4 mt-6">

@@ -1,10 +1,49 @@
 'use client'
 
 import { useGame } from "@/context/GameContext";
+import titlesData from "@/public/avatars/titles.json";
+import { api } from "@/services/api";
 import { Avatar, Card, CardBody, Progress, Tooltip } from "@heroui/react";
+import { useState } from "react";
 
 export function UserProfileCard() {
-    const { user } = useGame();
+    const { user, refreshUser } = useGame();
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    const availablePoints = user?.activeAvatar?.availablePoints ?? 0;
+
+    const getTitle = () => {
+        const avatar = user?.activeAvatar;
+        if (!avatar) return "Iniciante";
+        const focus = avatar.focus || 'both';
+        const titles = (titlesData as any)[focus];
+        
+        if (!titles) return "Iniciante";
+        const value = Number(avatar.level) || 0;
+        const thresholds = Object.keys(titles).map(Number).sort((a, b) => a - b);
+        
+        if (value >= thresholds[thresholds.length - 1]) {
+            return titles[thresholds[thresholds.length - 1]];
+        }
+
+        const nextThreshold = thresholds.find(t => t > value);
+        return nextThreshold ? titles[nextThreshold] : "Iniciante";
+    };
+
+    const handleIncreaseAttribute = async (attr: string) => {
+        if (!user?.activeAvatar || isUpdating || availablePoints <= 0) return;
+
+        setIsUpdating(true);
+        try {
+            const updatedAvatar = await api.increaseAttribute(attr);
+
+            refreshUser({ activeAvatar: updatedAvatar });
+        } catch (error) {
+            console.error("Erro ao aumentar atributo:", error);
+        } finally {
+            setIsUpdating(false);
+        }
+    };
 
     const attributes = [
         {
@@ -50,7 +89,7 @@ export function UserProfileCard() {
             <CardBody className="p-3 md:p-4 grid grid-cols-2 md:flex md:flex-row gap-4 md:gap-6 items-center">
 
                 {/* Profile Section (Mobile: Top Left) */}
-                <div className="col-span-1 md:w-auto flex flex-col items-center gap-2 min-w-[100px] md:min-w-[120px]">
+                <div className="col-span-1 md:w-auto flex flex-col items-center gap-2 min-w-[120px]">
                     <div className="relative">
                         <Avatar
                             src={user?.activeAvatar?.picture}
@@ -60,17 +99,22 @@ export function UserProfileCard() {
                             LVL {user?.activeAvatar?.level}
                         </div>
                     </div>
-                    <div className="text-center">
-                        <h3 className="font-bold text-base md:text-lg leading-none mt-1 md:mt-2 truncate max-w-[120px]">{user?.activeAvatar?.name}</h3>
-                        <p className="text-[10px] md:text-xs text-gray-500 font-mono">Iniciante</p>
+                    <div className="flex flex-col items-center text-center w-full">
+                        <h3 className="font-bold text-base md:text-lg leading-none mt-1 md:mt-2 truncate w-full px-1">{user?.activeAvatar?.name}</h3>
+                        <p className="text-[10px] md:text-xs text-gray-500 font-mono w-full">{getTitle()}</p>
                     </div>
                 </div>
 
                 {/* Money Section (Mobile: Top Right) */}
                 <div className="col-span-1 md:w-auto flex flex-col items-center justify-center md:border-l border-white/10 md:pl-6 md:pr-6 h-full">
-                    <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Dinheiro</div>
-                    <div className="font-mono font-bold text-lg md:text-2xl text-green-400 break-all text-center">
-                        R$ {(user?.activeAvatar?.money ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">
+                        {availablePoints > 0 ? "Pontos Disponíveis" : "Dinheiro"}
+                    </div>
+                    <div className={`font-mono font-bold text-lg md:text-2xl break-all text-center ${availablePoints > 0 ? "text-primary animate-pulse" : "text-green-400"}`}>
+                        {availablePoints > 0 
+                            ? availablePoints
+                            : `R$ ${(user?.activeAvatar?.money ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                        }
                     </div>
                 </div>
 
@@ -83,13 +127,24 @@ export function UserProfileCard() {
                                     <div className="px-1 py-2">
                                         <div className="text-small font-bold">{attr.label}</div>
                                         <div className="text-tiny">{attr.description}</div>
+                                        {availablePoints > 0 && (
+                                            <div className="text-tiny mt-1 text-primary font-bold">
+                                                Clique para aumentar (+1)
+                                            </div>
+                                        )}
                                     </div>
                                 }
                                 placement="top"
                                 closeDelay={0}
                             >
-                                <div className={`w-8 h-8 md:w-8 md:h-8 rounded ${attr.bg} flex items-center justify-center ${attr.color} font-bold text-xs ring-1 ${attr.ring} cursor-help hover:scale-110 transition-transform`}>
-                                    {attr.short}
+                                <div
+                                    onClick={() => handleIncreaseAttribute(attr.short)}
+                                    className={`w-8 h-8 md:w-8 md:h-8 rounded ${attr.bg} flex items-center justify-center ${attr.color} font-bold text-xs ring-1 ${attr.ring} transition-all ${availablePoints > 0
+                                        ? "cursor-pointer hover:scale-110 active:scale-95 animate-pulse"
+                                        : "cursor-help hover:scale-110"
+                                        } ${isUpdating ? "opacity-50 cursor-not-allowed" : ""}`}
+                                >
+                                    {availablePoints > 0 ? "+" : attr.short}
                                 </div>
                             </Tooltip>
                             <div className="font-mono font-bold text-sm hidden md:block">{attr.value}</div>
@@ -111,6 +166,7 @@ export function UserProfileCard() {
                         <div className="w-full flex items-center gap-2">
                             <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider text-gray-400 min-w-[65px]">Vida:</span>
                             <Progress
+                                id="progress-life"
                                 value={user?.activeAvatar?.life ?? 0}
                                 color="danger"
                                 size="sm"
@@ -135,6 +191,7 @@ export function UserProfileCard() {
                         <div className="w-full flex items-center gap-2">
                             <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider text-gray-400 min-w-[65px]">Energia:</span>
                             <Progress
+                                id="progress-stamina"
                                 value={user?.activeAvatar?.stamina ?? 0}
                                 size="sm"
                                 classNames={{
@@ -158,6 +215,7 @@ export function UserProfileCard() {
                         <div className="w-full flex items-center gap-2">
                             <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider text-gray-400 min-w-[65px]">Respeito:</span>
                             <Progress
+                                id="progress-experience"
                                 value={user?.activeAvatar?.experience ?? 0}
                                 maxValue={user?.activeAvatar?.nextLevelExperience ?? 100}
                                 size="sm"

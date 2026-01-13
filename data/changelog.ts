@@ -7,6 +7,18 @@ export interface ChangelogItem {
 
 export const CHANGELOG_DATA: ChangelogItem[] = [
     {
+        version: "0.2.0",
+        title: "Batch actions e melhorias em user e action cards",
+        date: "11/01/2026",
+        items: [
+            "Distribuição de pontos: Agora pode ser feita via user card.",
+            "Actions: Adicionadas várias novas actions.",
+            "Actions em batch: Adicionada a possibilidade e perfomar actions em batchs.",
+            "Formula de exp: Adicionada nova formula de calculo de exp de forma que tenha uma curva mais gradual.",
+            "Titulos: Adicionados titulos relacionados ao level, titulos levam em consideração actions performadas pelo usuario."
+        ]
+    },
+    {
         version: "0.1.3",
         title: "Sistema de Timeouts: Hospital & Prisão",
         date: "10/01/2026",

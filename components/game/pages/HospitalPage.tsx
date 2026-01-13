@@ -1,6 +1,7 @@
 'use client'
 
 import { ActionCard } from "@/components/game/ActionCard";
+import { ActionQuantitySelector } from "@/components/game/ActionQuantitySelector";
 import { useEffect, useState } from "react";
 import { api, GameAction, GameActionType } from "@/services/api";
 import { useGame } from "@/context/GameContext";
@@ -100,13 +101,15 @@ export function HospitalPage() {
         return (
             <div>
                 {/* Header - same pattern as other pages */}
-                <div>
-                    <h1 className="text-2xl md:text-4xl font-bold uppercase text-white mb-2">
-                        🏥 Hospital
-                    </h1>
-                    <p className="text-gray-400 text-sm md:text-lg border-l-2 border-red-500 pl-4">
-                        Seu HP chegou a zero. Você precisa descansar e se recuperar.
-                    </p>
+                <div className="flex justify-between items-start md:items-center">
+                    <div>
+                        <h1 className="text-2xl md:text-4xl font-bold uppercase text-white mb-2">
+                            🏥 Hospital
+                        </h1>
+                        <p className="text-gray-400 text-sm md:text-lg border-l-2 border-red-500 pl-4">
+                            Seu HP chegou a zero. Você precisa descansar e se recuperar.
+                        </p>
+                    </div>
                 </div>
 
                 {/* Content area - following the grid pattern */}
@@ -219,13 +222,16 @@ export function HospitalPage() {
     // Normal hospital page - show actions
     return (
         <div>
-            <div>
-                <h1 className="text-2xl md:text-4xl font-bold uppercase text-white mb-2">
-                    🏥 Hospital
-                </h1>
-                <p className="text-gray-400 text-sm md:text-lg border-l-2 border-red-500 pl-4">
-                    Cuide da sua saúde. HP baixo é refactoring na carne.
-                </p>
+            <div className="flex justify-between items-start md:items-center">
+                <div>
+                    <h1 className="text-2xl md:text-4xl font-bold uppercase text-white mb-2">
+                        🏥 Hospital
+                    </h1>
+                    <p className="text-gray-400 text-sm md:text-lg border-l-2 border-red-500 pl-4">
+                        Cuide da sua saúde. HP baixo é refactoring na carne.
+                    </p>
+                </div>
+                <ActionQuantitySelector />
             </div>
 
             <div className="grid grid-cols-1 gap-4 mt-6">

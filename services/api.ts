@@ -14,6 +14,9 @@ export interface Avatar {
     charisma: number;
     strength: number;
     stealth: number;
+    hacking: number;
+    work: number;
+    focus: 'work' | 'hacking' | 'both';
     active: boolean;
     burnout: number;
     story?: string;
@@ -78,6 +81,9 @@ export const api = {
                     charisma: 25,
                     strength: 10,
                     stealth: 5,
+                    hacking: 0,
+                    work: 0,
+                    focus: 'both',
                     active: true,
                     burnout: 0,
                 },
@@ -101,13 +107,17 @@ export const api = {
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080/dirty-code';
         try {
             const token = await api.getToken();
+            if (!token) return [];
 
             const response = await fetch(`${baseUrl}/v1/actions/type/${type}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (!response.ok) throw new Error('Failed to fetch actions');
+            if (!response.ok) {
+                console.warn(`Failed to fetch actions of type ${type}: ${response.status}`);
+                return [];
+            }
             return await response.json();
         } catch (error) {
             console.error(`Error fetching actions of type ${type}:`, error);
@@ -115,9 +125,10 @@ export const api = {
         }
     },
 
-    performAction: async (actionId: string): Promise<{
+    performAction: async (actionId: string, count: number = 1): Promise<{
         success: boolean;
         avatar: Avatar;
+        timesExecuted?: number;
         variations?: {
             experience?: number;
             life?: number;
@@ -129,7 +140,7 @@ export const api = {
         try {
             const token = await api.getToken();
 
-            const response = await fetch(`${baseUrl}/v1/actions/${actionId}/perform`, {
+            const response = await fetch(`${baseUrl}/v1/actions/${actionId}/perform?times=${count}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -155,7 +166,10 @@ export const api = {
     updateAvatar: async (data: any) => {
         const { updateAvatarAction } = await import('@/app/actions/avatar');
         return await updateAvatarAction(data);
-        return await updateAvatarAction(data);
+    },
+    increaseAttribute: async (attribute: string) => {
+        const { increaseAttributeAction } = await import('@/app/actions/avatar');
+        return await increaseAttributeAction(attribute);
     },
 
     getRanking: async (): Promise<Avatar[]> => {

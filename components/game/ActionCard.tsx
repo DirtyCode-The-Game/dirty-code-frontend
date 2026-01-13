@@ -11,11 +11,12 @@ interface ActionCardProps {
 }
 
 export function ActionCard({ action }: ActionCardProps) {
-    const { performAction, user } = useGame();
+    const { performAction, user, actionCount } = useGame();
     const [isLoading, setIsLoading] = useState(false);
     const [feedback, setFeedback] = useState<{ 
         message: string; 
         type: 'success' | 'failure' | 'stamina';
+        count?: number;
         variations?: {
             experience?: number;
             life?: number;
@@ -35,8 +36,23 @@ export function ActionCard({ action }: ActionCardProps) {
 
     const handleAction = async () => {
         if (isStaminaInsufficient) {
+            let message = "Você está sem energia para trabalhar, vá jogar um lolzinho ou tomar um café para desbaratinar...";
+            
+            try {
+                const response = await fetch('/actions/descriptions/no_energy.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    const pool = data.stamina;
+                    if (pool && pool.length > 0) {
+                        message = pool[Math.floor(Math.random() * pool.length)];
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to load stamina message", error);
+            }
+
             setFeedback({
-                message: "Você está sem energia para trabalhar, vá jogar um lolzinho ou tomar um café para desbaratinar...",
+                message,
                 type: 'stamina'
             });
             return;
@@ -46,10 +62,12 @@ export function ActionCard({ action }: ActionCardProps) {
 
         setIsLoading(true);
         try {
-            const result = await performAction(action);
+            const result = await performAction(action, actionCount);
+            
             setFeedback({ 
                 message: result.message, 
                 type: result.success ? 'success' : 'failure',
+                count: result.timesExecuted,
                 variations: result.variations
             });
         } catch (error: any) {
@@ -62,9 +80,9 @@ export function ActionCard({ action }: ActionCardProps) {
         }
     }
 
-    const stamina = action.stamina;
-    const moneyReward = action.money;
-    const xpReward = action.xp;
+    const stamina = action.stamina * actionCount;
+    const moneyReward = action.money * actionCount;
+    const xpReward = action.xp * actionCount;
 
     const formatValue = (value: number) => {
         const sign = value > 0 ? '+' : '';
@@ -131,7 +149,7 @@ export function ActionCard({ action }: ActionCardProps) {
                                     {feedback.variations.money !== 0 && feedback.variations.money !== undefined && (
                                         <div className={`flex items-center gap-1.5 ${feedback.variations.money < 0 ? 'text-red-500' : 'text-green-500'}`}>
                                             <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                                            <span>{feedback.variations.money > 0 ? '+' : ''}{feedback.variations.money.toFixed(2)} R$</span>
+                                            <span>{feedback.variations.money > 0 ? '+' : ''}{(Number(feedback.variations.money)).toFixed(2)} R$</span>
                                         </div>
                                     )}
                                     {feedback.variations.life !== 0 && feedback.variations.life !== undefined && (
@@ -215,7 +233,7 @@ export function ActionCard({ action }: ActionCardProps) {
                     <Chip
                         size="sm"
                         variant="flat"
-                        color={riskPercentage < 20 ? "success" : riskPercentage === 20 ? "warning" : "danger"}
+                        color={riskPercentage <= 10 ? "success" : riskPercentage <= 25 ? "warning" : "danger"}
                         className="font-bold font-mono"
                     >
                         RISCO: {riskPercentage}%
