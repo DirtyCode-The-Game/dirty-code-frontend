@@ -6,12 +6,12 @@ import titlesData from "@/public/avatars/titles.json";
 import { useGame } from "@/context/GameContext";
 
 interface AvatarData {
+    story?: string;
     id: string;
     name: string;
     level: number;
     money: number;
     picture: string;
-    bio?: string;
     focus: string;
 }
 
@@ -109,7 +109,7 @@ export function AvatarTooltipContent({ avatarId }: AvatarTooltipContentProps) {
                 <div className="space-y-2 border-t border-white/5 pt-2">
                     <div className="flex flex-col gap-0.5">
                         <p className="text-[10px] text-gray-400 italic line-clamp-2 leading-tight">
-                            {avatar.bio || "Este hacker prefere manter o anonimato..."}
+                            {avatar.story || "Este hacker prefere manter o anonimato..."}
                         </p>
                     </div>
                 </div>
