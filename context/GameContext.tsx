@@ -1,8 +1,9 @@
 'use client'
 
-import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
-import {api, User} from '../services/api';
-import {useRouter} from 'next/navigation';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { api, GameAction, GameActionType, User } from '@/services/api';
+import { useRouter } from 'next/navigation';
+import { chatService, ChatMessage } from '@/services/chatService';
 
 
 interface GameContextType {
@@ -10,8 +11,28 @@ interface GameContextType {
     isLoading: boolean;
     login: () => Promise<void>;
     logout: () => void;
-    performAction: (actionName: string) => Promise<void>;
+    performAction: (action: any, count?: number) => Promise<{
+        success: boolean;
+        message: string;
+        timesExecuted?: number;
+        variations?: {
+            experience?: number;
+            life?: number;
+            stamina?: number;
+            money?: number;
+        } | null;
+    }>;
     refreshUser: (updates: Partial<User>) => void;
+    actionCounts: Record<string, number>;
+    setActionCountForCategory: (category: string, count: number) => void;
+    onTimeoutRedirect?: () => void;
+    setOnTimeoutRedirect: (callback: () => void) => void;
+    chatMessages: ChatMessage[];
+    chatToken: string | null;
+    cachedActions: Record<GameActionType, GameAction[]>;
+    fetchActions: (type: GameActionType, silent?: boolean) => Promise<void>;
+    avatarCache: Record<string, any>;
+    getAvatarData: (avatarId: string, forceRefresh?: boolean) => Promise<any>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -19,9 +40,105 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export function GameProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [actionCounts, setActionCounts] = useState<Record<string, number>>({});
+    const [timeoutRedirectCallback, setTimeoutRedirectCallback] = useState<(() => void) | undefined>(undefined);
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+    const [chatToken, setChatToken] = useState<string | null>(null);
+    const [cachedActions, setCachedActions] = useState<Record<GameActionType, GameAction[]>>({} as any);
+    const [avatarCache, setAvatarCache] = useState<Record<string, any>>({});
     const router = useRouter();
 
-    // Self-healing: Fetch user from BFF if not present
+    const getAvatarData = async (avatarId: string, forceRefresh: boolean = false) => {
+        // Se já existe no cache e não for um forceRefresh, retornamos
+        const cached = avatarCache[avatarId];
+        
+        const fetchAndCache = async () => {
+            try {
+                const response = await fetch(`/api/avatar/${avatarId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setAvatarCache(prev => ({ ...prev, [avatarId]: data }));
+                    return data;
+                }
+            } catch (error) {
+                console.error("Erro ao buscar dados do avatar:", error);
+            }
+            return null;
+        };
+
+        if (cached) {
+            if (forceRefresh) {
+                // Atualização transparente em background
+                fetchAndCache();
+            }
+            return cached;
+        }
+
+        return await fetchAndCache();
+    };
+
+    const fetchActions = async (type: GameActionType, silent: boolean = false) => {
+        if (!user?.activeAvatar) return;
+
+        // Se já temos dados e não é um fetch silencioso, 
+        // poderíamos pular o loading se quisermos navegação instantânea.
+        // Mas o componente já trata isso usando o comprimento do array.
+        if (!silent) setIsLoading(true);
+        try {
+            const data = await api.getActionsByType(type);
+            setCachedActions(prev => ({
+                ...prev,
+                [type]: data
+            }));
+        } catch (error) {
+            console.error(`Erro ao buscar ações do tipo ${type}:`, error);
+        } finally {
+            if (!silent) setIsLoading(false);
+        }
+    };
+
+    const updateAllActions = async () => {
+        if (!user?.activeAvatar) return;
+        
+        // Atualiza apenas os tipos que já foram carregados pelo menos uma vez
+        const activeTypes = Object.keys(cachedActions) as GameActionType[];
+        for (const type of activeTypes) {
+            await fetchActions(type, true);
+        }
+    };
+
+    useEffect(() => {
+        if (!user) return;
+
+        const connectChat = async () => {
+            try {
+                const response = await fetch('/api/auth/token');
+                if (response.ok) {
+                    const data = await response.json();
+                    setChatToken(data.token);
+                    chatService.connect((msg) => {
+                        setChatMessages((prev) => {
+                            if (Array.isArray(msg)) {
+                                const newMessages = msg.filter(m => !prev.some(p => p.message === m.message && p.avatarName === m.avatarName));
+                                return [...prev, ...newMessages];
+                            }
+                            if (prev.some(m => m.message === msg.message && m.avatarName === msg.avatarName)) return prev;
+                            return [...prev, msg];
+                        });
+                    }, data.token);
+                }
+            } catch (error) {
+                console.error("Erro ao conectar no chat", error);
+            }
+        };
+
+        connectChat();
+
+        return () => {
+            chatService.disconnect();
+        };
+    }, [user?.activeAvatar?.id]);
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -39,6 +156,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
             fetchUser();
         }
     }, [user]);
+
+    useEffect(() => {
+        if (!user?.activeAvatar) return;
+
+        const POLL_INTERVAL = 30000;
+
+        const pollTimer = setInterval(async () => {
+            try {
+                const response = await fetch('/api/user/me');
+                if (response.ok) {
+                    const serverUser = await response.json();
+                    setUser(serverUser);
+                    localStorage.setItem('dirty_user_info', JSON.stringify(serverUser));
+                }
+            } catch (error) {
+                console.error('Failed to sync with backend:', error);
+            }
+        }, POLL_INTERVAL);
+
+        return () => clearInterval(pollTimer);
+    }, [user?.activeAvatar?.id]);
 
     const logout = async () => {
         setIsLoading(true);
@@ -60,7 +198,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setIsLoading(true);
         try {
             // Redirect to Backend Login
-            window.location.href = process.env.LOGIN_FULL_URL || 'http://localhost:8080/dirty-code/v1/gmail/auth-page';
+            window.location.href = process.env.LOGIN_FULL_URL || 'http://127.0.0.1:8080/dirty-code/v1/gmail/auth-page';
         } catch (error) {
             console.error("Login redirect failed", error);
             setIsLoading(false);
@@ -69,95 +207,127 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
 
 
-    const performAction = async (actionId: string) => {
-        // ... (Action definition omitted for brevity, keeping existing hardcoded action for now as it wasn't requested to change)
-        const action = {
-            id: actionId,
-            title: "Ação",
-            risk: 50,
-            moneyReward: 100,
-            energyCost: 10,
-            reputationReward: 5,
+    const performAction = async (action: any, count: number = 1): Promise<{
+        success: boolean;
+        message: string;
+        timesExecuted?: number;
+        variations?: {
+            experience?: number;
+            life?: number;
+            stamina?: number;
+            money?: number;
+        } | null;
+    }> => {
+        if (!user) {
+            console.error("User not logged in.");
+            return { success: false, message: "Usuário não logado" };
         }
 
-        if (!user || !action) {
-            console.error("Action not found or user not logged in.");
-            return;
-        }
-
-        // Helper to get current stats
-        const currentStamina = user.activeAvatar?.stamina ?? 0;
-        const currentMoney = user.activeAvatar?.money ?? 0;
-        // Karma/Reputation logic needs review, assuming it might be 'karma' or 'streetIntelligence' on avatar. 
-        // For now, defaulting to 0 as 'karma' is removed from basic User interface.
-        const currentKarma = 0;
-
-        if (action.energyCost > 0 && currentStamina < action.energyCost) {
-            alert("Você está exausto! Recupere energias na Vida Noturna.");
-            return;
-        }
-
-        if (action.moneyReward < 0 && currentMoney < Math.abs(action.moneyReward)) {
-            alert("Fundos insuficientes.");
-            return;
-        }
+        const oldAvatar = user.activeAvatar;
 
         try {
-            const result = await api.performAction(actionId);
-            if (result.success && result.rewards && result.rewards.activeAvatar) {
-                // Calculate new values
-                const rewardAvatar = result.rewards.activeAvatar as any; // Cast for ease since we returned any in API
+            const result = await api.performAction(action.id, count);
+            const updatedAvatar = result.avatar;
 
-                const newStamina = Math.min(100, Math.max(0, currentStamina + (rewardAvatar.stamina || 0)));
-                const newMoney = currentMoney + (rewardAvatar.money || 0);
+            setUser(prev => {
+                if (!prev) return null;
+                const updatedUser = {
+                    ...prev,
+                    activeAvatar: updatedAvatar
+                };
+                localStorage.setItem('dirty_user_info', JSON.stringify(updatedUser));
+                return updatedUser;
+            });
 
-                // Note: api.performAction returns generic rewards. We need to map them. 
-                // Currently mock api returns { stamina, money, karma }.
+            let finalMessage = result.success ? "Ação concluída com sucesso!" : "A ação falhou!";
 
-                let newUser = { ...user };
-
-                if (newUser.activeAvatar) {
-                    newUser.activeAvatar = {
-                        ...newUser.activeAvatar,
-                        stamina: newStamina,
-                        money: newMoney,
-                        // Update other stats if rewards exist
-                    };
+            // Load and show message
+            if (action.textFile) {
+                try {
+                    const response = await fetch(`/actions/descriptions/${action.textFile}`);
+                    if (response.ok) {
+                        const messages = await response.json();
+                        const pool = result.success ? messages.success : messages.failure;
+                        if (pool && pool.length > 0) {
+                            finalMessage = pool[Math.floor(Math.random() * pool.length)];
+                        }
+                    }
+                } catch (msgError) {
+                    console.error("Failed to load action message", msgError);
                 }
-
-                setUser(newUser);
-                localStorage.setItem('dirty_user', JSON.stringify(newUser));
-            } else {
-                // Handle failure (e.g. only energy cost)
-                const rewardAvatar = result.rewards?.activeAvatar as any || {};
-                const newStamina = Math.min(100, Math.max(0, currentStamina + (rewardAvatar.stamina || 0)));
-
-                let newUser = { ...user };
-                if (newUser.activeAvatar) {
-                    newUser.activeAvatar = {
-                        ...newUser.activeAvatar,
-                        stamina: newStamina
-                    };
-                }
-
-                setUser(newUser);
-                localStorage.setItem('dirty_user', JSON.stringify(newUser));
-                alert(result.message);
             }
-        } catch (e) {
+
+            // Get variations
+            const variations = result.variations || (oldAvatar ? {
+                experience: updatedAvatar.experience - oldAvatar.experience,
+                life: updatedAvatar.life - oldAvatar.life,
+                stamina: updatedAvatar.stamina - oldAvatar.stamina,
+                money: updatedAvatar.money - oldAvatar.money,
+            } : null);
+
+            // Check if user was sent to timeout (hospital or jail) and trigger redirect
+            if (updatedAvatar.timeoutType && updatedAvatar.timeout) {
+                if (timeoutRedirectCallback) {
+                    timeoutRedirectCallback();
+                }
+            }
+
+            // Atualiza ações em background após realizar uma ação (ex: novos jobs podem ter surgido)
+            updateAllActions();
+
+            router.refresh();
+            return {
+                success: result.success,
+                message: finalMessage,
+                timesExecuted: result.timesExecuted,
+                variations
+            };
+        } catch (e: any) {
             console.error(e);
+            return { success: false, message: e.message || "Erro ao realizar ação" };
         }
     };
 
     const refreshUser = (updates: Partial<User>) => {
-        const base = user || {} as User;
-        const updated = { ...base, ...updates };
-        setUser(updated);
-        localStorage.setItem('dirty_user_info', JSON.stringify(updated));
+        setUser(prev => {
+            const base = prev || {} as User;
+            const updated = { ...base, ...updates };
+            localStorage.setItem('dirty_user_info', JSON.stringify(updated));
+            return updated;
+        });
+        router.refresh();
+    }
+    
+    const setActionCountForCategory = (category: string, count: number) => {
+        setActionCounts(prev => ({
+            ...prev,
+            [category]: count
+        }));
+    };
+
+    const setOnTimeoutRedirect = (callback: () => void) => {
+        setTimeoutRedirectCallback(() => callback);
     }
 
     return (
-        <GameContext.Provider value={{ user, isLoading, login, logout, performAction, refreshUser }}>
+        <GameContext.Provider value={{
+            user,
+            isLoading,
+            login,
+            logout,
+            performAction,
+            refreshUser,
+            actionCounts,
+            setActionCountForCategory,
+            onTimeoutRedirect: timeoutRedirectCallback,
+            setOnTimeoutRedirect,
+            chatMessages,
+            chatToken,
+            cachedActions,
+            fetchActions,
+            avatarCache,
+            getAvatarData
+        }}>
             {children}
         </GameContext.Provider>
     );

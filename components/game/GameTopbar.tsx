@@ -11,7 +11,7 @@ export function GameTopbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <nav className="h-16 bg-black/50 border-b border-white/10 relative z-50">
+        <nav className="h-16 bg-black/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
             <div className="container mx-auto px-4 lg:px-8 h-full flex items-center justify-between">
                 <div className="flex items-center gap-8">
                     <Link href="/game" className="flex items-center gap-2">
@@ -26,10 +26,9 @@ export function GameTopbar() {
                     </Link>
 
                     <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
-                        <Link href="/game/user" className="hover:text-white transition-colors">Perfil</Link>
-                        <Link href="#" className="hover:text-white transition-colors">Ranking</Link>
-                        <Link href="#" className="hover:text-white transition-colors">Comunidade</Link>
-                        <Link href="#" className="hover:text-white transition-colors">Patch Notes</Link>
+                        <Link href="/game/ranking" className="hover:text-white transition-colors">Ranking</Link>
+                        <Link href="/game/news" className="hover:text-white transition-colors">Notícias</Link>
+                        <Link href="https://github.com/DirtyCode-The-Game" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Github</Link>
                     </div>
                 </div>
 
@@ -60,7 +59,7 @@ export function GameTopbar() {
                             onPress={logout}
                             className="font-mono uppercase text-xs"
                         >
-                            Sair do Sistema
+                            Sair
                         </Button>
                     </div>
                 </div>
@@ -71,32 +70,27 @@ export function GameTopbar() {
                 <div className="md:hidden absolute top-16 left-0 w-full bg-black/95 backdrop-blur-xl border-b border-white/10 p-4 flex flex-col gap-4 animate-in slide-in-from-top-5 shadow-2xl">
                     <nav className="flex flex-col gap-2">
                         <Link
-                            href="/game/user"
-                            className="p-2 hover:bg-white/5 rounded-lg text-gray-300 hover:text-white transition-colors font-medium"
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            Perfil
-                        </Link>
-                        <Link
-                            href="#"
+                            href="/game/ranking"
                             className="p-2 hover:bg-white/5 rounded-lg text-gray-300 hover:text-white transition-colors font-medium"
                             onClick={() => setIsMenuOpen(false)}
                         >
                             Ranking
                         </Link>
                         <Link
-                            href="#"
+                            href="/game/news"
                             className="p-2 hover:bg-white/5 rounded-lg text-gray-300 hover:text-white transition-colors font-medium"
                             onClick={() => setIsMenuOpen(false)}
                         >
-                            Comunidade
+                            Notícias
                         </Link>
                         <Link
-                            href="#"
+                            href="https://github.com/DirtyCode-The-Game"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="p-2 hover:bg-white/5 rounded-lg text-gray-300 hover:text-white transition-colors font-medium"
                             onClick={() => setIsMenuOpen(false)}
                         >
-                            Patch Notes
+                            Github
                         </Link>
                     </nav>
 
@@ -112,7 +106,7 @@ export function GameTopbar() {
                         }}
                         className="font-mono uppercase text-sm w-full"
                     >
-                        Sair do Sistema
+                        Sair
                     </Button>
                 </div>
             )}

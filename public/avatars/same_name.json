@@ -1,0 +1,14 @@
+{
+    "messages": [
+        "Esse nome já foi commitado por outro dev. Tente algo menos genérico.",
+        "Erro 409: Conflito de identidade. Esse nome já existe no banco de dados.",
+        "O sistema detectou que esse nome pertence a um sênior. Você não tem permissão para usá-lo.",
+        "Ataque de clone detectado! Esse nome já está em uso.",
+        "Stack Overflow: Muitos usuários com esse nome. Escolha um ID mais único.",
+        "Esse nome já está em produção. Não tente fazer hotfix na identidade alheia.",
+        "O firewall bloqueou esse nome pois ele já faz parte da nossa whitelist de usuários.",
+        "NullPointerException: O nome escolhido já foi instanciado anteriormente.",
+        "Git merge conflict: Outro player já deu push nesse nome primeiro.",
+        "Esse nome é legado e já está em uso. Tente uma versão v2.0."
+    ]
+}

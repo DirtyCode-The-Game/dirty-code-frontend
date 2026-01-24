@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
     const cookieStore = await cookies();
     const token = cookieStore.get('dirty_token')?.value;
 
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8080/dirty-code';
+    const backendUrl = process.env.BACKEND_URL || 'http://127.0.0.1:8080/dirty-code';
 
     try {
         const res = await fetch(`${backendUrl}/v1/users`, {

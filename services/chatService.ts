@@ -2,10 +2,12 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
 export interface ChatMessage {
+    avatarId: string;
     avatarName: string;
     message: string;
     id?: string;
     timestamp?: string;
+    fullDate?: string;
 }
 
 export type MessageCallback = (message: ChatMessage | ChatMessage[]) => void;
@@ -16,7 +18,10 @@ class ChatWebSocketService {
     private readonly baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080/dirty-code';
 
     connect(onMessageReceived: MessageCallback, token: string) {
-        if (this.client?.active) return;
+        if (this.client?.active) {
+            this.onMessageReceived = onMessageReceived;
+            return;
+        }
         this.onMessageReceived = onMessageReceived;
 
         const socket = new SockJS(`${this.baseUrl}/ws-chat`);
@@ -48,6 +53,7 @@ class ChatWebSocketService {
             this.client?.subscribe('/app/global-messages', (message) => {
                 if (message.body && this.onMessageReceived) {
                     const parsedMessages = JSON.parse(message.body);
+                    console.log(message.body);
                     this.onMessageReceived(parsedMessages);
                 }
             });
@@ -80,10 +86,6 @@ class ChatWebSocketService {
                 body: JSON.stringify({ message }),
                 credentials: 'include',
             });
-            if (!response.ok) {
-                throw new Error('Failed to send message');
-            }
-            // O endpoint retorna void (201 Created), então não tentamos fazer .json() se não houver conteúdo
             if (response.status === 201 || response.status === 204) {
                 return;
             }

@@ -1,0 +1,26 @@
+{
+  "success": [
+    "Recuperei o CaraLivro da mãe e ela já foi fofocar da Cleude.",
+    "Achei o e-mail certo. Senha nova do CaraLivro na mão.",
+    "Tirei o caps lock e destravou tudo no perfil dela.",
+    "Ela jurou que era 'mãe123'. Era mesmo, segurança máxima!",
+    "Resetei e deixei anotado no caderno de receitas.",
+    "Ativei verificação em duas etapas pra ela não ser hackeada de novo.",
+    "Troquei a senha e ela voltou a bisbilhotar a vida dos vizinhos.",
+    "Cliquei no link de recuperação e pronto. Mãe feliz, eu em paz.",
+    "Recuperei sem precisar ligar pro suporte do CaraLivro. Vitória!",
+    "Agora o CaraLivro abriu e a paz (ou a fofoca) voltou à casa."
+  ],
+  "failure": [
+    "Resetei a senha no e-mail errado. Agora nem ela, nem eu acessamos.",
+    "Bloqueou a conta por excesso de tentativas. Agora só amanhã, mãe.",
+    "Ela mudou a senha de novo e esqueceu em exatos 2 minutos.",
+    "O link de recuperação expirou. Igual minha paciência com o CaraLivro.",
+    "Recuperei, mas era o perfil da tia por engano. Confusão em família!",
+    "Caiu num captcha de selecionar semáforos e ela perdeu a calma.",
+    "A senha nova não foi aceita. O CaraLivro está de birra com a gente.",
+    "Apareceu 'atividade suspeita'. Mal sabem eles que a atividade é só fofoca.",
+    "O SMS de confirmação não chega nunca. A operadora está rindo da gente.",
+    "Agora o app pediu foto do RG. Virou burocracia de cartório, desisti."
+  ]
+}

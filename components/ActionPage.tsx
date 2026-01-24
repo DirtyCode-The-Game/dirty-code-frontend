@@ -1,20 +1,8 @@
 'use client'
-import { Button } from "@heroui/react";
-import { useRouter } from "next/navigation";
 import { ActionCard } from "@/components/game/ActionCard";
+import { GameAction } from "@/services/api";
 
-export type ActionItem = {
-    id: string;
-    title: string;
-    description: string;
-    energyCost: number;
-    moneyReward?: number;
-    risk?: number;
-    type?: 'work' | 'crime' | 'business' | 'training' | 'lifestyle';
-}
-
-export function ActionPage({ title, description, actions, color = "primary" }: { title: string, description: string, actions: ActionItem[], color?: "primary" | "secondary" | "success" | "warning" | "danger" }) {
-    const router = useRouter();
+export function ActionPage({ title, description, actions }: { title: string, description: string, actions: GameAction[] }) {
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
@@ -27,7 +15,7 @@ export function ActionPage({ title, description, actions, color = "primary" }: {
 
             <div className="grid grid-cols-1 gap-4">
                 {actions.map(action => (
-                    <ActionCard key={action.id} action={action} color={color} />
+                    <ActionCard key={action.id} action={action} />
                 ))}
             </div>
         </div>

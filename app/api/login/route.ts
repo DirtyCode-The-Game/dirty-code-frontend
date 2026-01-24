@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     });
 
     try {
-        const backendUrl = process.env.BACKEND_URL || 'http://localhost:8080/dirty-code';
+        const backendUrl = process.env.BACKEND_URL || 'http://127.0.0.1:8080/dirty-code';
 
         const userRes = await fetch(`${backendUrl}/v1/users`, {
             headers: {
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
             if (userData.activeAvatar) {
                 return NextResponse.redirect(new URL('/game', request.url));
             } else {
-                return NextResponse.redirect(new URL('/game/user', request.url));
+                return NextResponse.redirect(new URL('/game/onboarding', request.url));
             }
         } else {
             console.error('Failed to fetch user in login callback', await userRes.text());

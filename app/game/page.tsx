@@ -1,14 +1,18 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 import { UserProfileCard } from "@/components/game/UserProfileCard";
-import { GameMenuCarousel, MenuItem } from "@/components/game/GameMenuCarousel";
+import { GameMenu, MenuItem } from "@/components/game/GameMenu";
 import { GlobalChat } from "@/components/game/pages/GlobalChat";
 import { WorkPage } from "@/components/game/pages/WorkPage";
 import { HackingPage } from "@/components/game/pages/HackingPage";
-import { StartupPage } from "@/components/game/pages/StartupPage";
 import { TrainingPage } from "@/components/game/pages/TrainingPage";
-import { NightlifePage } from "@/components/game/pages/NightlifePage";
+import { MarketPage } from "@/components/game/pages/MarketPage";
+import { HospitalPage } from "@/components/game/pages/HospitalPage";
+import { JailPage } from "@/components/game/pages/JailPage";
+import { DefaultPage } from "@/components/game/pages/DefaultPage";
+import { useGame } from "@/context/GameContext";
 
 // Define Menu Items
 const MENU_ITEMS: MenuItem[] = [
@@ -49,42 +53,141 @@ const MENU_ITEMS: MenuItem[] = [
         component: <TrainingPage />
     },
     {
-        title: "Vida Noturna",
-        id: "vida-noturna",
-        desc: "Balada, Energético e ... mais código?",
+        title: "Mercadinho",
+        id: "mercadinho",
+        desc: "Recupere energias. Café, Pizza e Energético.",
         color: "text-pink-400",
         border: "border-pink-500/50",
         path: "M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z",
-        component: <NightlifePage />
+        component: <MarketPage />
+    },
+    {
+        title: "Hospital",
+        id: "hospital",
+        desc: "Cuide da sua saúde. HP baixo é refactoring na carne.",
+        color: "text-red-400",
+        border: "border-red-500/50",
+        path: "M12 4.5v15m7.5-7.5h-15",
+        component: <HospitalPage />
+    },
+    {
+        title: "Prisão",
+        id: "jail",
+        desc: "Cuidado com ações ilegais. A cadeia é real.",
+        color: "text-orange-400",
+        border: "border-orange-500/50",
+        path: "M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z",
+        component: <JailPage />
     },
 ];
 
 export default function GameDashboard() {
-    const [activeTab, setActiveTab] = useState("bludiit");
+    const router = useRouter();
+    const [activeTab, setActiveTab] = useState("Helldit");
+    const { user, setOnTimeoutRedirect } = useGame();
 
     const content = MENU_ITEMS.find(item => item.id === activeTab);
 
+    // Redirect to onboarding if user doesn't have an avatar
+    useEffect(() => {
+        if (user && !user.activeAvatar) {
+            console.log("Redirecting to onboarding because user has no avatar");
+            router.replace('/game/onboarding');
+        }
+    }, [user?.activeAvatar, router]);
+
+    // Check if user is in hospital/jail timeout
+    const isInTimeout = user?.activeAvatar?.timeoutType && user?.activeAvatar?.timeout;
+    const timeoutType = user?.activeAvatar?.timeoutType;
+    const timeoutDate = isInTimeout && user?.activeAvatar?.timeout ? new Date(user.activeAvatar.timeout) : null;
+    const isTimeoutExpired = timeoutDate ? new Date() >= timeoutDate : false;
+
+    // Memoize the timeout redirect callback - redirects to correct page based on timeout type
+    const handleTimeoutRedirect = useCallback(() => {
+        const type = user?.activeAvatar?.timeoutType;
+        if (type === 'HOSPITAL') {
+            setActiveTab('hospital');
+        } else if (type === 'JAIL') {
+            setActiveTab('jail');
+        }
+    }, [user?.activeAvatar?.timeoutType]);
+
+    // Register timeout redirect callback once on mount
+    useEffect(() => {
+        setOnTimeoutRedirect(handleTimeoutRedirect);
+    }, [setOnTimeoutRedirect, handleTimeoutRedirect]);
+
+    // Auto-redirect to correct timeout page if user has active timeout
+    useEffect(() => {
+        if (isInTimeout && !isTimeoutExpired) {
+            if (timeoutType === 'HOSPITAL') {
+                setActiveTab('hospital');
+            } else if (timeoutType === 'JAIL') {
+                setActiveTab('jail');
+            }
+        }
+    }, [isInTimeout, isTimeoutExpired, timeoutType]);
+
+    // Override setActiveTab to prevent navigation when in timeout
+    const handleTabChange = (tabId: string) => {
+        // Helldit is always allowed
+        if (tabId === 'Helldit') {
+            setActiveTab(tabId);
+            return;
+        }
+
+        // If user is in timeout and hasn't expired, only allow the current timeout tab
+        if (isInTimeout && !isTimeoutExpired) {
+            // Only allow navigation to the current timeout page
+            if (timeoutType === 'HOSPITAL' && tabId === 'hospital') {
+                setActiveTab(tabId);
+                return;
+            } else if (timeoutType === 'JAIL' && tabId === 'jail') {
+                setActiveTab(tabId);
+                return;
+            }
+            // Silently ignore navigation to blocked tabs
+            return;
+        }
+        setActiveTab(tabId);
+    };
+
     return (
         <div className="flex flex-col gap-2 min-h-screen pb-10">
-            <div className="container mx-auto lg:px-8 space-y-8">
+            <div className="container mx-auto lg:px-8 space-y-4 md:space-y-8">
                 {/* 1. Profile Card */}
                 <UserProfileCard />
 
-                {/* 2. Menu Carousel */}
-                <GameMenuCarousel
+                {/* 2. Game Menu Grid */}
+                <GameMenu
                     items={MENU_ITEMS}
                     activeId={activeTab}
-                    onSelect={setActiveTab}
+                    onSelect={handleTabChange}
+                    lockedItems={isInTimeout && !isTimeoutExpired
+                        ? MENU_ITEMS
+                            .filter(item => {
+                                // Helldit is never locked
+                                if (item.id === 'Helldit') return false;
+                                
+                                // Only allow the current timeout page
+                                if (timeoutType === 'HOSPITAL') {
+                                    return item.id !== 'hospital'; // Block everything except hospital
+                                } else if (timeoutType === 'JAIL') {
+                                    return item.id !== 'jail'; // Block everything except jail
+                                }
+                                return true; // Block by default
+                            })
+                            .map(item => item.id)
+                        : []
+                    }
                 />
 
                 {/* 3. Dynamic Content Area */}
-                <div className="min-h-96 bg-black/50 border border-white/10 rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                <div className="bg-black/50 border border-white/10 rounded-2xl p-4 md:p-8 relative overflow-hidden">
                     {content ? (
                         content.component
                     ) : (
-                        <div className="flex items-center justify-center h-full text-gray-500 font-mono">
-                            Selecione uma atividade...
-                        </div>
+                        <DefaultPage />
                     )}
                 </div>
             </div>

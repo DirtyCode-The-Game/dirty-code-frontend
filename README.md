@@ -43,7 +43,7 @@ O projeto é composto por um Backend (Spring Boot) e um Frontend (Next.js).
 3. O backend estará disponível em `http://localhost:8080/dirty-code`
 4. Console do H2: `http://localhost:8080/dirty-code/h2-console` (JDBC URL: `jdbc:h2:mem:dirtycode`)
 
-### 🌐 Frontend
+### 🌐 Frontend 
 
 #### Como subir o Frontend:
 1. Acesse a pasta do frontend: `cd ../dirty-code-frontend`

@@ -15,10 +15,15 @@ export function GameShell({ children, user: serverUser }: GameShellProps) {
 
     // Hydrate context with server user on mount or update
     useEffect(() => {
-        if (serverUser && JSON.stringify(serverUser) !== JSON.stringify(contextUser)) {
-            refreshUser(serverUser);
+        if (serverUser) {
+            const hasAvatarChanged = serverUser.activeAvatar?.id !== contextUser?.activeAvatar?.id;
+            const hasNameChanged = serverUser.name !== contextUser?.name;
+            
+            if (hasAvatarChanged || hasNameChanged) {
+                refreshUser(serverUser);
+            }
         }
-    }, [serverUser, contextUser, refreshUser]);
+    }, [serverUser, contextUser?.activeAvatar?.id, contextUser?.name, refreshUser]);
 
     return (
         <div className="flex flex-col min-h-screen bg-black">
@@ -26,10 +31,6 @@ export function GameShell({ children, user: serverUser }: GameShellProps) {
             <main className="flex-1 container mx-auto p-2 fade-in">
                 {children}
             </main>
-
-            <footer className="fixed bottom-0 left-0 right-0 p-2 text-[10px] text-gray-600 font-mono text-center">
-                CONNECTED TO: {serverUser ? 'SERVER::SECURE' : 'LOCAL::UNVERIFIED'}
-            </footer>
         </div>
     );
 }
