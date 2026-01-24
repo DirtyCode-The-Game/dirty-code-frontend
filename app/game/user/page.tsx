@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Input, Button, Progress } from "@heroui/react";
-import { api } from '@/services/api';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { Input, Button, Progress } from "@heroui/react";
+
+import { api } from '@/services/api';
+import { Avatar } from '@/services/api';
 import { useGame } from "@/context/GameContext";
-import { User, Avatar } from '@/services/api';
+
 const PlusIcon = ({ size = 24, strokeWidth = 2, ...props }: any) => (
     <svg
         width={size}
@@ -24,11 +26,47 @@ const PlusIcon = ({ size = 24, strokeWidth = 2, ...props }: any) => (
     </svg>
 );
 
-const AVATAR_OPTIONS = [
-    '/avatars/avatar_1.png',
-    '/avatars/avatar_2.png',
-    '/avatars/avatar_3.png',
-    '/logo.jpeg',
+const AVATAR_OPTIONS: { src: string; alt: string }[] = [
+  {
+    src: "/avatars/avatar_1.webp",
+    alt: "Programador jovem sorrindo com óculos e fones de ouvido em um setup de monitor triplo",
+  },
+  {
+    src: "/avatars/avatar_2.webp",
+    alt: "Hacker misterioso com capuz preto fumando em frente a telas de código verde",
+  },
+  {
+    src: "/avatars/avatar_3.webp",
+    alt: "Mulher programadora com cabelos cacheados e óculos em um ambiente de escritório técnico",
+  },
+  {
+    src: "/avatars/avatar_4.webp",
+    alt: "Pessoa hacker com estilo cyberpunk, tatuagens no pescoço e luzes neon roxas",
+  },
+  {
+    src: "/avatars/avatar_5.webp",
+    alt: "Programadora focada em seu computador em um ambiente aconchegante com um gato",
+  },
+  {
+    src: "/avatars/avatar_6.webp",
+    alt: "Homem com barba, óculos e correntes de ouro fumando um charuto em um setup de gamer",
+  },
+  {
+    src: "/avatars/avatar_7.webp",
+    alt: "Hacker com cabelo rosa e fones de ouvido neon operando em um centro de comando",
+  },
+  {
+    src: "/avatars/avatar_8.webp",
+    alt: "Hacker mascarado com capuz em um ambiente de alta tecnologia com luzes neon azul e roxa",
+  },
+  {
+    src: "/avatars/avatar_9.webp",
+    alt: "Programador idoso experiente com barba branca e óculos trabalhando em código complexo",
+  },
+  {
+    src: "/avatars/avatar_10.webp",
+    alt: "Jovem programadora com óculos de aro de tartaruga trabalhando à noite com uma caneca de café",
+  },
 ];
 
 type StatKey = 'intelligence' | 'charisma' | 'streetIntelligence' | 'stealth';
@@ -46,7 +84,7 @@ export default function AvatarEdit() {
 
     // UI State
     const [name, setName] = useState('');
-    const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0]);
+    const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0]?.src || '');
     const [stats, setStats] = useState<Stats>({
         intelligence: 0,
         charisma: 0,
@@ -62,7 +100,7 @@ export default function AvatarEdit() {
         if (user && user.activeAvatar && !isInitialized) {
             const avatar = user.activeAvatar;
             setName(avatar.name || user.name || '');
-            setSelectedAvatar(avatar.picture || AVATAR_OPTIONS[0]);
+            setSelectedAvatar(avatar.picture || AVATAR_OPTIONS[0]?.src || '');
 
 
             setStats({
@@ -184,22 +222,22 @@ export default function AvatarEdit() {
                     <div className="mt-8">
                         <h2 className="text-xl font-bold mb-4 text-gray-200">Avatar</h2>
                         <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                            {AVATAR_OPTIONS.map((src, idx) => (
+                            {AVATAR_OPTIONS.map((avatar) => (
                                 <button
-                                    key={idx}
-                                    onClick={() => setSelectedAvatar(src)}
-                                    className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all duration-300 flex-shrink-0 group ${selectedAvatar === src
+                                    key={avatar.src}
+                                    onClick={() => setSelectedAvatar(avatar.src)}
+                                    className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all duration-300 flex-shrink-0 group ${selectedAvatar === avatar.src
                                         ? 'border-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] scale-105'
                                         : 'border-white/10 opacity-60 hover:opacity-100 hover:scale-105'
                                         }`}
                                 >
                                     <Image
-                                        src={src}
-                                        alt={`Avatar ${idx + 1}`}
+                                        src={avatar.src}
+                                        alt={avatar.alt}
                                         fill
                                         className="object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
-                                    {selectedAvatar === src && (
+                                    {selectedAvatar === avatar.src && ( 
                                         <div className="absolute inset-0 bg-primary/20" />
                                     )}
                                 </button>
