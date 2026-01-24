@@ -1,18 +1,55 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Input, Button, Textarea, Card, CardBody } from "@heroui/react";
-import { api } from '@/services/api';
 import Image from 'next/image';
-import { useGame } from "@/context/GameContext";
-import { Avatar } from '@/services/api';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { Input, Button, Textarea, Card, CardBody } from "@heroui/react";
 
-const AVATAR_OPTIONS = [
-    '/avatars/avatar_1.png',
-    '/avatars/avatar_2.png',
-    '/avatars/avatar_3.png',
-    '/logo.jpeg',
+import { api } from '@/services/api';
+import { Avatar } from '@/services/api';
+import { useGame } from "@/context/GameContext";
+
+const AVATAR_OPTIONS: { src: string; alt: string }[] = [
+  {
+    src: "/avatars/avatar_1.webp",
+    alt: "Programador jovem sorrindo com óculos e fones de ouvido em um setup de monitor triplo",
+  },
+  {
+    src: "/avatars/avatar_2.webp",
+    alt: "Hacker misterioso com capuz preto fumando em frente a telas de código verde",
+  },
+  {
+    src: "/avatars/avatar_3.webp",
+    alt: "Mulher programadora com cabelos cacheados e óculos em um ambiente de escritório técnico",
+  },
+  {
+    src: "/avatars/avatar_4.webp",
+    alt: "Pessoa hacker com estilo cyberpunk, tatuagens no pescoço e luzes neon roxas",
+  },
+  {
+    src: "/avatars/avatar_5.webp",
+    alt: "Programadora focada em seu computador em um ambiente aconchegante com um gato",
+  },
+  {
+    src: "/avatars/avatar_6.webp",
+    alt: "Homem com barba, óculos e correntes de ouro fumando um charuto em um setup de gamer",
+  },
+  {
+    src: "/avatars/avatar_7.webp",
+    alt: "Hacker com cabelo rosa e fones de ouvido neon operando em um centro de comando",
+  },
+  {
+    src: "/avatars/avatar_8.webp",
+    alt: "Hacker mascarado com capuz em um ambiente de alta tecnologia com luzes neon azul e roxa",
+  },
+  {
+    src: "/avatars/avatar_9.webp",
+    alt: "Programador idoso experiente com barba branca e óculos trabalhando em código complexo",
+  },
+  {
+    src: "/avatars/avatar_10.webp",
+    alt: "Jovem programadora com óculos de aro de tartaruga trabalhando à noite com uma caneca de café",
+  },
 ];
 
 export default function OnboardingPage() {
@@ -23,7 +60,7 @@ export default function OnboardingPage() {
     const [currentStep, setCurrentStep] = useState(0);
     const [name, setName] = useState('');
     const [story, setStory] = useState('');
-    const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0]);
+    const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0]?.src || '');
     const [isLoading, setIsLoading] = useState(false);
     const [nameError, setNameError] = useState('');
     const [isCheckingName, setIsCheckingName] = useState(false);
@@ -283,22 +320,22 @@ export default function OnboardingPage() {
                     <div>
                         <h3 className="text-lg font-bold mb-3 text-gray-200">Escolha seu Avatar</h3>
                         <div className="flex gap-4 justify-center flex-wrap">
-                            {AVATAR_OPTIONS.map((src, idx) => (
+                            {AVATAR_OPTIONS.map((avatar) => (
                                 <button
-                                    key={idx}
-                                    onClick={() => setSelectedAvatar(src)}
-                                    className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all duration-300 group ${selectedAvatar === src
+                                    key={avatar.src}
+                                    onClick={() => setSelectedAvatar(avatar.src)}
+                                    className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all duration-300 group ${selectedAvatar === avatar.src
                                         ? 'border-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] scale-105'
                                         : 'border-white/10 opacity-60 hover:opacity-100 hover:scale-105'
                                         }`}
                                 >
                                     <Image
-                                        src={src}
-                                        alt={`Avatar ${idx + 1}`}
+                                        src={avatar.src}
+                                        alt={avatar.alt}
                                         fill
                                         className="object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
-                                    {selectedAvatar === src && (
+                                    {selectedAvatar === avatar.src && (
                                         <div className="absolute inset-0 bg-primary/20" />
                                     )}
                                 </button>
