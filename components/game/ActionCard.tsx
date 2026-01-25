@@ -1,11 +1,12 @@
 'use client'
 
 import {useGame} from "@/context/GameContext";
-import {Card, CardBody, Chip, Tooltip} from "@heroui/react";
-import {useEffect, useState} from "react";
-import {GameAction} from "@/services/api";
-import {AnimatePresence, motion} from "framer-motion";
-import {getNoEnergyMessage, getNoMoneyMessage, isNoMoneyError} from "@/lib/game-utils";
+import { Card, CardBody, Chip, Tooltip } from "@heroui/react";
+import { useEffect, useState } from "react";
+import { GameAction, GameActionType } from "@/services/api";
+import { AnimatePresence, motion } from "framer-motion";
+import { formatMoney, getNoEnergyMessage, getNoMoneyMessage, isNoMoneyError } from "@/lib/game-utils";
+import { CountdownTimer } from "./CountdownTimer";
 
 interface ActionCardProps {
     action: GameAction;
@@ -24,6 +25,10 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
             life?: number;
             stamina?: number;
             money?: number;
+            temporaryStrength?: number;
+            temporaryIntelligence?: number;
+            temporaryCharisma?: number;
+            temporaryStealth?: number;
         } | null;
     } | null>(null);
 
@@ -97,6 +102,11 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
     const xpReward = action.xp * actionCount;
     const hpReward = (action.hp ?? 0) * actionCount;
 
+    const tempStrGain = (action.temporaryStrength ?? 0) * actionCount;
+    const tempIntGain = (action.temporaryIntelligence ?? 0) * actionCount;
+    const tempChaGain = (action.temporaryCharisma ?? 0) * actionCount;
+    const tempSteGain = (action.temporaryStealth ?? 0) * actionCount;
+
     const hasMoneyVariation = action.moneyVariation !== undefined && action.moneyVariation > 0;
     const hasXpVariation = action.xpVariation !== undefined && action.xpVariation > 0;
     const hasHpVariation = action.hpVariation !== undefined && action.hpVariation > 0;
@@ -108,20 +118,34 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
         return `${approx}${sign}${value}`;
     };
 
+    const formatMoneyValue = (value: number, hasVariation?: boolean) => {
+        const sign = value > 0 ? '+' : '';
+        const approx = hasVariation ? '≈' : '';
+        return `${approx}${sign}${formatMoney(value)}`;
+    };
+
 
     const requirements = [
-        { label: "FOR", value: action.requiredStrength ?? 0, color: "text-red-500", bg: "bg-red-500/10", ring: "ring-red-500/20", current: user?.activeAvatar?.strength ?? 0 },
-        { label: "INT", value: action.requiredIntelligence ?? 0, color: "text-blue-500", bg: "bg-blue-500/10", ring: "ring-blue-500/20", current: user?.activeAvatar?.intelligence ?? 0 },
-        { label: "CHA", value: action.requiredCharisma ?? 0, color: "text-fuchsia-500", bg: "bg-fuchsia-500/10", ring: "ring-fuchsia-500/20", current: user?.activeAvatar?.charisma ?? 0 },
-        { label: "DIS", value: action.requiredStealth ?? 0, color: "text-gray-500", bg: "bg-gray-500/10", ring: "ring-gray-500/20", current: user?.activeAvatar?.stealth ?? 0 },
+        { label: "FOR", value: action.requiredStrength ?? 0, color: "text-red-500", bg: "bg-red-500/10", ring: "ring-red-500/20", current: (user?.activeAvatar?.strength ?? 0) + (user?.activeAvatar?.temporaryStrength ?? 0) },
+        { label: "INT", value: action.requiredIntelligence ?? 0, color: "text-blue-500", bg: "bg-blue-500/10", ring: "ring-blue-500/20", current: (user?.activeAvatar?.intelligence ?? 0) + (user?.activeAvatar?.temporaryIntelligence ?? 0) },
+        { label: "CHA", value: action.requiredCharisma ?? 0, color: "text-fuchsia-500", bg: "bg-fuchsia-500/10", ring: "ring-fuchsia-500/20", current: (user?.activeAvatar?.charisma ?? 0) + (user?.activeAvatar?.temporaryCharisma ?? 0) },
+        { label: "DIS", value: action.requiredStealth ?? 0, color: "text-gray-500", bg: "bg-gray-500/10", ring: "ring-gray-500/20", current: (user?.activeAvatar?.stealth ?? 0) + (user?.activeAvatar?.temporaryStealth ?? 0) },
     ];
 
     const riskPercentage = Math.round((action.failureChance ?? 0) * 100);
+    const isTraining = action.type === GameActionType.TRAINING;
+    const isMarket = action.type === GameActionType.MARKET;
+    const isHospital = action.type === GameActionType.HOSPITAL;
+    const hideRequirements = isTraining || isMarket || isHospital;
+
+    const hasStatusCooldown = !!user?.activeAvatar?.statusCooldown;
+    const isTrainingDisabled = isTraining && hasStatusCooldown;
+
     return (
         <Card
-            isPressable={true}
+            isPressable={!isTrainingDisabled}
             onPress={handleAction}
-            className={`bg-black border border-white/10 hover:border-white/20 transition-all group w-full relative overflow-hidden ${isLoading ? 'cursor-wait' : ''} ${isLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
+            className={`bg-black border border-white/10 hover:border-white/20 transition-all group w-full relative overflow-hidden ${isLoading ? 'opacity-60 cursor-wait' : isTrainingDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
         >
             <AnimatePresence>
                 {feedback && (
@@ -139,6 +163,11 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                             setFeedback(null);
                         }}
                     >
+                        {feedback.count !== undefined && feedback.count > 1 && (
+                            <div className="absolute top-2 right-2 bg-black/40 backdrop-blur-sm border border-white/10 px-2 py-0.5 rounded-md text-[10px] font-bold font-mono">
+                                x{feedback.count}
+                            </div>
+                        )}
                         <div className="space-y-4">
                             <p className="text-sm md:text-base font-medium leading-tight max-w-[80%] mx-auto whitespace-pre-line">
                                 {feedback.message}
@@ -162,13 +191,33 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                                     {feedback.variations.money !== 0 && feedback.variations.money !== undefined && (
                                         <div className={`flex items-center gap-1.5 ${feedback.variations.money < 0 ? 'text-red-500' : 'text-green-500'}`}>
                                             <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                                            <span>{hasMoneyVariation ? '≈' : ''}{feedback.variations.money > 0 ? '+' : ''}{(Number(feedback.variations.money)).toFixed(2)} R$</span>
+                                            <span>R$ {formatMoneyValue(Number(feedback.variations.money), hasMoneyVariation)}</span>
                                         </div>
                                     )}
                                     {feedback.variations.life !== 0 && feedback.variations.life !== undefined && (
                                         <div className={`flex items-center gap-1.5 ${feedback.variations.life < 0 ? 'text-red-500' : 'text-green-500'}`}>
                                             <span className="w-2 h-2 rounded-full bg-red-500"></span>
                                             <span>{formatValue(feedback.variations.life, hasHpVariation)} HP</span>
+                                        </div>
+                                    )}
+                                    {feedback.variations.temporaryStrength !== 0 && feedback.variations.temporaryStrength !== undefined && (
+                                        <div className={`flex items-center gap-1.5 ${feedback.variations.temporaryStrength > 0 ? 'text-red-500' : 'text-orange-500'} font-bold`}>
+                                            <span>{feedback.variations.temporaryStrength > 0 ? '+' : ''}{feedback.variations.temporaryStrength} FOR</span>
+                                        </div>
+                                    )}
+                                    {feedback.variations.temporaryIntelligence !== 0 && feedback.variations.temporaryIntelligence !== undefined && (
+                                        <div className={`flex items-center gap-1.5 ${feedback.variations.temporaryIntelligence > 0 ? 'text-blue-500' : 'text-orange-500'} font-bold`}>
+                                            <span>{feedback.variations.temporaryIntelligence > 0 ? '+' : ''}{feedback.variations.temporaryIntelligence} INT</span>
+                                        </div>
+                                    )}
+                                    {feedback.variations.temporaryCharisma !== 0 && feedback.variations.temporaryCharisma !== undefined && (
+                                        <div className={`flex items-center gap-1.5 ${feedback.variations.temporaryCharisma > 0 ? 'text-fuchsia-500' : 'text-orange-500'} font-bold`}>
+                                            <span>{feedback.variations.temporaryCharisma > 0 ? '+' : ''}{feedback.variations.temporaryCharisma} CHA</span>
+                                        </div>
+                                    )}
+                                    {feedback.variations.temporaryStealth !== 0 && feedback.variations.temporaryStealth !== undefined && (
+                                        <div className={`flex items-center gap-1.5 ${feedback.variations.temporaryStealth > 0 ? 'text-gray-400' : 'text-orange-500'} font-bold`}>
+                                            <span>{feedback.variations.temporaryStealth > 0 ? '+' : ''}{feedback.variations.temporaryStealth} DIS</span>
                                         </div>
                                     )}
                                 </div>
@@ -227,6 +276,26 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                                 </span>
                             </div>
                         )}
+                        {tempStrGain !== 0 && (
+                            <div className="flex items-center gap-1.5 text-red-500 font-bold">
+                                <span>{tempStrGain > 0 ? '+' : ''}{tempStrGain} FOR</span>
+                            </div>
+                        )}
+                        {tempIntGain !== 0 && (
+                            <div className="flex items-center gap-1.5 text-blue-500 font-bold">
+                                <span>{tempIntGain > 0 ? '+' : ''}{tempIntGain} INT</span>
+                            </div>
+                        )}
+                        {tempChaGain !== 0 && (
+                            <div className="flex items-center gap-1.5 text-fuchsia-500 font-bold">
+                                <span>{tempChaGain > 0 ? '+' : ''}{tempChaGain} CHA</span>
+                            </div>
+                        )}
+                        {tempSteGain !== 0 && (
+                            <div className="flex items-center gap-1.5 text-gray-400 font-bold">
+                                <span>{tempSteGain > 0 ? '+' : ''}{tempSteGain} DIS</span>
+                            </div>
+                        )}
                         {action.lostHpFailure !== undefined && action.lostHpFailure !== 0 && (
                             <div className="flex items-center gap-1.5 text-red-400/80">
                                 <span className="w-2 h-2 rounded-full bg-red-600"></span>
@@ -245,7 +314,7 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                         )}
                     </div>
 
-                    {requirements.length > 0 && (
+                    {!hideRequirements && requirements.length > 0 && (
                         <div className="flex flex-row gap-2">
                             {requirements.map((req, idx) => (
                                 <Tooltip
@@ -267,28 +336,32 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                 </div>
 
                 <div className="flex flex-col items-center gap-2">
-                    <Tooltip
-                        content={riskPercentage > 50 ? "Risco Crítico: Punições triplicadas (HP e Cadeia)!" : "Chance de falha"}
-                        isDisabled={riskPercentage <= 50}
-                        color="danger"
-                    >
-                        <Chip
-                            size="sm"
-                            variant="flat"
-                            color={riskPercentage <= 10 ? "success" : riskPercentage <= 25 ? "warning" : "danger"}
-                            className={`font-bold font-mono ${riskPercentage > 50 ? "animate-pulse border border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" : ""}`}
-                        >
-                            RISCO: {riskPercentage}%
-                        </Chip>
-                    </Tooltip>
-                    {riskPercentage > 50 && (
-                        <div className="text-[10px] text-red-500 font-bold uppercase tracking-tighter animate-bounce">
-                            Punição 3x
-                        </div>
+                    {!hideRequirements && (
+                        <>
+                            <Tooltip
+                                content={riskPercentage > 50 ? "Risco Crítico: Punições triplicadas (HP e Cadeia)!" : "Chance de falha"}
+                                isDisabled={riskPercentage <= 50}
+                                color="danger"
+                            >
+                                <Chip
+                                    size="sm"
+                                    variant="flat"
+                                    color={riskPercentage <= 10 ? "success" : riskPercentage <= 25 ? "warning" : "danger"}
+                                    className={`font-bold font-mono ${riskPercentage > 50 ? "animate-pulse border border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" : ""}`}
+                                >
+                                    RISCO: {riskPercentage}%
+                                </Chip>
+                            </Tooltip>
+                            {riskPercentage > 50 && (
+                                <div className="text-[10px] text-red-500 font-bold uppercase tracking-tighter animate-bounce">
+                                    Punição 3x
+                                </div>
+                            )}
+                        </>
                     )}
                     {moneyReward !== undefined && moneyReward !== 0 && (
                         <div className={`text-2xl font-bold ${moneyReward > 0 ? 'text-green-500' : (user?.activeAvatar?.money ?? 0) < Math.abs(moneyReward) ? 'text-red-600' : 'text-red-500'}`}>
-                            {formatValue(moneyReward, hasMoneyVariation)} R$
+                            R$ {formatMoneyValue(moneyReward, hasMoneyVariation)}
                         </div>
                     )}
                 </div>

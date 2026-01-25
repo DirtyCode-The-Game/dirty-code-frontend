@@ -2,6 +2,8 @@
 
 import { useRef, useState, useEffect } from "react";
 import { Button, Card, CardBody, ScrollShadow } from "@heroui/react";
+import { useGame } from "@/context/GameContext";
+import { CountdownTimer } from "./CountdownTimer";
 
 export type MenuItem = {
     title: string;
@@ -21,6 +23,7 @@ interface GameMenuCarouselProps {
 }
 
 export function GameMenuCarousel({ items, activeId, onSelect, lockedItems = [] }: GameMenuCarouselProps) {
+    const { user } = useGame();
     const scrollRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(true);
@@ -146,6 +149,12 @@ export function GameMenuCarousel({ items, activeId, onSelect, lockedItems = [] }
                                     </div>
                                     <span className={`font-bold uppercase tracking-wider text-[10px] md:text-sm text-center md:text-left ${isActive ? 'text-white' : 'text-gray-300 decoration-slice'}`}>
                                         {item.title}
+                                        {item.id === 'treinar' && user?.activeAvatar?.statusCooldown && (
+                                            <CountdownTimer 
+                                                targetDate={user.activeAvatar.statusCooldown} 
+                                                className="ml-1 text-[8px] md:text-[10px] text-yellow-500 font-bold animate-pulse inline-block"
+                                            />
+                                        )}
                                     </span>
                                 </div>
 

@@ -34,3 +34,10 @@ export async function getNoEnergyMessage(): Promise<string> {
     }
     return "Você está sem energia para trabalhar, vá jogar um lolzinho ou tomar um café para desbaratinar...";
 }
+
+export function formatMoney(value: number): string {
+    return value.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}

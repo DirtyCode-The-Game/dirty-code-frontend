@@ -3,6 +3,7 @@
 import { useGame } from "@/context/GameContext";
 import titlesData from "@/public/avatars/titles.json";
 import { api } from "@/services/api";
+import { formatMoney } from "@/lib/game-utils";
 import { Avatar, Card, CardBody, Progress, Tooltip } from "@heroui/react";
 import { useState } from "react";
 
@@ -50,6 +51,7 @@ export function UserProfileCard() {
             label: "Força",
             short: "FOR",
             value: user?.activeAvatar?.strength ?? 0,
+            tempValue: user?.activeAvatar?.temporaryStrength ?? 0,
             color: "text-red-500",
             bg: "bg-red-500/10",
             ring: "ring-red-500/20",
@@ -59,6 +61,7 @@ export function UserProfileCard() {
             label: "Inteligência",
             short: "INT",
             value: user?.activeAvatar?.intelligence ?? 0,
+            tempValue: user?.activeAvatar?.temporaryIntelligence ?? 0,
             color: "text-blue-500",
             bg: "bg-blue-500/10",
             ring: "ring-blue-500/20",
@@ -68,6 +71,7 @@ export function UserProfileCard() {
             label: "Carisma",
             short: "CHA",
             value: user?.activeAvatar?.charisma ?? 0,
+            tempValue: user?.activeAvatar?.temporaryCharisma ?? 0,
             color: "text-fuchsia-500",
             bg: "bg-fuchsia-500/10",
             ring: "ring-fuchsia-500/20",
@@ -77,6 +81,7 @@ export function UserProfileCard() {
             label: "Discrição",
             short: "DIS",
             value: user?.activeAvatar?.stealth ?? 0,
+            tempValue: user?.activeAvatar?.temporaryStealth ?? 0,
             color: "text-gray-500",
             bg: "bg-gray-500/10",
             ring: "ring-gray-500/20",
@@ -113,7 +118,7 @@ export function UserProfileCard() {
                     <div className={`font-mono font-bold text-lg md:text-2xl break-all text-center ${availablePoints > 0 ? "text-primary animate-pulse" : "text-green-400"}`}>
                         {availablePoints > 0 
                             ? availablePoints
-                            : `R$ ${(user?.activeAvatar?.money ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                            : `R$ ${formatMoney(user?.activeAvatar?.money ?? 0)}`
                         }
                     </div>
                 </div>
@@ -147,9 +152,23 @@ export function UserProfileCard() {
                                     {availablePoints > 0 ? "+" : attr.short}
                                 </div>
                             </Tooltip>
-                            <div className="font-mono font-bold text-sm hidden md:block">{attr.value}</div>
+                            <div className="font-mono font-bold text-sm hidden md:block">
+                                {attr.value}
+                                {attr.tempValue !== 0 && (
+                                    <span className={`${attr.tempValue > 0 ? 'text-green-500' : 'text-red-500'} ml-1`}>
+                                        {attr.tempValue > 0 ? '+' : ''}{attr.tempValue}
+                                    </span>
+                                )}
+                            </div>
                             {/* Mobile Value Badge */}
-                            <div className="font-mono font-bold text-xs md:hidden bg-black/50 px-1 rounded text-gray-300">{attr.value}</div>
+                            <div className="font-mono font-bold text-xs md:hidden bg-black/50 px-1 rounded text-gray-300">
+                                {attr.value}
+                                {attr.tempValue !== 0 && (
+                                    <span className={`${attr.tempValue > 0 ? 'text-green-500' : 'text-red-500'} ml-0.5`}>
+                                        {attr.tempValue > 0 ? '+' : ''}{attr.tempValue}
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     ))}
                 </div>

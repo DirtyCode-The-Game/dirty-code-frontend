@@ -3,6 +3,7 @@
 import { Card, CardBody, User as UserUI, Chip } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { api, Avatar } from "@/services/api";
+import { formatMoney } from "@/lib/game-utils";
 
 export function RankingPage() {
     const [ranking, setRanking] = useState<Avatar[]>([]);
@@ -87,7 +88,7 @@ export function RankingPage() {
                                 <div className="flex items-center gap-4 text-right">
                                     <div className="hidden sm:block">
                                         <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Dinheiro</div>
-                                        <div className="font-mono text-primary">R$ {avatar.money?.toFixed(2) || '0.00'}</div>
+                                        <div className="font-mono text-primary">R$ {formatMoney(avatar.money ?? 0)}</div>
                                     </div>
                                     <div className="text-right pl-4 border-l border-white/10">
                                         <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Nível</div>

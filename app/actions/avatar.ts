@@ -177,7 +177,25 @@ export async function leaveTimeoutAction() {
         throw new Error(errorText || "Failed to leave timeout");
     }
 
-    return await res.json();
+    const avatarData = await res.json();
+
+    const currentUserCookie = cookieStore.get('dirty_user_info')?.value;
+    if (currentUserCookie) {
+        try {
+            const userData = JSON.parse(currentUserCookie);
+            userData.activeAvatar = avatarData.avatar || avatarData; // Handle both direct avatar and ActionResultDTO
+            cookieStore.set('dirty_user_info', JSON.stringify(userData), {
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 7 // 1 week
+            });
+        } catch (e) {
+            console.error("Failed to update user cookie", e);
+        }
+    }
+
+    return avatarData;
 }
 
 export async function buyFreedomAction() {
@@ -203,7 +221,25 @@ export async function buyFreedomAction() {
         throw new Error(errorText || "Failed to buy freedom");
     }
 
-    return await res.json();
+    const avatarData = await res.json();
+
+    const currentUserCookie = cookieStore.get('dirty_user_info')?.value;
+    if (currentUserCookie) {
+        try {
+            const userData = JSON.parse(currentUserCookie);
+            userData.activeAvatar = avatarData.avatar || avatarData;
+            cookieStore.set('dirty_user_info', JSON.stringify(userData), {
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 7 // 1 week
+            });
+        } catch (e) {
+            console.error("Failed to update user cookie", e);
+        }
+    }
+
+    return avatarData;
 }
 
 export async function checkAvatarNameAction(name: string) {

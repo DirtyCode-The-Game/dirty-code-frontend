@@ -1,6 +1,8 @@
 'use client'
 
 import { Card, CardBody } from "@heroui/react";
+import { useGame } from "@/context/GameContext";
+import { CountdownTimer } from "./CountdownTimer";
 
 export type MenuItem = {
     title: string;
@@ -20,6 +22,7 @@ interface GameMenuProps {
 }
 
 export function GameMenu({ items, activeId, onSelect, lockedItems = [] }: GameMenuProps) {
+    const { user } = useGame();
     return (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 w-full">
             {items.map((item) => {
@@ -53,6 +56,12 @@ export function GameMenu({ items, activeId, onSelect, lockedItems = [] }: GameMe
                                 {/* Title */}
                                 <span className={`font-bold uppercase tracking-wider text-[10px] md:text-xs leading-tight ${isActive ? 'text-white' : 'text-gray-300'}`}>
                                     {item.title}
+                                    {item.id === 'treinar' && user?.activeAvatar?.statusCooldown && (
+                                        <CountdownTimer 
+                                            targetDate={user.activeAvatar.statusCooldown} 
+                                            className="ml-1 text-[8px] md:text-[9px] text-yellow-500 font-bold animate-pulse inline-block"
+                                        />
+                                    )}
                                 </span>
                             </div>
 

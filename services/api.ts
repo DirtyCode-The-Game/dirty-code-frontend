@@ -14,25 +14,27 @@ export interface Avatar {
     charisma: number;
     strength: number;
     stealth: number;
+    temporaryStrength?: number;
+    temporaryIntelligence?: number;
+    temporaryCharisma?: number;
+    temporaryStealth?: number;
+    statusCooldown?: string;
     hacking: number;
     work: number;
     focus: 'work' | 'hacking' | 'both';
     active: boolean;
-    maxLife?: number;
-    maxStamina?: number;
-    burnout: number;
     story?: string;
     timeout?: string; // ISO datetime string when timeout expires
     timeoutType?: string; // "HOSPITAL" or "JAIL"
 }
 
 export enum GameActionType {
-    HACKING = 'hacking',
-    WORK = 'work',
-    TRAIN = 'training',
-    MARKET = 'market',
-    HOSPITAL = 'hospital',
-    JAIL = 'jail'
+    HACKING = 'HACKING',
+    WORK = 'WORK',
+    TRAINING = 'TRAINING',
+    MARKET = 'MARKET',
+    HOSPITAL = 'HOSPITAL',
+    JAIL = 'JAIL'
 }
 
 export interface GameAction {
@@ -58,6 +60,12 @@ export interface GameAction {
     lostHpFailure?: number;
     lostHpFailureVariation?: number;
     recommendedMaxLevel?: number;
+    temporaryStrength?: number;
+    temporaryIntelligence?: number;
+    temporaryCharisma?: number;
+    temporaryStealth?: number;
+    actionCooldown?: string;
+    specialAction?: string;
 }
 
 export interface User {
@@ -94,7 +102,6 @@ export const api = {
                     work: 0,
                     focus: 'both',
                     active: true,
-                    burnout: 0,
                 },
             },
         };

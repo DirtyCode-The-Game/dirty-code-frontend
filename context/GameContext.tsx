@@ -20,6 +20,10 @@ interface GameContextType {
             life?: number;
             stamina?: number;
             money?: number;
+            temporaryStrength?: number;
+            temporaryIntelligence?: number;
+            temporaryCharisma?: number;
+            temporaryStealth?: number;
         } | null;
     }>;
     refreshUser: (updates: Partial<User>) => void;
@@ -40,6 +44,24 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export function GameProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    // Load initial user from localStorage on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('dirty_user_info');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    setUser(parsed);
+                    console.log("[GameContext] Initial user loaded from localStorage:", parsed.name);
+                } catch (e) {
+                    console.error("[GameContext] Failed to parse saved user info", e);
+                }
+            }
+            setIsInitialized(true);
+        }
+    }, []);
     const [actionCounts, setActionCounts] = useState<Record<string, number>>({});
     const [timeoutRedirectCallback, setTimeoutRedirectCallback] = useState<(() => void) | undefined>(undefined);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -51,7 +73,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const getAvatarData = async (avatarId: string, forceRefresh: boolean = false) => {
         // Se já existe no cache e não for um forceRefresh, retornamos
         const cached = avatarCache[avatarId];
-        
         const fetchAndCache = async () => {
             try {
                 const response = await fetch(`/api/avatar/${avatarId}`);
@@ -141,21 +162,35 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchUser = async () => {
+            // Se já temos usuário (carregado do localStorage ou anterior), 
+            // não precisamos buscar de novo imediatamente, o poll fará isso.
+            if (user) return;
+
             try {
                 const res = await fetch('/api/user/me');
                 if (res.ok) {
                     const userData = await res.json();
                     setUser(userData);
+                    if (typeof window !== 'undefined') {
+                        localStorage.setItem('dirty_user_info', JSON.stringify(userData));
+                    }
+                } else if (res.status === 401 || res.status === 403) {
+                    // Só desloga se não estivermos na landing page
+                    if (window.location.pathname !== '/') {
+                        console.warn(`[GameContext] Session invalid (${res.status}), logging out`);
+                        logout();
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch user context", error);
             }
         };
 
-        if (!user) {
+        // Only fetch if we've finished checking localStorage and still don't have a user
+        if (isInitialized && !user && !isLoading) {
             fetchUser();
         }
-    }, [user]);
+    }, [isInitialized, user, isLoading]);
 
     useEffect(() => {
         if (!user?.activeAvatar) return;
@@ -169,6 +204,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
                     const serverUser = await response.json();
                     setUser(serverUser);
                     localStorage.setItem('dirty_user_info', JSON.stringify(serverUser));
+                } else if (response.status === 401 || response.status === 403) {
+                    console.warn(`[GameContext] Session expired during poll (${response.status})`);
+                    logout();
                 }
             } catch (error) {
                 console.error('Failed to sync with backend:', error);
@@ -189,7 +227,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
         // Clear client state
         setUser(null);
-        localStorage.removeItem('dirty_user_info');
+        setChatToken(null);
+        setChatMessages([]);
+        setCachedActions({} as any);
+        setAvatarCache({});
+        
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('dirty_user_info');
+        }
+        
         router.push('/');
         setIsLoading(false);
     };
@@ -216,6 +262,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
             life?: number;
             stamina?: number;
             money?: number;
+            temporaryStrength?: number;
+            temporaryIntelligence?: number;
+            temporaryCharisma?: number;
+            temporaryStealth?: number;
         } | null;
     }> => {
         if (!user) {
@@ -259,10 +309,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
             // Get variations
             const variations = result.variations || (oldAvatar ? {
-                experience: updatedAvatar.experience - oldAvatar.experience,
-                life: updatedAvatar.life - oldAvatar.life,
-                stamina: updatedAvatar.stamina - oldAvatar.stamina,
-                money: updatedAvatar.money - oldAvatar.money,
+                experience: (updatedAvatar.experience ?? 0) - (oldAvatar.experience ?? 0),
+                life: (updatedAvatar.life ?? 0) - (oldAvatar.life ?? 0),
+                stamina: (updatedAvatar.stamina ?? 0) - (oldAvatar.stamina ?? 0),
+                money: (updatedAvatar.money ?? 0) - (oldAvatar.money ?? 0),
+                temporaryStrength: (updatedAvatar.temporaryStrength ?? 0) - (oldAvatar.temporaryStrength ?? 0),
+                temporaryIntelligence: (updatedAvatar.temporaryIntelligence ?? 0) - (oldAvatar.temporaryIntelligence ?? 0),
+                temporaryCharisma: (updatedAvatar.temporaryCharisma ?? 0) - (oldAvatar.temporaryCharisma ?? 0),
+                temporaryStealth: (updatedAvatar.temporaryStealth ?? 0) - (oldAvatar.temporaryStealth ?? 0),
             } : null);
 
             // Check if user was sent to timeout (hospital or jail) and trigger redirect
@@ -295,7 +349,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
             localStorage.setItem('dirty_user_info', JSON.stringify(updated));
             return updated;
         });
-        router.refresh();
     }
     
     const setActionCountForCategory = (category: string, count: number) => {

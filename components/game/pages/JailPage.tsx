@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { api, GameActionType } from "@/services/api";
 import { useGame } from "@/context/GameContext";
-import { getNoMoneyMessage, isNoMoneyError } from "@/lib/game-utils";
+import { formatMoney, getNoMoneyMessage, isNoMoneyError } from "@/lib/game-utils";
 
 export function JailPage() {
     const { user, refreshUser, cachedActions, fetchActions } = useGame();
@@ -195,7 +195,7 @@ export function JailPage() {
                                                 <>
                                                     <span>💰</span>
                                                     <span className={!canAffordFreedom ? 'text-red-500 font-bold' : ''}>
-                                                        Subornar Guarda ({freedomCost.toFixed(2)} R$)
+                                                        Subornar Guarda (R$ {formatMoney(freedomCost)})
                                                     </span>
                                                 </>
                                             )}
@@ -204,7 +204,7 @@ export function JailPage() {
 
                                     {!timeoutExpired && !canAffordFreedom && (
                                         <p className="text-red-400 text-sm text-center">
-                                            Você não tem dinheiro suficiente. Necessário: {freedomCost.toFixed(2)} R$
+                                            Você não tem dinheiro suficiente. Necessário: R$ {formatMoney(freedomCost)}
                                         </p>
                                     )}
                                 </div>

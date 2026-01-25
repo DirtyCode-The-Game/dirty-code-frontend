@@ -6,10 +6,11 @@ import { useEffect, useState, useMemo } from "react";
 import { GameAction, GameActionType } from "@/services/api";
 import { useGame } from "@/context/GameContext";
 import { Accordion, AccordionItem } from "@heroui/react";
+import { CountdownTimer } from "../CountdownTimer";
 
 export function TrainingPage() {
     const { user, actionCounts, setActionCountForCategory, cachedActions, fetchActions } = useGame();
-    const actions = cachedActions[GameActionType.TRAIN] || [];
+    const actions = cachedActions[GameActionType.TRAINING] || [];
     const [isLoading, setIsLoading] = useState(actions.length === 0);
     const actionCount = actionCounts['training'] || 1;
     const setActionCount = (count: number) => setActionCountForCategory('training', count);
@@ -50,7 +51,7 @@ export function TrainingPage() {
             const isInitialLoad = actions.length === 0;
             if (isInitialLoad) setIsLoading(true);
             
-            await fetchActions(GameActionType.TRAIN, !isInitialLoad);
+            await fetchActions(GameActionType.TRAINING, !isInitialLoad);
             
             if (isInitialLoad) setIsLoading(false);
         };
@@ -66,6 +67,20 @@ export function TrainingPage() {
                     <p className="text-gray-400 text-sm md:text-lg border-l-2 border-primary pl-4">
                         No pain, no gain. Fique monstrão (de conhecimento).
                     </p>
+                    <p className="text-gray-400 text-sm md:text-lg border-l-2 border-primary pl-4">
+                        Ganhe status temporarios por 24h.
+                    </p>
+                    {user?.activeAvatar?.statusCooldown && (
+                        <>
+                            <p className="text-yellow-500 text-xs md:text-sm font-bold mt-2 animate-pulse">
+                                ⚠️ Você já possui bônus ativos. Aguarde {user?.activeAvatar?.statusCooldown && <CountdownTimer targetDate={user.activeAvatar.statusCooldown} />} para treinar novamente.
+                            </p>
+                            <p className="text-yellow-500 text-xs md:text-sm font-bold mt-2 animate-pulse">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ou procure por um desneuralizador no hospital.
+                            </p>
+                        </>
+                    )}
+
                 </div>
                 <ActionQuantitySelector value={actionCount} onChange={setActionCount} />
             </div>

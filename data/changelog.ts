@@ -7,6 +7,19 @@ export interface ChangelogItem {
 
 export const CHANGELOG_DATA: ChangelogItem[] = [
     {
+        version: "0.2.3",
+        title: "Pequenos ajustes de UI, rework completo da aba de treinamentos.",
+        date: "24/01/2026",
+        items: [
+            "GameMechanic: Rework completo da aba de treinamentos.",
+            "GameMechanic: Adicionados atributos temporários.",
+            "UI: Aplicada mascara de valor em todas as exibições de dinheiro do sistema.",
+            "UI: Adicionada exibição de ganhos de status temporários na aba de treinamento.",
+            "UI: Adicionadas mais imagens para o usuario. Valeu @orafael93.",
+            ""
+        ]
+    },
+    {
         version: "0.2.2",
         title: "Social & Risco: Evolução do Helldit e Refinamento de UI",
         date: "18/01/2026",

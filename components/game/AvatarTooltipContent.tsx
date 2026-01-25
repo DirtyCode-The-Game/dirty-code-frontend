@@ -4,6 +4,7 @@ import { Avatar, Card, CardBody, Spinner } from "@heroui/react";
 import { useEffect, useState } from "react";
 import titlesData from "@/public/avatars/titles.json";
 import { useGame } from "@/context/GameContext";
+import { formatMoney } from "@/lib/game-utils";
 
 interface AvatarData {
     story?: string;
@@ -101,7 +102,7 @@ export function AvatarTooltipContent({ avatarId }: AvatarTooltipContentProps) {
                         <h3 className="font-bold text-sm text-white leading-tight">{avatar.name}</h3>
                         <p className="text-[9px] text-primary font-mono uppercase tracking-tighter">{getTitle(avatar)}</p>
                         <p className="text-green-400 font-bold font-mono text-[11px]">
-                            R$ {avatar.money.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            R$ {formatMoney(avatar.money)}
                         </p>
                     </div>
                 </div>

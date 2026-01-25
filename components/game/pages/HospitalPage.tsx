@@ -5,7 +5,7 @@ import { ActionQuantitySelector } from "@/components/game/ActionQuantitySelector
 import { useEffect, useState } from "react";
 import { api, GameActionType } from "@/services/api";
 import { useGame } from "@/context/GameContext";
-import { getNoMoneyMessage, isNoMoneyError } from "@/lib/game-utils";
+import { formatMoney, getNoMoneyMessage, isNoMoneyError } from "@/lib/game-utils";
 
 export function HospitalPage() {
     const { user, refreshUser, actionCounts, setActionCountForCategory, cachedActions, fetchActions } = useGame();
@@ -199,7 +199,7 @@ export function HospitalPage() {
                                                 <>
                                                     <span>💰</span>
                                                     <span className={!canAffordFreedom ? 'text-red-500 font-bold' : ''}>
-                                                        Comprar Liberdade ({freedomCost.toFixed(2)} R$)
+                                                        Comprar Liberdade (R$ {formatMoney(freedomCost)})
                                                     </span>
                                                 </>
                                             )}
@@ -208,7 +208,7 @@ export function HospitalPage() {
 
                                     {!timeoutExpired && !canAffordFreedom && (
                                         <p className="text-red-400 text-sm text-center">
-                                            Você não tem dinheiro suficiente. Necessário: {freedomCost.toFixed(2)} R$
+                                            Você não tem dinheiro suficiente. Necessário: R$ {formatMoney(freedomCost)}
                                         </p>
                                     )}
                                 </div>
