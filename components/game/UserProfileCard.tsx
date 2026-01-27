@@ -186,7 +186,8 @@ export function UserProfileCard() {
                             <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider text-gray-400 min-w-[65px]">Vida:</span>
                             <Progress
                                 id="progress-life"
-                                value={user?.activeAvatar?.life ?? 0}
+                                value={user?.activeAvatar?.currentLife ?? 0}
+                                maxValue={user?.activeAvatar?.maxLife ?? 100}
                                 color="danger"
                                 size="sm"
                                 classNames={{
@@ -197,7 +198,7 @@ export function UserProfileCard() {
                                 }}
                                 className="flex-1"
                             />
-                            <span className="text-[10px] md:text-xs font-mono text-gray-500 min-w-[35px] text-right">{user?.activeAvatar?.life ?? 0}/100</span>
+                            <span className="text-[10px] md:text-xs font-mono text-gray-500 min-w-[35px] text-right">{user?.activeAvatar?.currentLife ?? 0}/{user?.activeAvatar?.maxLife ?? 100}</span>
                         </div>
                     </Tooltip>
 
@@ -211,7 +212,8 @@ export function UserProfileCard() {
                             <span className="text-[10px] md:text-xs uppercase font-bold tracking-wider text-gray-400 min-w-[65px]">Energia:</span>
                             <Progress
                                 id="progress-stamina"
-                                value={user?.activeAvatar?.stamina ?? 0}
+                                value={user?.activeAvatar?.currentStamina ?? 0}
+                                maxValue={user?.activeAvatar?.maxStamina ?? 100}
                                 size="sm"
                                 classNames={{
                                     track: "bg-white/10 h-2",
@@ -221,7 +223,7 @@ export function UserProfileCard() {
                                 }}
                                 className="flex-1"
                             />
-                            <span className="text-[10px] md:text-xs font-mono text-gray-500 min-w-[35px] text-right">{user?.activeAvatar?.stamina ?? 0}/100</span>
+                            <span className="text-[10px] md:text-xs font-mono text-gray-500 min-w-[35px] text-right">{user?.activeAvatar?.currentStamina ?? 0}/{user?.activeAvatar?.maxStamina ?? 100}</span>
                         </div>
                     </Tooltip>
 

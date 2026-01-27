@@ -22,8 +22,8 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
         count?: number;
         variations?: {
             experience?: number;
-            life?: number;
-            stamina?: number;
+            currentLife?: number;
+            currentStamina?: number;
             money?: number;
             temporaryStrength?: number;
             temporaryIntelligence?: number;
@@ -43,7 +43,7 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
 
     const handleAction = async () => {
         const staminaNeededPerAction = Math.abs(action.stamina);
-        const currentStamina = user?.activeAvatar?.stamina ?? 0;
+        const currentStamina = user?.activeAvatar?.currentStamina ?? 0;
         
         if (action.stamina < 0 && currentStamina < staminaNeededPerAction) {
             const message = await getNoEnergyMessage();
@@ -174,11 +174,11 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                             </p>
                             {feedback.variations && (
                                 <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-mono">
-                                    {feedback.variations.stamina !== 0 && feedback.variations.stamina !== undefined && (
-                                        <div className={`flex items-center gap-1.5 ${feedback.variations.stamina < 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                    {feedback.variations.currentStamina !== 0 && feedback.variations.currentStamina !== undefined && (
+                                        <div className={`flex items-center gap-1.5 ${feedback.variations.currentStamina < 0 ? 'text-red-500' : 'text-green-500'}`}>
                                             <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
                                             <span>
-                                                {feedback.variations.stamina > 0 ? '+' : ''}{feedback.variations.stamina} Energia
+                                                {feedback.variations.currentStamina > 0 ? '+' : ''}{feedback.variations.currentStamina} Energia
                                             </span>
                                         </div>
                                     )}
@@ -194,10 +194,10 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                                             <span>R$ {formatMoneyValue(Number(feedback.variations.money), hasMoneyVariation)}</span>
                                         </div>
                                     )}
-                                    {feedback.variations.life !== 0 && feedback.variations.life !== undefined && (
-                                        <div className={`flex items-center gap-1.5 ${feedback.variations.life < 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                    {feedback.variations.currentLife !== 0 && feedback.variations.currentLife !== undefined && (
+                                        <div className={`flex items-center gap-1.5 ${feedback.variations.currentLife < 0 ? 'text-red-500' : 'text-green-500'}`}>
                                             <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                                            <span>{formatValue(feedback.variations.life, hasHpVariation)} HP</span>
+                                            <span>{formatValue(feedback.variations.currentLife, hasHpVariation)} HP</span>
                                         </div>
                                     )}
                                     {feedback.variations.temporaryStrength !== 0 && feedback.variations.temporaryStrength !== undefined && (
@@ -257,7 +257,7 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                         {stamina !== 0 && (
                             <div className="flex items-center gap-1.5">
                                 <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
-                                <span className={stamina < 0 && (user?.activeAvatar?.stamina ?? 0) < Math.abs(stamina) ? 'text-red-500 font-bold' : ''}>
+                                <span className={stamina < 0 && (user?.activeAvatar?.currentStamina ?? 0) < Math.abs(stamina) ? 'text-red-500 font-bold' : ''}>
                                     {stamina > 0 ? '+' : ''}{stamina} Energia
                                 </span>
                             </div>
@@ -271,7 +271,7 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                         {hpReward !== 0 && (
                             <div className="flex items-center gap-1.5">
                                 <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                                <span className={hpReward < 0 && (user?.activeAvatar?.life ?? 0) < Math.abs(hpReward) ? 'text-red-500 font-bold' : ''}>
+                                <span className={hpReward < 0 && (user?.activeAvatar?.currentLife ?? 0) < Math.abs(hpReward) ? 'text-red-500 font-bold' : ''}>
                                     {formatValue(hpReward, hasHpVariation)} HP
                                 </span>
                             </div>
