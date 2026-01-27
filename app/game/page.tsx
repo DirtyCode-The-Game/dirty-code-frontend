@@ -9,6 +9,7 @@ import { WorkPage } from "@/components/game/pages/WorkPage";
 import { HackingPage } from "@/components/game/pages/HackingPage";
 import { TrainingPage } from "@/components/game/pages/TrainingPage";
 import { MarketPage } from "@/components/game/pages/MarketPage";
+import { PichowPage } from "@/components/game/pages/PichowPage";
 import { HospitalPage } from "@/components/game/pages/HospitalPage";
 import { JailPage } from "@/components/game/pages/JailPage";
 import { DefaultPage } from "@/components/game/pages/DefaultPage";
@@ -53,6 +54,15 @@ const MENU_ITEMS: MenuItem[] = [
         component: <TrainingPage />
     },
     {
+        title: "Pichow",
+        id: "store",
+        desc: "A grife oficial do periquito maluco.",
+        color: "text-purple-400",
+        border: "border-purple-500/50",
+        path: "M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z",
+        component: <PichowPage />
+    },
+    {
         title: "Mercadinho",
         id: "mercadinho",
         desc: "Recupere energias. Café, Pizza e Energético.",
@@ -64,7 +74,7 @@ const MENU_ITEMS: MenuItem[] = [
     {
         title: "Hospital",
         id: "hospital",
-        desc: "Cuide da sua saúde. HP baixo é refactoring na carne.",
+        desc: "Cuide da sua saúde. HP baixo é badvibes.",
         color: "text-red-400",
         border: "border-red-500/50",
         path: "M12 4.5v15m7.5-7.5h-15",
@@ -155,8 +165,10 @@ export default function GameDashboard() {
     return (
         <div className="flex flex-col gap-2 min-h-screen pb-10">
             <div className="container mx-auto lg:px-8 space-y-4 md:space-y-8">
-                {/* 1. Profile Card */}
-                <UserProfileCard />
+                {/* 1. Profile Card - Fixed at the top below Topbar */}
+                <div className="sticky top-16 z-30 py-2 md:py-4 bg-black/80 backdrop-blur-md -mx-2 px-2 md:mx-0 md:px-0">
+                    <UserProfileCard />
+                </div>
 
                 {/* 2. Game Menu Grid */}
                 <GameMenu

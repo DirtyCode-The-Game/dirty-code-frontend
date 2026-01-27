@@ -33,6 +33,7 @@ export enum GameActionType {
     WORK = 'WORK',
     TRAINING = 'TRAINING',
     MARKET = 'MARKET',
+    STORE = 'STORE',
     HOSPITAL = 'HOSPITAL',
     JAIL = 'JAIL'
 }

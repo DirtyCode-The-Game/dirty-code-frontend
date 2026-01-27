@@ -16,7 +16,7 @@ export const CHANGELOG_DATA: ChangelogItem[] = [
             "UI: Aplicada mascara de valor em todas as exibições de dinheiro do sistema.",
             "UI: Adicionada exibição de ganhos de status temporários na aba de treinamento.",
             "UI: Adicionadas mais imagens para o usuario. Valeu @orafael93.",
-            ""
+            "UI: Adicionando loja de itens 'pichow'.",
         ]
     },
     {
