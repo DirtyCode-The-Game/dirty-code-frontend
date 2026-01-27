@@ -17,8 +17,8 @@ interface GameContextType {
         timesExecuted?: number;
         variations?: {
             experience?: number;
-            life?: number;
-            stamina?: number;
+            currentLife?: number;
+            currentStamina?: number;
             money?: number;
             temporaryStrength?: number;
             temporaryIntelligence?: number;
@@ -259,8 +259,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         timesExecuted?: number;
         variations?: {
             experience?: number;
-            life?: number;
-            stamina?: number;
+            currentLife?: number;
+            currentStamina?: number;
             money?: number;
             temporaryStrength?: number;
             temporaryIntelligence?: number;
@@ -310,8 +310,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
             // Get variations
             const variations = result.variations || (oldAvatar ? {
                 experience: (updatedAvatar.experience ?? 0) - (oldAvatar.experience ?? 0),
-                life: (updatedAvatar.life ?? 0) - (oldAvatar.life ?? 0),
-                stamina: (updatedAvatar.stamina ?? 0) - (oldAvatar.stamina ?? 0),
+                currentLife: (updatedAvatar.currentLife ?? 0) - (oldAvatar.currentLife ?? 0),
+                currentStamina: (updatedAvatar.currentStamina ?? 0) - (oldAvatar.currentStamina ?? 0),
                 money: (updatedAvatar.money ?? 0) - (oldAvatar.money ?? 0),
                 temporaryStrength: (updatedAvatar.temporaryStrength ?? 0) - (oldAvatar.temporaryStrength ?? 0),
                 temporaryIntelligence: (updatedAvatar.temporaryIntelligence ?? 0) - (oldAvatar.temporaryIntelligence ?? 0),
