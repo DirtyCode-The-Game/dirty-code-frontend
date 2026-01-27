@@ -15,6 +15,7 @@ export const CHANGELOG_DATA: ChangelogItem[] = [
             "UI: Ajuste de paddings, gaps e tamanhos de ícones/avatares para um layout mais compacto.",
             "UI: Redução significativa do espaço entre a barra superior (Topbar) e o card do usuário.",
             "UI: Redução do espaço entre o card do usuário e o conteúdo das tarefas.",
+            "UI: Adicionando os valores dos batchs nos cookies.",
             "UX: O menu de navegação lateral/inferior agora é fixo (sticky) junto com o card do usuário, facilitando a navegação em páginas longas.",
             "Layout: Otimização de containers e espaçamentos no dashboard principal.",
             "Bugfix: Corrigida impossibilidade de usar a tecla de espaço e selecionar texto nos inputs de onboarding.",
@@ -140,4 +141,4 @@ export const CHANGELOG_DATA: ChangelogItem[] = [
     }
 ];
 
-export const CURRENT_VERSION = "0.2.5";
+export const CURRENT_VERSION = CHANGELOG_DATA[0].version;

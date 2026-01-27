@@ -106,7 +106,6 @@ export default function GameDashboard() {
     // Redirect to onboarding if user doesn't have an avatar
     useEffect(() => {
         if (user && !user.activeAvatar) {
-            console.log("Redirecting to onboarding because user has no avatar");
             router.replace('/game/onboarding');
         }
     }, [user?.activeAvatar, router]);

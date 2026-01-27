@@ -66,10 +66,8 @@ export default function OnboardingPage() {
     const [isCheckingName, setIsCheckingName] = useState(false);
     const [nameAvailable, setNameAvailable] = useState(true);
 
-    // If user already has an avatar, redirect to game
     useEffect(() => {
         if (user?.activeAvatar) {
-            console.log("Redirecting to game because user already has an avatar");
             router.replace('/game');
         }
     }, [user?.activeAvatar, router]);

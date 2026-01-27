@@ -4,6 +4,7 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 import { api, GameAction, GameActionType, User } from '@/services/api';
 import { useRouter } from 'next/navigation';
 import { chatService, ChatMessage } from '@/services/chatService';
+import Cookies from 'js-cookie';
 
 
 interface GameContextType {
@@ -43,26 +44,27 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
+    const [actionCounts, setActionCounts] = useState<Record<string, number>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
 
-    // Load initial user from localStorage on mount
+    // Load initial user from localStorage and actionCounts from cookies on mount
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem('dirty_user_info');
             if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    setUser(parsed);
-                    console.log("[GameContext] Initial user loaded from localStorage:", parsed.name);
-                } catch (e) {
-                    console.error("[GameContext] Failed to parse saved user info", e);
-                }
+                const parsed = JSON.parse(saved);
+                setUser(parsed);
+            }
+
+            const savedCounts = Cookies.get('dirty_action_counts');
+            if (savedCounts) {
+                const parsedCounts = JSON.parse(savedCounts);
+                setActionCounts(parsedCounts);
             }
             setIsInitialized(true);
         }
     }, []);
-    const [actionCounts, setActionCounts] = useState<Record<string, number>>({});
     const [timeoutRedirectCallback, setTimeoutRedirectCallback] = useState<(() => void) | undefined>(undefined);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [chatToken, setChatToken] = useState<string | null>(null);
@@ -227,6 +229,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
         // Clear client state
         setUser(null);
+        setActionCounts({});
         setChatToken(null);
         setChatMessages([]);
         setCachedActions({} as any);
@@ -234,6 +237,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         
         if (typeof window !== 'undefined') {
             localStorage.removeItem('dirty_user_info');
+            Cookies.remove('dirty_action_counts');
         }
         
         router.push('/');
@@ -352,10 +356,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
     
     const setActionCountForCategory = (category: string, count: number) => {
-        setActionCounts(prev => ({
-            ...prev,
-            [category]: count
-        }));
+        setActionCounts(prev => {
+            const next = {
+                ...prev,
+                [category]: count
+            };
+            Cookies.set('dirty_action_counts', JSON.stringify(next), { expires: 7 });
+            return next;
+        });
     };
 
     const setOnTimeoutRedirect = (callback: () => void) => {
