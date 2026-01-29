@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Input, Button, Textarea, Card, CardBody } from "@heroui/react";
+import { Input, Button, Textarea, Card, CardBody, Spinner } from "@heroui/react";
 
 import { api } from '@/services/api';
 import { Avatar } from '@/services/api';
@@ -140,7 +140,7 @@ export default function OnboardingPage() {
     };
 
     const handleSubmit = async () => {
-        if (!name.trim()) return;
+        if (!name.trim() || isLoading) return;
 
         setIsLoading(true);
         try {
@@ -151,16 +151,16 @@ export default function OnboardingPage() {
             };
 
             const newAvatar: Avatar = await api.createAvatar(payload);
-            refreshUser({ activeAvatar: newAvatar });
-
-            // Pequeno delay para garantir atualização do contexto e cookies
-            setTimeout(() => {
-                router.replace('/game');
-            }, 300);
-        } catch (error) {
+            
+            if (newAvatar && newAvatar.id) {
+                refreshUser({ activeAvatar: newAvatar });
+            } else {
+                setIsLoading(false);
+                throw new Error("O servidor não retornou os dados do avatar criado.");
+            }
+        } catch (error: any) {
             console.error(error);
-            alert("Falha ao criar personagem. Por favor, tente novamente.");
-        } finally {
+            alert("Falha ao criar personagem: " + (error.message || "Erro desconhecido"));
             setIsLoading(false);
         }
     };
@@ -397,6 +397,24 @@ export default function OnboardingPage() {
 
     return (
         <div className="flex flex-col gap-2 min-h-screen pb-10">
+            {isLoading && (
+                <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="relative">
+                        <div className="w-24 h-24 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-full border-4 border-secondary/20 border-b-secondary animate-spin-reverse" />
+                        </div>
+                    </div>
+                    <div className="mt-8 text-center space-y-2">
+                        <h2 className="text-2xl font-bold text-white tracking-tight animate-pulse">
+                            Compilando seu destino...
+                        </h2>
+                        <p className="text-gray-400 font-mono text-sm">
+                            &gt; Criando avatar no banco de dados
+                        </p>
+                    </div>
+                </div>
+            )}
             <div className="container mx-auto lg:px-8 space-y-8 py-8">
                 <div className="min-h-[600px] bg-black/50 border border-white/10 rounded-2xl p-6 md:p-8 relative overflow-hidden backdrop-blur-sm">
 
