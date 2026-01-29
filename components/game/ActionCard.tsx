@@ -101,15 +101,32 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
         }
     }
 
-    const stamina = action.stamina * actionCount;
-    const moneyReward = action.money * actionCount;
-    const xpReward = action.xp * actionCount;
-    const hpReward = (action.hp ?? 0) * actionCount;
+    const effectiveCount = (() => {
+        if (!user?.activeAvatar) return actionCount;
+        
+        let maxByStamina = Infinity;
+        if (action.stamina < 0) {
+            maxByStamina = Math.floor((user.activeAvatar.stamina ?? 0) / Math.abs(action.stamina));
+        }
 
-    const tempStrGain = (action.temporaryStrength ?? 0) * actionCount;
-    const tempIntGain = (action.temporaryIntelligence ?? 0) * actionCount;
-    const tempChaGain = (action.temporaryCharisma ?? 0) * actionCount;
-    const tempSteGain = (action.temporaryStealth ?? 0) * actionCount;
+        let maxByMoney = Infinity;
+        if (action.money < 0) {
+            maxByMoney = Math.floor((user.activeAvatar.money ?? 0) / Math.abs(action.money));
+        }
+
+        const maxPossible = Math.max(1, Math.min(maxByStamina, maxByMoney));
+        return Math.min(actionCount, maxPossible);
+    })();
+
+    const stamina = action.stamina * effectiveCount;
+    const moneyReward = action.money * effectiveCount;
+    const xpReward = action.xp * effectiveCount;
+    const hpReward = (action.hp ?? 0) * effectiveCount;
+
+    const tempStrGain = (action.temporaryStrength ?? 0) * effectiveCount;
+    const tempIntGain = (action.temporaryIntelligence ?? 0) * effectiveCount;
+    const tempChaGain = (action.temporaryCharisma ?? 0) * effectiveCount;
+    const tempSteGain = (action.temporaryStealth ?? 0) * effectiveCount;
 
     const hasMoneyVariation = action.moneyVariation !== undefined && action.moneyVariation > 0;
     const hasXpVariation = action.xpVariation !== undefined && action.xpVariation > 0;

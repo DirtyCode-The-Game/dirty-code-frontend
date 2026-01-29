@@ -14,7 +14,8 @@ export const CHANGELOG_DATA: ChangelogItem[] = [
             "UX: Onboarding se tornou uma modal e não uma pagina a parte, tornando a transação entre criar personagem e jogar mais suave.",
             "UI: Adicionando loading na execução das tarefas.",
             "UI: Removido o refresh de pagina ao sair da prisão/hospital.",
-            "Dr. Hoo Lee Sheet: Não aparece mais para quem esta internado no hospital."
+            "Dr. Hoo Lee Sheet: Não aparece mais para quem esta internado no hospital.",
+            "UI: Os valores de recompensa e custo exibidos nos cards de ação agora se ajustam automaticamente ao limite máximo que o avatar pode executar (baseado em Stamina e Dinheiro), caso o valor do batch seja superior.",
         ]
     },{
         version: "0.2.5",
