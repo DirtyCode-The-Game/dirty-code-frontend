@@ -7,6 +7,15 @@ export interface ChangelogItem {
 
 export const CHANGELOG_DATA: ChangelogItem[] = [
     {
+        version: "0.2.6",
+        title: "Melhoria no  onboarding.",
+        date: "29/01/2026",
+        items: [
+            "UX: Onboarding se tornou uma modal e não uma pagina a parte, tornando a transação entre criar personagem e jogar mais suave.",
+            "UI: Adicionando loading na execução das tarefas.",
+            "UI: Removido o refresh de pagina ao sair da prisão/hospital."
+        ]
+    },{
         version: "0.2.5",
         title: "Novo Sistema: Dr. Hoo Lee Sheet",
         date: "28/01/2026",

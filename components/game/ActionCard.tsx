@@ -149,8 +149,21 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
         <Card
             isPressable={!isTrainingDisabled}
             onPress={handleAction}
-            className={`bg-black border border-white/10 hover:border-white/20 transition-all group w-full relative overflow-hidden ${isLoading ? 'opacity-60 cursor-wait' : isTrainingDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+            className={`bg-black border border-white/10 hover:border-white/20 transition-all group w-full relative overflow-hidden ${isLoading ? 'cursor-wait' : isTrainingDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
         >
+            <AnimatePresence>
+                {isLoading && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-[2px]"
+                    >
+                        <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin shadow-[0_0_15px_rgba(var(--primary-rgb),0.3)]" />
+                        <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-primary animate-pulse">Da um tempo safado, estou registrando sua ação...</p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <AnimatePresence>
                 {feedback && (
                     <motion.div

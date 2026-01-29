@@ -14,6 +14,7 @@ import { HospitalPage } from "@/components/game/pages/HospitalPage";
 import { JailPage } from "@/components/game/pages/JailPage";
 import { DefaultPage } from "@/components/game/pages/DefaultPage";
 import { useGame } from "@/context/GameContext";
+import { OnboardingModal } from "@/components/game/OnboardingModal";
 
 // Define Menu Items
 const MENU_ITEMS: MenuItem[] = [
@@ -94,7 +95,8 @@ const MENU_ITEMS: MenuItem[] = [
 export default function GameDashboard() {
     const router = useRouter();
     const [activeTab, setActiveTab] = useState("Helldit");
-    const { user, setOnTimeoutRedirect } = useGame();
+    const { user, setOnTimeoutRedirect, syncUserWithBackend } = useGame();
+    const [showOnboarding, setShowOnboarding] = useState(false);
 
     const content = MENU_ITEMS.find(item => item.id === activeTab);
 
@@ -103,12 +105,14 @@ export default function GameDashboard() {
         window.scrollTo(0, 0);
     }, [activeTab]);
 
-    // Redirect to onboarding if user doesn't have an avatar
+    // Show onboarding if user doesn't have an avatar
     useEffect(() => {
         if (user && !user.activeAvatar) {
-            router.replace('/game/onboarding');
+            setShowOnboarding(true);
+        } else {
+            setShowOnboarding(false);
         }
-    }, [user?.activeAvatar, router]);
+    }, [user?.activeAvatar, user]);
 
     // Check if user is in hospital/jail timeout
     const isInTimeout = user?.activeAvatar?.timeoutType && user?.activeAvatar?.timeout;
@@ -142,6 +146,14 @@ export default function GameDashboard() {
         }
     }, [isInTimeout, isTimeoutExpired, timeoutType]);
 
+    // Handle return from timeout: if was in timeout and now is not, go to Helldit
+    useEffect(() => {
+        // We only care if isInTimeout becomes false/null while we are on a timeout tab
+        if (!isInTimeout && (activeTab === 'hospital' || activeTab === 'jail')) {
+            setActiveTab('Helldit');
+        }
+    }, [isInTimeout, activeTab]);
+
     // Override setActiveTab to prevent navigation when in timeout
     const handleTabChange = (tabId: string) => {
         // Helldit is always allowed
@@ -168,6 +180,13 @@ export default function GameDashboard() {
 
     return (
         <div className="flex flex-col gap-2 min-h-screen pb-10">
+            <OnboardingModal 
+                isOpen={showOnboarding} 
+                onComplete={() => {
+                    setShowOnboarding(false);
+                    syncUserWithBackend();
+                }} 
+            />
             <div className="container mx-auto lg:px-8 space-y-2 md:space-y-3">
                 {/* 1. Fixed Header Section (Profile + Menu) */}
                 <div className="sticky top-16 z-30 pt-1 md:pt-2 pb-0 bg-black/80 backdrop-blur-md -mx-2 px-2 md:mx-0 md:px-0 flex flex-col gap-2 md:gap-3">

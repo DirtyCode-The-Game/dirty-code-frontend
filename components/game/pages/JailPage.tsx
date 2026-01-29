@@ -68,8 +68,6 @@ export function JailPage() {
         try {
             await api.leaveTimeout();
             await syncUserWithBackend();
-
-            window.location.href = '/game';
         } catch (error: any) {
             alert(error.message || 'Erro ao sair da prisão');
         } finally {
@@ -82,8 +80,6 @@ export function JailPage() {
         try {
             await api.buyFreedom();
             await syncUserWithBackend();
-
-            window.location.href = '/game';
         } catch (error: any) {
             let message = error.message || 'Erro ao comprar liberdade';
             

@@ -73,8 +73,6 @@ export function HospitalPage() {
         try {
             await api.leaveTimeout();
             await syncUserWithBackend();
-
-            window.location.href = '/game';
         } catch (error: any) {
             alert(error.message || 'Erro ao sair do hospital');
         } finally {
@@ -87,8 +85,6 @@ export function HospitalPage() {
         try {
             await api.buyFreedom();
             await syncUserWithBackend();
-
-            window.location.href = '/game';
         } catch (error: any) {
             let message = error.message || 'Erro ao comprar liberdade';
             
