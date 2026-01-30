@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { GameAction, GameActionType } from "@/services/api";
 import { AnimatePresence, motion } from "framer-motion";
 import { formatMoney, getNoEnergyMessage, getNoMoneyMessage, isNoMoneyError } from "@/lib/game-utils";
-import { CountdownTimer } from "./CountdownTimer";
 
 interface ActionCardProps {
     action: GameAction;
@@ -157,7 +156,8 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
     const isTraining = action.type === GameActionType.TRAINING;
     const isMarket = action.type === GameActionType.MARKET;
     const isHospital = action.type === GameActionType.HOSPITAL;
-    const hideRequirements = hideRequirementsProp || isTraining || isMarket || isHospital;
+    const isJail = action.type === GameActionType.JAIL;
+    const hideRequirements = hideRequirementsProp || isTraining || isMarket || isHospital || isJail;
 
     const hasStatusCooldown = !!user?.activeAvatar?.statusCooldown;
     const isTrainingDisabled = isTraining && hasStatusCooldown;
@@ -216,6 +216,7 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
                                             </span>
                                         </div>
                                     )}
+                                    
                                     {feedback.variations.experience !== 0 && feedback.variations.experience !== undefined && (
                                         <div className={`flex items-center gap-1.5 ${feedback.variations.experience < 0 ? 'text-red-500' : 'text-green-500'}`}>
                                             <span className="w-2 h-2 rounded-full bg-purple-500"></span>
@@ -300,6 +301,12 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
                             <div className="flex items-center gap-1.5">
                                 <span className="w-2 h-2 rounded-full bg-purple-500"></span>
                                 <span>{formatValue(xpReward, hasXpVariation)} Respeito</span>
+                            </div>
+                        )}
+                        {action.specialAction === 'VOLUNTARY_WORK' && (
+                            <div className="flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                                <span>-5% Respeito Total</span>
                             </div>
                         )}
                         {hpReward !== 0 && (

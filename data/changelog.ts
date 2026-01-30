@@ -7,6 +7,30 @@ export interface ChangelogItem {
 
 export const CHANGELOG_DATA: ChangelogItem[] = [
     {
+        version: "0.2.8",
+        title: "Sistema de 'PROCURADO' e melhorias visuais.",
+        date: "30/01/2026",
+        items: [
+            "GameMechanic: Implementado o conceito de 'PROCURADO', representado por estrelas acima do saldo do jogador.",
+            "UI: Adicionado componente WantedStars para exibição visual do nível de procurado (1-5 estrelas).",
+            "UI: Integração do sistema de estrelas no UserProfileCard.",
+            "UI: Ajustado posicionamento das estrelas de procurado para não afetar o alinhamento central do dinheiro.",
+            "API: Renomeado \`wanted\` para \`wantedLevel\` (0-100) na interface Avatar para compatibilidade com backend real.",
+            "Backend: Adicionado \`wantedLevel\` (0-100) no model Avatar, DTO AvatarResponseDTO e migração DB (V3).",
+            "GameMechanic: Removido cálculo frontend de freedomCost (500*level); agora usa timeoutCost do backend em Avatar. Backend: Adicionado campo/migração V4__add_timeout_cost_to_avatar.sql e mapeamento em AvatarResponseDTO.",
+            "UX: Acordeões (Work, Hacking, Training): agora usuário pode minimizar todos quando não locked pelo nível, persistindo estado fechado.",
+            "UX: JailPage agora exibe ações JAIL mesmo quando o usuário não está preso (para reduzir wantedLevel voluntariamente).",
+            "GameMechanic: Nova ação JAIL 'Trabalho Voluntário': custa 5% respeito total + 50 HP, recompensa -50 wantedLevel.",
+            "UX: JailPage agora permite executar ações JAIL durante detenção (Trabalho Voluntário visível).",
+            "Backend: Migração DB V5 + lógica special em performAction + timeout conditional permite ações locais durante timeout.",
+            "Security: Alterado redirect automático de 403 de '/logout' para '/' (root), pois rota /logout não existe.",
+            "UI: Exibição explícita de '-5% Respeito' no card da ação 'Trabalho Voluntário' para melhor clareza.",
+            "UI: Reaproveitada a correção que remove o highlight/borda branca ao abrir a modal de onboarding (focus:outline-none).",
+            "Conteúdo: Adicionados textos de sucesso irônicos para a ação 'Trabalho Voluntário' (limpeza de pracinha sob supervisão policial).",
+            "UX: Melhoria na imersão do sistema de ações da prisão."
+        ]
+    },
+    {
         version: "0.2.7",
         title: "Novas tarefas e melhorias de UX.",
         date: "29/01/2026",

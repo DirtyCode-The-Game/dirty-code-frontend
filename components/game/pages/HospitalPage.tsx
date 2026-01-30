@@ -65,9 +65,8 @@ export function HospitalPage() {
         return () => clearInterval(interval);
     }, [timeoutDate]);
 
-    // Calculate freedom cost and check if user can afford it (minimum 500)
-    const freedomCost = avatar ? 500 * Math.max(1, avatar.level) : 500;
-    const canAffordFreedom = avatar ? avatar.money >= freedomCost : false;
+    const freedomCost = avatar?.timeoutCost ?? 0;
+    const canAffordFreedom = (avatar?.money ?? 0) >= freedomCost;
 
     const handleDischarge = async () => {
         if (isProcessing) return;
@@ -202,7 +201,7 @@ export function HospitalPage() {
                                                 <>
                                                     <span>💰</span>
                                                     <span className={!canAffordFreedom ? 'text-red-500 font-bold' : ''}>
-                                                        Comprar Liberdade (R$ {formatMoney(freedomCost)})
+                                                        Sua conta fica em R$ {formatMoney(freedomCost)} ou você pode esperar pelo SUS.
                                                     </span>
                                                 </>
                                             )}
@@ -217,14 +216,27 @@ export function HospitalPage() {
                                 </div>
 
                                 {/* Additional Info */}
-                                <div className="flex items-start gap-3 bg-red-900/20 border border-red-500/30 rounded-lg p-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-red-400 flex-shrink-0">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                <div className="flex items-center justify-center gap-3 bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="w-6 h-6 text-red-400 flex-shrink-0"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                                        />
                                     </svg>
-                                    <p className="text-gray-400 text-sm">
-                                        Você não pode realizar ações enquanto estiver internado. Use este tempo para refletir sobre suas escolhas.
+
+                                    <p className="text-gray-400 text-sm text-center">
+                                        Você não pode realizar ações enquanto estiver internado. Use este tempo para relaxar.
                                     </p>
                                 </div>
+
                             </div>
                         </div>
                     </div>

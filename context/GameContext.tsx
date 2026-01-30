@@ -204,7 +204,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 if (typeof window !== 'undefined') {
                     setWithExpiry('dirty_user_info', serverUser);
                 }
-            } else if (response.status === 401 || response.status === 403) {
+            } else if (response.status === 401 || response.status === 403 || response.status === 500) {
                 if (window.location.pathname !== '/') {
                     logout();
                 }
@@ -254,7 +254,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
                     const serverUser = await response.json();
                     setUser(serverUser);
                     setWithExpiry('dirty_user_info', serverUser);
-                } else if (response.status === 401 || response.status === 403) {
+                    } else if (response.status === 401 || response.status === 403 || response.status === 500) {
                     console.warn(`[GameContext] Session expired during poll (${response.status})`);
                     logout();
                 }

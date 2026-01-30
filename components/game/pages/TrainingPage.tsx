@@ -56,12 +56,12 @@ export function TrainingPage() {
     }, [groupedActions, userLevel]);
 
     useEffect(() => {
-        if (persistedKeys && persistedKeys.length > 0) {
-            const filtered = persistedKeys.filter(key => {
+        if (persistedKeys !== undefined) {
+            const filtered = (persistedKeys || []).filter(key => {
                 const level = parseInt(key);
                 return level === 0 || userLevel >= level - 10;
             });
-            
+        
             if (JSON.stringify(filtered) !== JSON.stringify(expandedKeys)) {
                 setExpandedKeys(filtered);
             }

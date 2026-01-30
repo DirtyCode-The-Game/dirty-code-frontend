@@ -384,8 +384,8 @@ export function OnboardingModal({ isOpen, onComplete }: OnboardingModalProps) {
             size="5xl"
             radius="lg"
             classNames={{
-                base: "dark text-foreground bg-zinc-950/90 border border-white/10 shadow-2xl",
-                wrapper: "z-[9999]",
+                base: "dark text-foreground bg-zinc-950/90 border border-white/10 shadow-2xl focus:outline-none",
+                wrapper: "z-[9999] focus:outline-none",
                 backdrop: "bg-black/80 backdrop-blur-md",
             }}
             scrollBehavior="inside"

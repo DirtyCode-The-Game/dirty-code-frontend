@@ -5,6 +5,7 @@ import { api } from "@/services/api";
 import { formatMoney, getAvatarTitle } from "@/lib/game-utils";
 import { Avatar, Card, CardBody, Progress, Tooltip } from "@heroui/react";
 import { useState } from "react";
+import { WantedStars } from "./WantedStars";
 
 export function UserProfileCard() {
     const { user, syncUserWithBackend } = useGame();
@@ -93,17 +94,24 @@ export function UserProfileCard() {
                 </div>
 
                 {/* Money Section (Mobile: Top Right) */}
-                <div className="col-span-1 md:w-auto flex flex-col items-center justify-center md:border-l border-white/10 md:pl-4 md:pr-4 h-full">
-                    <div className="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">
-                        {availablePoints > 0 ? "Pontos Disponíveis" : "Dinheiro"}
-                    </div>
-                    <div className={`font-mono font-bold text-base md:text-xl break-all text-center ${availablePoints > 0 ? "text-primary animate-pulse" : "text-green-400"}`}>
-                        {availablePoints > 0 
-                            ? availablePoints
-                            : `R$ ${formatMoney(user?.activeAvatar?.money ?? 0)}`
-                        }
+                <div className="col-span-1 md:w-auto flex flex-col items-center justify-center md:border-l border-white/10 md:px-4 md:self-stretch">
+                    <div className="flex flex-col items-center justify-center gap-1.5 md:gap-2">
+                        <div className="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">
+                            {availablePoints > 0 ? "Pontos Disponíveis" : "Dinheiro"}
+                        </div>
+                        <div
+                            className={`font-mono font-bold text-base md:text-xl break-all text-center ${
+                                availablePoints > 0 ? "text-primary animate-pulse" : "text-green-400"
+                            }`}
+                        >
+                            {availablePoints > 0 ? availablePoints : `R$ ${formatMoney(user?.activeAvatar?.money ?? 0)}`}
+                        </div>
+                        <div className="flex justify-center">
+                            <WantedStars wantedLevel={user?.activeAvatar?.wantedLevel ?? 0} />
+                        </div>
                     </div>
                 </div>
+
 
                 {/* Attributes Section (Mobile: Middle Row - Full Width) */}
                 <div className="col-span-2 md:col-span-1 md:w-auto flex flex-row md:flex-col gap-3 md:gap-2.5 md:border-l border-white/10 md:pl-4 justify-center md:order-last py-1.5 md:py-0 border-y border-white/10 md:border-y-0 bg-white/5 md:bg-transparent rounded-lg md:rounded-none">

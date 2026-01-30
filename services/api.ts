@@ -26,7 +26,8 @@ export interface Avatar {
     story?: string;
     timeout?: string; // ISO datetime string when timeout expires
     timeoutType?: string; // "HOSPITAL" or "JAIL"
-    drStrangeVisible?: boolean;
+    timeoutCost?: number; // Cost to buy freedom from timeout
+    wantedLevel?: number; // 0 to 100
 }
 
 export enum GameActionType {
@@ -105,6 +106,7 @@ export const api = {
                     work: 0,
                     focus: 'both',
                     active: true,
+                    wantedLevel: 60,
                 },
             },
         };
@@ -113,6 +115,10 @@ export const api = {
     getToken: async (): Promise<string | null> => {
         try {
             const tokenRes = await fetch('/api/auth/token');
+            if (tokenRes.status === 403) {
+              window.location.href = '/';
+              return null;
+            }
             if (!tokenRes.ok) return null;
             const { token } = await tokenRes.json();
             return token;
@@ -133,6 +139,10 @@ export const api = {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 403 || response.status === 500) {
+              window.location.href = '/';
+              return [];
+            }
             if (!response.ok) {
                 console.warn(`Failed to fetch actions of type ${type}: ${response.status}`);
                 return [];
@@ -167,6 +177,10 @@ export const api = {
                 }
             });
 
+            if (response.status === 403 || response.status === 500) {
+              window.location.href = '/';
+              throw new Error('Sessão expirada');
+            }
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
                 throw new Error(errorData.message || 'Falha ao executar ação.');
@@ -201,6 +215,10 @@ export const api = {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 403 || response.status === 500) {
+              window.location.href = '/';
+              throw new Error('Sessão expirada');
+            }
             if (!response.ok) throw new Error('Failed to fetch ranking');
             return await response.json();
         } catch (error) {
