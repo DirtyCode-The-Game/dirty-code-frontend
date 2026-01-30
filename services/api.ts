@@ -28,6 +28,7 @@ export interface Avatar {
     timeoutType?: string; // "HOSPITAL" or "JAIL"
     timeoutCost?: number; // Cost to buy freedom from timeout
     wantedLevel?: number; // 0 to 100
+    drStrangeVisible?: boolean;
 }
 
 export enum GameActionType {
@@ -107,6 +108,7 @@ export const api = {
                     focus: 'both',
                     active: true,
                     wantedLevel: 60,
+                    drStrangeVisible: true,
                 },
             },
         };
