@@ -7,6 +7,7 @@ import { api, GameActionType } from "@/services/api";
 import { useGame } from "@/context/GameContext";
 import { formatMoney, getNoMoneyMessage, isNoMoneyError } from "@/lib/game-utils";
 import { DrStrange } from "@/components/game/DrStrange";
+import { Spinner } from "@heroui/react";
 
 export function HospitalPage() {
     const { user, syncUserWithBackend, refreshUser, actionCounts, setActionCountForCategory, cachedActions, fetchActions } = useGame();
@@ -249,10 +250,15 @@ export function HospitalPage() {
 
             <div className="grid grid-cols-1 gap-4 mt-6 relative min-h-[200px]">
                 <DrStrange />
-                {actions.map(action => (
-                    <ActionCard key={action.id} action={action} actionCount={actionCount} />
-                ))}
-                {!isLoading && actions.length === 0 && (
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Spinner color="danger" label="Limpando o sangue do teclado... aguarde..." labelColor="danger" />
+                    </div>
+                ) : actions.length > 0 ? (
+                    actions.map(action => (
+                        <ActionCard key={action.id} action={action} actionCount={actionCount} />
+                    ))
+                ) : (
                     <p className="text-gray-500 font-mono italic">
                         O hospital está fechado. Volte mais tarde.
                     </p>

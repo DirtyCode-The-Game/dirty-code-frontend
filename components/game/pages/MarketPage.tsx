@@ -5,6 +5,7 @@ import { ActionQuantitySelector } from "@/components/game/ActionQuantitySelector
 import { useEffect, useState } from "react";
 import { GameActionType } from "@/services/api";
 import { useGame } from "@/context/GameContext";
+import { Spinner } from "@heroui/react";
 
 export function MarketPage() {
     const { user, actionCounts, setActionCountForCategory, cachedActions, fetchActions } = useGame();
@@ -41,10 +42,15 @@ export function MarketPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-2 md:gap-3 mt-4 md:mt-5">
-                {actions.map(action => (
-                    <ActionCard key={action.id} action={action} actionCount={actionCount} />
-                ))}
-                {!isLoading && actions.length === 0 && (
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Spinner color="primary" label="Esquentando a pizza de ontem no microondas..." labelColor="primary" />
+                    </div>
+                ) : actions.length > 0 ? (
+                    actions.map(action => (
+                        <ActionCard key={action.id} action={action} actionCount={actionCount} />
+                    ))
+                ) : (
                     <p className="text-gray-500 font-mono italic">O mercadinho está fechado. Volte mais tarde.</p>
                 )}
             </div>

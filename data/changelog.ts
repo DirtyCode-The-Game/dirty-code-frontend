@@ -20,7 +20,10 @@ export const CHANGELOG_DATA: ChangelogItem[] = [
             "UI: Destaque visual aprimorado para a seleção de avatar no onboarding.",
             "Code: Centralização da lógica de títulos e foco do avatar em utilitários globais.",
             "Cleanup: Remoção de comentários redundantes e limpeza geral do código-fonte.",
-            "UX: Garantia de que dados locais 'morram' automaticamente após um período de inatividade, aumentando a segurança em dispositivos compartilhados."
+            "UX: Garantia de que dados locais 'morram' automaticamente após um período de inatividade, aumentando a segurança em dispositivos compartilhados.",
+            "UI: Adicionados indicadores de carregamento (Spinner) em todas as páginas de atividades (Work, Hacking, Training, Market, Pichow, Hospital, Jail).",
+            "UX: Implementadas mensagens de carregamento personalizadas e bem-humoradas para melhorar a experiência do usuário durante a espera.",
+            "UI: Padronização das cores dos Spinners de acordo com a temática de cada página."
         ]
     },
     {
@@ -179,4 +182,4 @@ export const CHANGELOG_DATA: ChangelogItem[] = [
     }
 ];
 
-export const CURRENT_VERSION = "0.2.9";
+export const CURRENT_VERSION = "0.3.0";

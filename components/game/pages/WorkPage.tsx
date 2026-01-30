@@ -5,7 +5,7 @@ import { ActionQuantitySelector } from "@/components/game/ActionQuantitySelector
 import { useEffect, useState, useMemo } from "react";
 import { GameAction, GameActionType } from "@/services/api";
 import { useGame } from "@/context/GameContext";
-import { Accordion, AccordionItem } from "@heroui/react";
+import { Accordion, AccordionItem, Spinner } from "@heroui/react";
 
 export function WorkPage() {
     const { user, actionCounts, setActionCountForCategory, cachedActions, fetchActions, expandedAccordionKeys, setExpandedAccordionKeysForCategory } = useGame();
@@ -111,7 +111,11 @@ export function WorkPage() {
             </div>
             
             <div className="mt-4 md:mt-5">
-                {!isLoading && groupedActions.length > 0 ? (
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Spinner color="primary" label="Escravizando estagiários... digo, carregando jobs..." labelColor="primary" />
+                    </div>
+                ) : groupedActions.length > 0 ? (
                     <Accordion 
                         variant="splitted" 
                         selectionMode="multiple" 

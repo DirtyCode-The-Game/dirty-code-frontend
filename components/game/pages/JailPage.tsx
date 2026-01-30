@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { api, GameActionType } from "@/services/api";
 import { useGame } from "@/context/GameContext";
 import { formatMoney, getNoMoneyMessage, isNoMoneyError } from "@/lib/game-utils";
+import { Spinner } from "@heroui/react";
 
 export function JailPage() {
     const { user, syncUserWithBackend, refreshUser, cachedActions, fetchActions } = useGame();
     const actions = cachedActions[GameActionType.JAIL] || [];
-    const [_isLoading, setIsLoading] = useState(actions.length === 0);
+    const [isLoading, setIsLoading] = useState(actions.length === 0);
     const [isProcessing, setIsProcessing] = useState(false);
     
     useEffect(() => {
@@ -241,22 +242,27 @@ export function JailPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-4 mt-6">
-                {/* Normal jail page - show freedom image */}
-                <div className="bg-black/30 border border-orange-500/50 rounded-xl p-8 text-center">
-                    <img
-                        src={`/freedom.png?v=${new Date().getTime()}`}
-                        alt="Freedom"
-                        width={400}
-                        height={300}
-                        className="mx-auto rounded-lg opacity-80 mb-6"
-                    />
-                    <h2 className="text-green-400 text-2xl font-bold mb-2">
-                        Você está livre!
-                    </h2>
-                    <p className="text-gray-400">
-                        Continue assim e não volte para cá.
-                    </p>
-                </div>
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Spinner color="warning" label="Afiando a escova de dentes... aguarde..." labelColor="warning" />
+                    </div>
+                ) : (
+                    <div className="bg-black/30 border border-orange-500/50 rounded-xl p-8 text-center">
+                        <img
+                            src={`/freedom.png?v=${new Date().getTime()}`}
+                            alt="Freedom"
+                            width={400}
+                            height={300}
+                            className="mx-auto rounded-lg opacity-80 mb-6"
+                        />
+                        <h2 className="text-green-400 text-2xl font-bold mb-2">
+                            Você está livre!
+                        </h2>
+                        <p className="text-gray-400">
+                            Continue assim e não volte para cá.
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     );
