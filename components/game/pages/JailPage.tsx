@@ -132,7 +132,7 @@ export function JailPage() {
                             {/* Jail Image */}
                             <div className="flex-shrink-0">
                                 <img
-                                    src={`/jail_scene.png?v=${new Date().getTime()}`}
+                                    src={`/jail_scene.png`}
                                     alt="Jail Scene"
                                     width={400}
                                     height={300}
