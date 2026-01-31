@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "DirtyCode - The Game",
   description: "A vida real do dev não é clean.",
   icons: {
-    icon: "/favicon.png",
+    icon: "/favicon.webp",
   },
 };
 
