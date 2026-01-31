@@ -12,8 +12,10 @@ export const CHANGELOG_DATA: ChangelogItem[] = [
         date: "31/01/2026",
         items: [
             "Bugfix: Redução drastica de chamadas entre back e front.",
+            "Bugfix: Ajustadas ações com presos variaveis para exibir os preços corretamente.",
             "FrontEnd: Conversão de todas imagens para WEBP.",
-            "Dr. Hoo Lee Sheet: Redução do custo base das seringas."
+            "Dr. Hoo Lee Sheet: Ajustado bug que não calculava a chance de falha das seringas" +
+            "Dr. Hoo Lee Sheet: Redução do custo base das seringas para 100000."
         ]
     },
     {

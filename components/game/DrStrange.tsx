@@ -137,7 +137,7 @@ export function DrStrange() {
                         <div className="p-4 space-y-4 max-h-[50vh] overflow-y-auto custom-scrollbar">
                             <p className="text-gray-300 text-xs italic border-l-2 border-[#00ff9d] pl-3">
                                 Olá! Sou o Dr. Hoo Lee Sheet. Tenho umas paradinhas que podem te ajudar...<br />
-                                A, 50% de chance de tu se fuder e sei la quem é RC, deve ser o fabricante.
+                                A, 30% de chance de tu se fuder e sei la quem é RC, deve ser o fabricante.
                             </p>
                             
                             <div className="flex flex-col gap-3">

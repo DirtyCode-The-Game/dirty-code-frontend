@@ -58,7 +58,7 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
             return;
         }
 
-        const moneyRequiredPerAction = action.money < 0 ? Math.abs(action.money) : 0;
+        const moneyRequiredPerAction = effectiveActionMoney < 0 ? Math.abs(effectiveActionMoney) : 0;
         const currentMoney = user?.activeAvatar?.money ?? 0;
 
         if (moneyRequiredPerAction > 0 && currentMoney < moneyRequiredPerAction) {
@@ -100,6 +100,9 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
         }
     }
 
+    const purchaseInfo = user?.activeAvatar?.actionPurchases?.find(p => p.actionId === action.id);
+    const effectiveActionMoney = purchaseInfo ? -Math.abs(purchaseInfo.currentPrice) : action.money;
+
     const effectiveCount = (() => {
         if (!user?.activeAvatar) return actionCount;
         
@@ -109,8 +112,8 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
         }
 
         let maxByMoney = Infinity;
-        if (action.money < 0) {
-            maxByMoney = Math.floor((user.activeAvatar.money ?? 0) / Math.abs(action.money));
+        if (effectiveActionMoney < 0) {
+            maxByMoney = Math.floor((user.activeAvatar.money ?? 0) / Math.abs(effectiveActionMoney));
         }
 
         const maxPossible = Math.max(1, Math.min(maxByStamina, maxByMoney));
@@ -118,7 +121,7 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
     })();
 
     const stamina = action.stamina * effectiveCount;
-    const moneyReward = action.money * effectiveCount;
+    const moneyReward = effectiveActionMoney * effectiveCount;
     const xpReward = action.xp * effectiveCount;
     const hpReward = (action.hp ?? 0) * effectiveCount;
 
