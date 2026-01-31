@@ -51,7 +51,7 @@ export default function Home() {
           {/* Logo Section */}
           <div className="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
             <Image
-              src="/logo.png"
+              src="/logo.webp"
               alt="DirtyCode Logo"
               fill
               className="object-contain"

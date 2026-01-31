@@ -17,7 +17,7 @@ export function GameTopbar() {
                     <Link href="/game" className="flex items-center gap-2">
                         <div className="w-12 h-12 relative rounded-lg overflow-hidden">
                             <Image
-                                src="/logo.jpeg"
+                                src="/logo.webp"
                                 alt="Dirty Code Logo"
                                 fill
                                 className="object-cover"

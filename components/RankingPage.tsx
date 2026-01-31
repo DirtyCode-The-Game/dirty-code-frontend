@@ -75,7 +75,7 @@ export function RankingPage() {
                                             </span>
                                         }
                                         avatarProps={{
-                                            src: avatar.picture ? (avatar.picture.startsWith('/') ? avatar.picture : `/${avatar.picture}`) : '/avatars/avatar_1.png',
+                                            src: avatar.picture ? (avatar.picture.startsWith('/') ? avatar.picture : `/${avatar.picture}`) : '/avatars/avatar_1.webp',
                                             radius: "sm",
                                             isBordered: index < 3,
                                             color: index === 0 ? "warning" : index === 1 ? "default" : index === 2 ? "danger" : "default",

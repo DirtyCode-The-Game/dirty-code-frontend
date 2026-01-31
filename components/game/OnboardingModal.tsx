@@ -188,7 +188,7 @@ export function OnboardingModal({ isOpen, onComplete }: OnboardingModalProps) {
                     <div className="relative w-32 h-32 mx-auto">
                         <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse"></div>
                         <Image
-                            src="/logo.png"
+                            src="/logo.webp"
                             alt="Dirty Code Logo"
                             fill
                             className="object-contain relative z-10"

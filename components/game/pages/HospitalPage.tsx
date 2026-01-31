@@ -137,7 +137,7 @@ export function HospitalPage() {
                             {/* Hospital Image */}
                             <div className="flex-shrink-0">
                                 <img
-                                    src={`/hospital_scene.png`}
+                                    src={`/hospital_scene.webp`}
                                     alt="Hospital Scene"
                                     width={400}
                                     height={300}
