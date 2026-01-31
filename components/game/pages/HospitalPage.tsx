@@ -132,7 +132,7 @@ export function HospitalPage() {
                             {/* Hospital Image */}
                             <div className="flex-shrink-0">
                                 <img
-                                    src={`/hospital_scene.png?v=${new Date().getTime()}`}
+                                    src={`/hospital_scene.png`}
                                     alt="Hospital Scene"
                                     width={400}
                                     height={300}

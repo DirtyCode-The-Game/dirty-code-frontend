@@ -266,7 +266,7 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
                 {action.actionImage && (
                     <div className={`flex-shrink-0 ${isSmall ? 'w-20 h-20' : 'w-32 h-32'} rounded-lg overflow-hidden border border-white/5`}>
                         <img
-                            src={`/actions/images/${action.actionImage}?v=${new Date().getTime()}`}
+                            src={`/actions/images/${action.actionImage}`}
                             alt={action.title}
                             className="w-full h-full object-cover"
                         />
