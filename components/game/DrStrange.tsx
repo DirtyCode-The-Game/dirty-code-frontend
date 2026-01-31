@@ -89,7 +89,7 @@ export function DrStrange() {
                 >
                     <div className="w-16 h-16 rounded-full border-4 border-[#00ff9d] overflow-hidden bg-black shadow-[0_0_15px_rgba(0,255,157,0.5)] transition-transform hover:scale-110">
                         <img 
-                            src="/avatars/dr_hoo_lee_sheet.jpg" 
+                            src="/avatars/dr_hoo_lee_sheet.webp" 
                             alt="Dr. Hoo Lee Sheet" 
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -113,7 +113,7 @@ export function DrStrange() {
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full border-2 border-[#00ff9d] overflow-hidden bg-black">
                                     <img 
-                                        src="/avatars/dr_hoo_lee_sheet.jpg" 
+                                        src="/avatars/dr_hoo_lee_sheet.webp" 
                                         alt="Dr. Hoo Lee Sheet"
                                         onError={(e) => {
                                             e.currentTarget.src = "https://api.dicebear.com/7.x/avataaars/svg?seed=DrStrange"

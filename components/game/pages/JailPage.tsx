@@ -132,7 +132,7 @@ export function JailPage() {
                             {/* Jail Image */}
                             <div className="flex-shrink-0">
                                 <img
-                                    src={`/jail_scene.png`}
+                                    src={`/jail_scene.webp`}
                                     alt="Jail Scene"
                                     width={400}
                                     height={300}
