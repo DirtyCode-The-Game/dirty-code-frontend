@@ -118,7 +118,7 @@ export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequ
 
         let maxByStamina = Infinity;
         if (action.stamina < 0) {
-            maxByStamina = Math.floor((user.activeAvatar.stamina ?? 0) / Math.abs(action.stamina));
+            maxByStamina = Math.floor((user.activeAvatar.maxStamina ?? 0) / Math.abs(action.stamina));
         }
 
         let maxByMoney = Infinity;

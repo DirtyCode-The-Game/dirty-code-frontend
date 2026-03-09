@@ -7,7 +7,9 @@ export interface Avatar {
     totalExperience?: number;
     nextLevelExperience: number;
     currentStamina: number;
+    maxStamina: number;
     currentLife: number;
+    maxLife: number;
     money: number; // BigDecimal in backend, number in JS
     availablePoints: number;
     intelligence: number;
@@ -112,7 +114,9 @@ export const api = {
                     experience: 0,
                     nextLevelExperience: 100,
                     currentLife: 100,
+                    maxLife: 100,
                     currentStamina: 100,
+                    maxStamina: 100,
                     money: 500,
                     availablePoints: 0,
                     intelligence: 80,
@@ -192,6 +196,8 @@ export const api = {
             experience?: number;
             currentLife?: number;
             currentStamina?: number;
+            maxLife?: number;
+            maxStamina?: number;
             money?: number;
             temporaryStrength?: number;
             temporaryIntelligence?: number;
