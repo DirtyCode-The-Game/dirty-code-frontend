@@ -1,0 +1,26 @@
+{
+  "success": [
+    "O estagiário finalmente entendeu a diferença entre 'null' e 'undefined'. Você se sentiu um mestre Jedi.",
+    "Vocês dois encontraram um bug que o Sênior deixou passar. O orgulho transbordou.",
+    "O estagiário digitou o código sem errar a sintaxe uma única vez. Aluno aplicado!",
+    "Você conseguiu explicar a lógica sem perder a paciência. Sua inteligência emocional subiu!",
+    "O 'julgamento silencioso' virou um 'elogio barulhento' quando o código funcionou.",
+    "Vocês terminaram a tarefa em tempo recorde e ainda sobraram 20 minutos para café.",
+    "O estagiário sugeriu uma solução melhor que a sua. Você sentiu um misto de orgulho e medo.",
+    "A fofoca durante a mentoria foi de altíssimo nível. Produtividade social nota 10.",
+    "O sogro no carona (seu colega) dormiu e vocês fizeram o código do jeito certo.",
+    "O estagiário te chamou de 'mestre' no Slack. Sua moral no time subiu!"
+  ],
+  "failure": [
+    "O estagiário deu um 'rm -rf' na pasta errada enquanto você olhava para o lado.",
+    "Você tentou explicar orientação a objetos e terminou explicando como fazer um miojo.",
+    "O estagiário perguntou: 'Por que a gente não usa PHP?' e você sentiu uma dor no peito.",
+    "Vocês passaram 1 hora procurando um erro que era apenas um parêntese sobrando.",
+    "O estagiário começou a chorar. Você começou a chorar. O Tech Lead começou a chorar.",
+    "A sessão de pair programming virou uma sessão de terapia para ambos.",
+    "Você tentou mostrar um atalho de teclado e acabou fechando o projeto sem salvar.",
+    "O estagiário commita direto na master e você não percebeu até ser tarde demais.",
+    "O silêncio ficou tão constrangedor que você começou a narrar o que estava digitando.",
+    "O estagiário desistiu da TI e perguntou se a empresa tem vaga no RH."
+  ]
+}

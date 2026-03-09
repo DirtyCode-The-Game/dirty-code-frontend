@@ -1,0 +1,26 @@
+{
+  "success": [
+    "A tabela 'clientes' agora é minha. O Seu Manoel não vai gostar disso.",
+    "Achei o admin e a senha era 'admin123'. Clássico.",
+    "Dei um drop table nos pedidos de ontem. Sem entregas hoje!",
+    "Injetei um script que dá desconto de 99% pra todo mundo.",
+    "O banco de dados de pães de queijo foi comprometido com sucesso.",
+    "Extraí todos os CPFs da lista de fidelidade da padaria.",
+    "O site agora exibe uma foto da Grávida de Taubaté na home.",
+    "Mudei o preço do sonho de 5 reais pra 1 centavo.",
+    "Achei as credenciais do servidor de e-mail no arquivo de config.",
+    "Sifonei os dados do cartão de crédito salvos em plain text."
+  ],
+  "failure": [
+    "O site caiu antes de eu terminar a query. Hosting barato é foda.",
+    "Apareceu um erro de sintaxe MySQL que eu não soube resolver.",
+    "O firewall da hospedagem me bloqueou depois de 3 tentativas.",
+    "O Seu Manoel tirou o site do ar pra 'manutenção' bem na hora.",
+    "Tentei ' OR 1=1' mas o campo tinha limite de 5 caracteres.",
+    "O banco de dados está vazio. Ninguém usa esse site.",
+    "Injetei o comando errado e deletei minha própria conexão.",
+    "O servidor está usando um WAF que barrou meu payload.",
+    "Fiquei preso num loop infinito de redirecionamento PHP.",
+    "O estagiário da padaria estava mexendo no código e quebrou o input."
+  ]
+}

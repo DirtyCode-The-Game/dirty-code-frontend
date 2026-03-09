@@ -1,0 +1,26 @@
+{
+  "success": [
+    "Você atingiu o Nirvana após 3 horas de blá-blá-blá. Nada mais te afeta.",
+    "O PO parou de falar por 10 segundos e você conseguiu fugir para o banheiro.",
+    "Você fingiu que a internet caiu e ninguém percebeu. Sucesso absoluto.",
+    "A 'Daily' acabou e você ainda lembra o seu próprio nome. Um milagre.",
+    "Você conseguiu mutar o microfone a tempo de dar um bocejo mortal.",
+    "Ninguém te perguntou nada e você saiu ileso da reunião infinita.",
+    "Você terminou de ler um livro inteiro enquanto o gerente explicava o óbvio.",
+    "A reunião terminou e a única coisa que você perdeu foi sua sanidade.",
+    "Você sobreviveu à explicação do sentido da vida do PO sem chorar.",
+    "O 'checkpoint' acabou. Agora só faltam mais 5 hoje."
+  ],
+  "failure": [
+    "Sua câmera ligou sozinha enquanto você palitava o dente. Que fase.",
+    "O PO percebeu que você estava jogando paciência durante o 'status report'.",
+    "Você esqueceu de mutar e todos ouviram seu suspiro de desespero.",
+    "O gerente te fez uma pergunta direta e você respondeu 'Oi? Pode repetir?'.",
+    "A reunião foi estendida por mais uma hora para 'alinhar expectativas'.",
+    "Você dormiu de olho aberto e começou a roncar no meio da sprint planning.",
+    "Sua alma saiu do corpo e se recusa a voltar para essa reunião.",
+    "Você foi escolhido para escrever a ata da reunião. É o fim.",
+    "O PO resolveu usar você como exemplo de 'baixo engajamento'.",
+    "A reunião acabou, mas pediram pra você ficar mais 5 minutos (que durarão 50)."
+  ]
+}

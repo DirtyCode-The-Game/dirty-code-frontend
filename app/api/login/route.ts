@@ -38,13 +38,7 @@ export async function GET(request: NextRequest) {
         });
 
         if (userRes.ok) {
-            const userData = await userRes.json();
-
-            if (userData.activeAvatar) {
-                return NextResponse.redirect(new URL('/game', request.url));
-            } else {
-                return NextResponse.redirect(new URL('/game/onboarding', request.url));
-            }
+            return NextResponse.redirect(new URL('/game', request.url));
         } else {
             console.error('Failed to fetch user in login callback', await userRes.text());
             return NextResponse.redirect(new URL('/game', request.url));

@@ -1,0 +1,26 @@
+{
+  "success": [
+    "Você descobriu que o frete dependia do clima na Mongólia porque o antigo dev usava o fuso horário de lá como 'seed' para o cálculo. Gênio incompreendido.",
+    "Refatoração concluída! O código agora faz sentido e você não precisa mais de um tradutor de hieróglifos.",
+    "Você removeu 500 linhas de código morto e o sistema continuou funcionando. Alívio imediato.",
+    "O GPT finalmente conseguiu explicar o que estava acontecendo após você limpar a bagunça.",
+    "Você encontrou um comentário dizendo 'Não mexa aqui' e mexeu. Ficou melhor!",
+    "A API de clima da Mongólia foi substituída por um cálculo local. Adeus, latência internacional!",
+    "O Tech Lead elogiou sua coragem de mexer naquele ninho de ratos.",
+    "Você entendeu a lógica do Pleno. Agora você também está um pouco louco, mas o código funciona.",
+    "A refatoração reduziu o tempo de resposta em 200ms. Chupa, legado!",
+    "Código limpo, alma lavada e sem dependências geopolíticas obscuras."
+  ],
+  "failure": [
+    "Você tentou remover a API de clima da Mongólia e o sistema de login da empresa parou de funcionar. Como?",
+    "A bagunça era mais profunda do que parecia. Você agora é parte do legado.",
+    "O GPT desistiu de te ajudar e começou a responder em binário.",
+    "Você encontrou um bug que existia desde 2012 e, ao tentar corrigir, criou outros dez.",
+    "A refatoração causou um erro de recursão infinita na sua própria sanidade.",
+    "Você passou 4 horas tentando entender um 'if' que sempre retornava true.",
+    "O Pleno que saiu deixou uma armadilha: o código só funciona se o arquivo 'temp.txt' existir no C:",
+    "Você tentou renomear uma variável e quebrou o banco de dados de produção.",
+    "A lógica era tão complexa que você começou a acreditar que a API de clima era necessária.",
+    "Você desistiu e apenas adicionou mais um comentário: // TODO: Refatorar isso um dia."
+  ]
+}

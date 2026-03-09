@@ -1,0 +1,26 @@
+{
+  "success": [
+    "Você rodou o script do YouTube e 'BOOM', admin/admin funcionou. Você é praticamente o Neo!",
+    "O scanner encontrou um diretório aberto com as fotos do churrasco do dono do site. Hacker de elite!",
+    "Você mudou a cor do título do site para verde neon. O mundo agora conhece o seu poder.",
+    "O script pronto não deu erro de Python na primeira tentativa. Hoje a sorte sorri para os audazes.",
+    "Você descobriu que o site da padaria usa a mesma senha para tudo. Acesso total aos sonhos de valsa.",
+    "O tutorial era de 2012, mas a vulnerabilidade ainda estava lá. O tempo é relativo para um hacker.",
+    "Você conseguiu baixar o banco de dados de 'clientes' (que eram só 3 pessoas). Big Data!",
+    "O vídeo do indiano no YouTube salvou sua carreira de cybercriminoso iniciante.",
+    "Você encontrou uma brecha de XSS e fez um 'alert' aparecer na tela. O sistema treme!",
+    "Sucesso! Você agora tem acesso a um painel de controle que você não faz ideia de como usar."
+  ],
+  "failure": [
+    "O script tinha um malware e quem foi hackeado foi você. O feitiço virou contra o feiticeiro.",
+    "Você esqueceu de usar VPN e agora tem um carro da polícia parado na frente da sua casa... ou será paranoia?",
+    "O dono do site viu o seu IP nos logs e mandou um e-mail para o seu provedor. O desespero começou.",
+    "Você rodou o script contra um 'honeypot' do governo. Já pode ir preparando o currículo para a Papuda.",
+    "O antivírus do site bloqueou seu IP e mandou uma notificação de 'Tentativa de Invasão' para o admin.",
+    "Você tentou apagar os logs e acabou deletando a pasta 'System32' da sua própria máquina.",
+    "A Polícia Federal bateu na porta. Mas era só o entregador de pizza. O mini-infarto foi real.",
+    "O script que você achou era um cavalo de troia que enviou sua pasta de 'estudos' para o Twitter.",
+    "Você foi banido do fórum de hackers por perguntar 'como hackear o Facebook'. Humilhação total.",
+    "O administrador do site rastreou sua localização e agora ele sabe que você mora com sua mãe."
+  ]
+}

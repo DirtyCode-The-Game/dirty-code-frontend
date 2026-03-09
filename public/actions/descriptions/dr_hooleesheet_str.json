@@ -1,0 +1,16 @@
+{
+  "success": [
+    "Dr. Hoo Lee Sheet te deu um suco de 'proteína' suspeito. Seus bíceps estão gritando, ou talvez seja só o seu pâncreas falhando. Você está mais forte!",
+    "Você levantou um servidor mainframe antigo no braço. O Dr. Hoo Lee Sheet aplaudiu enquanto roubava seus rins. Ganhou força!",
+    "Dr. Hoo Lee Sheet aplicou um 'patch' muscular direto na sua veia. Você agora consegue quebrar um teclado com um dedo. Pura força!",
+    "Você sobreviveu a um aperto de mão do Dr. Hoo Lee Sheet. Seus ossos se fundiram em algo mais resistente. FOR +!",
+    "Dr. Hoo Lee Sheet te convenceu que dor é apenas um bug no sistema. Você deletou a dor e agora carrega monitores CRT como se fossem penas."
+  ],
+  "failure": [
+    "Dr. Hoo Lee Sheet tentou te dar um anabolizante de código, mas era só Dolly Guaraná vencido. Você teve uma síncope e caiu da cadeira.",
+    "Você tentou levantar um rack, mas sua coluna deu Segfault. O Dr. Hoo Lee Sheet riu e cobrou a consulta mesmo assim.",
+    "O 'suco' do Dr. Hoo Lee Sheet te deu uma alergia que transformou seus músculos em marshmallow. Fracasso total.",
+    "Você tentou intimidar um estagiário com sua nova 'força', mas tropeçou no cabo de rede e derrubou o banco de dados. Que vergonha.",
+    "Dr. Hoo Lee Sheet esqueceu de avisar que o treino envolvia carregar as malas dele pro aeroporto. Você travou as costas e ele sumiu."
+  ]
+}

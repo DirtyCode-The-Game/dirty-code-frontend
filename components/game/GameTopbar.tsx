@@ -11,13 +11,13 @@ export function GameTopbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <nav className="h-16 bg-black/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+        <nav className="h-16 bg-black/80 backdrop-blur-md border-b border-white/10 relative md:sticky md:top-0 z-50">
             <div className="container mx-auto px-4 lg:px-8 h-full flex items-center justify-between">
                 <div className="flex items-center gap-8">
                     <Link href="/game" className="flex items-center gap-2">
                         <div className="w-12 h-12 relative rounded-lg overflow-hidden">
                             <Image
-                                src="/logo.jpeg"
+                                src="/logo.webp"
                                 alt="Dirty Code Logo"
                                 fill
                                 className="object-cover"

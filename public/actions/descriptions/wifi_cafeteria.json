@@ -1,0 +1,26 @@
+{
+  "success": [
+    "Conectado! O roteador estava usando WEP em pleno 2025.",
+    "Peguei o tráfego do POS. Olha só quanta gente acessando site porno!",
+    "O dono da cafeteria nem percebeu que estou usando 90% da banda dele.",
+    "Senha era o nome do gato. Fácil demais.",
+    "Snifando pacotes enquanto tomo um expresso grátis.",
+    "A rede 'Visitantes' agora é minha rede privada.",
+    "Derrubei o Wi-Fi de todo mundo e fiquei só eu logado.",
+    "Interceptei um e-mail com a receita secreta do croissant.",
+    "Injetei um script na página de login deles.",
+    "Mudei o DNS do roteador. Agora todo mundo vai pro meu site fake."
+  ],
+  "failure": [
+    "O roteador reiniciou bem na hora do handshake.",
+    "O dono me olhou feio quando viu minha antena de 1 metro.",
+    "Apareceu um 'Captive Portal' que eu não consegui burlar.",
+    "A senha era um hash SHA-256 impresso no guardanapo.",
+    "Fui desconectado por 'excesso de pacotes suspeitos'.",
+    "O sinal caiu e eu perdi o progresso do bruteforce.",
+    "Eles usam isolamento de AP. Não vejo ninguém na rede.",
+    "O MacFilter deles está ativado. Fui barrado na porta.",
+    "Confundi o SSID e tentei invadir a geladeira inteligente.",
+    "A bateria do notebook acabou no meio da desautenticação."
+  ]
+}

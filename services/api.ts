@@ -26,6 +26,16 @@ export interface Avatar {
     story?: string;
     timeout?: string; // ISO datetime string when timeout expires
     timeoutType?: string; // "HOSPITAL" or "JAIL"
+    timeoutCost?: number; // Cost to buy freedom from timeout
+    wantedLevel?: number; // 0 to 100
+    drStrangeVisible?: boolean;
+    actionPurchases?: AvatarActionPurchase[];
+}
+
+export interface AvatarActionPurchase {
+    actionId: string;
+    purchaseCount: number;
+    currentPrice: number;
 }
 
 export enum GameActionType {
@@ -35,7 +45,17 @@ export enum GameActionType {
     MARKET = 'MARKET',
     STORE = 'STORE',
     HOSPITAL = 'HOSPITAL',
-    JAIL = 'JAIL'
+    JAIL = 'JAIL',
+    SPECIAL_STATUS_SELLER = 'SPECIAL_STATUS_SELLER'
+}
+
+export enum SpecialActionType {
+    CLEAR_TEMPORARY_STATUS = 'CLEAR_TEMPORARY_STATUS',
+    ADD_STRENGTH = 'ADD_STRENGTH',
+    ADD_INTELLIGENCE = 'ADD_INTELLIGENCE',
+    ADD_CHARISMA = 'ADD_CHARISMA',
+    ADD_STEALTH = 'ADD_STEALTH',
+    VOLUNTARY_WORK = 'VOLUNTARY_WORK',
 }
 
 export interface GameAction {
@@ -103,16 +123,34 @@ export const api = {
                     work: 0,
                     focus: 'both',
                     active: true,
+                    wantedLevel: 60,
+                    drStrangeVisible: true,
                 },
             },
         };
     },
 
+    _tokenCache: null as string | null,
+    _tokenExpiry: 0,
+
     getToken: async (): Promise<string | null> => {
+        const now = Date.now();
+        if (api._tokenCache && now < api._tokenExpiry) {
+            return api._tokenCache;
+        }
+
         try {
             const tokenRes = await fetch('/api/auth/token');
+            if (tokenRes.status === 403) {
+              window.location.href = '/';
+              return null;
+            }
             if (!tokenRes.ok) return null;
             const { token } = await tokenRes.json();
+            
+            api._tokenCache = token;
+            api._tokenExpiry = now + 50 * 1000; // Cache por 50 segundos (tokens costumam durar 60s)
+            
             return token;
         } catch (error) {
             console.error('Error fetching token:', error);
@@ -131,6 +169,10 @@ export const api = {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 403 || response.status === 500) {
+              window.location.href = '/';
+              return [];
+            }
             if (!response.ok) {
                 console.warn(`Failed to fetch actions of type ${type}: ${response.status}`);
                 return [];
@@ -151,6 +193,13 @@ export const api = {
             currentLife?: number;
             currentStamina?: number;
             money?: number;
+            temporaryStrength?: number;
+            temporaryIntelligence?: number;
+            temporaryCharisma?: number;
+            temporaryStealth?: number;
+            actionId?: string;
+            nextMoney?: number;
+            nextFailureChance?: number;
         }
     }> => {
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8080/dirty-code';
@@ -165,6 +214,10 @@ export const api = {
                 }
             });
 
+            if (response.status === 403 || response.status === 500) {
+              window.location.href = '/';
+              throw new Error('Sessão expirada');
+            }
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
                 throw new Error(errorData.message || 'Falha ao executar ação.');
@@ -199,6 +252,10 @@ export const api = {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 403 || response.status === 500) {
+              window.location.href = '/';
+              throw new Error('Sessão expirada');
+            }
             if (!response.ok) throw new Error('Failed to fetch ranking');
             return await response.json();
         } catch (error) {

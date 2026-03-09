@@ -28,7 +28,7 @@ export function GameShell({ children, user: serverUser }: GameShellProps) {
     return (
         <div className="flex flex-col min-h-screen bg-black">
             <GameTopbar />
-            <main className="flex-1 container mx-auto p-2 fade-in">
+            <main className="flex-1 container mx-auto p-2 pt-0 md:pt-0 fade-in">
                 {children}
             </main>
         </div>

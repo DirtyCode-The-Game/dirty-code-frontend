@@ -1,23 +1,24 @@
 'use client'
 
-import {useGame} from "@/context/GameContext";
+import { useGame } from "@/context/GameContext";
 import { Card, CardBody, Chip, Tooltip } from "@heroui/react";
 import { useEffect, useState } from "react";
-import { GameAction, GameActionType } from "@/services/api";
+import {GameAction, GameActionType, SpecialActionType} from "@/services/api";
 import { AnimatePresence, motion } from "framer-motion";
 import { formatMoney, getNoEnergyMessage, getNoMoneyMessage, isNoMoneyError } from "@/lib/game-utils";
-import { CountdownTimer } from "./CountdownTimer";
 
 interface ActionCardProps {
     action: GameAction;
     actionCount?: number;
+    hideRequirements?: boolean;
+    isSmall?: boolean;
 }
 
-export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
-    const { performAction, user } = useGame();
+export function ActionCard({ action, actionCount = 1, hideRequirements: hideRequirementsProp, isSmall }: ActionCardProps) {
+    const { performAction, user, refreshWorkAndHacking } = useGame();
     const [isLoading, setIsLoading] = useState(false);
-    const [feedback, setFeedback] = useState<{ 
-        message: string; 
+    const [feedback, setFeedback] = useState<{
+        message: string;
         type: 'success' | 'failure' | 'stamina';
         count?: number;
         variations?: {
@@ -29,6 +30,9 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
             temporaryIntelligence?: number;
             temporaryCharisma?: number;
             temporaryStealth?: number;
+            actionId?: string;
+            nextMoney?: number;
+            nextFailureChance?: number;
         } | null;
     } | null>(null);
 
@@ -42,9 +46,12 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
     }, [feedback]);
 
     const handleAction = async () => {
+        if (actionCount <= 0) return;
+
         const staminaNeededPerAction = Math.abs(action.stamina);
+
         const currentStamina = user?.activeAvatar?.currentStamina ?? 0;
-        
+
         if (action.stamina < 0 && currentStamina < staminaNeededPerAction) {
             const message = await getNoEnergyMessage();
 
@@ -73,17 +80,26 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
         setIsLoading(true);
         try {
             const result = await performAction(action, actionCount);
-            
-            let message = result.message;
-            setFeedback({ 
-                message, 
+
+            const message = result.message;
+            setFeedback({
+                message,
                 type: result.success ? 'success' : 'failure',
                 count: result.timesExecuted,
                 variations: result.variations
             });
+
+            // Refresh work and hacking tabs if:
+            const isDrStrangeAction = action.type === GameActionType.SPECIAL_STATUS_SELLER;
+            const isClearTemporaryStatus = action.specialAction === SpecialActionType.CLEAR_TEMPORARY_STATUS;
+            const isTrainingAction = action.type === GameActionType.TRAINING;
+
+            if (result.success && (isDrStrangeAction || isClearTemporaryStatus || isTrainingAction)) {
+                await refreshWorkAndHacking();
+            }
         } catch (error: any) {
             let message = error.message || "Erro ao realizar ação. Tente novamente.";
-            
+
             if (isNoMoneyError(message)) {
                 message = await getNoMoneyMessage();
             }
@@ -97,15 +113,32 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
         }
     }
 
-    const stamina = action.stamina * actionCount;
-    const moneyReward = action.money * actionCount;
-    const xpReward = action.xp * actionCount;
-    const hpReward = (action.hp ?? 0) * actionCount;
+    const effectiveCount = (() => {
+        if (!user?.activeAvatar) return actionCount;
 
-    const tempStrGain = (action.temporaryStrength ?? 0) * actionCount;
-    const tempIntGain = (action.temporaryIntelligence ?? 0) * actionCount;
-    const tempChaGain = (action.temporaryCharisma ?? 0) * actionCount;
-    const tempSteGain = (action.temporaryStealth ?? 0) * actionCount;
+        let maxByStamina = Infinity;
+        if (action.stamina < 0) {
+            maxByStamina = Math.floor((user.activeAvatar.stamina ?? 0) / Math.abs(action.stamina));
+        }
+
+        let maxByMoney = Infinity;
+        if (action.money < 0) {
+            maxByMoney = Math.floor((user.activeAvatar.money ?? 0) / Math.abs(action.money));
+        }
+
+        const maxPossible = Math.max(1, Math.min(maxByStamina, maxByMoney));
+        return Math.min(actionCount, maxPossible);
+    })();
+
+    const stamina = action.stamina * effectiveCount;
+    const moneyReward = action.money * effectiveCount;
+    const xpReward = action.xp * effectiveCount;
+    const hpReward = (action.hp ?? 0) * effectiveCount;
+
+    const tempStrGain = (action.temporaryStrength ?? 0) * effectiveCount;
+    const tempIntGain = (action.temporaryIntelligence ?? 0) * effectiveCount;
+    const tempChaGain = (action.temporaryCharisma ?? 0) * effectiveCount;
+    const tempSteGain = (action.temporaryStealth ?? 0) * effectiveCount;
 
     const hasMoneyVariation = action.moneyVariation !== undefined && action.moneyVariation > 0;
     const hasXpVariation = action.xpVariation !== undefined && action.xpVariation > 0;
@@ -136,7 +169,8 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
     const isTraining = action.type === GameActionType.TRAINING;
     const isMarket = action.type === GameActionType.MARKET;
     const isHospital = action.type === GameActionType.HOSPITAL;
-    const hideRequirements = isTraining || isMarket || isHospital;
+    const isJail = action.type === GameActionType.JAIL;
+    const hideRequirements = hideRequirementsProp || isTraining || isMarket || isHospital || isJail;
 
     const hasStatusCooldown = !!user?.activeAvatar?.statusCooldown;
     const isTrainingDisabled = isTraining && hasStatusCooldown;
@@ -145,19 +179,31 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
         <Card
             isPressable={!isTrainingDisabled}
             onPress={handleAction}
-            className={`bg-black border border-white/10 hover:border-white/20 transition-all group w-full relative overflow-hidden ${isLoading ? 'opacity-60 cursor-wait' : isTrainingDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+            className={`bg-black border border-white/10 hover:border-white/20 transition-all group w-full relative overflow-hidden ${isLoading ? 'cursor-wait' : isTrainingDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
         >
+            <AnimatePresence>
+                {isLoading && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-[2px]"
+                    >
+                        <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin shadow-[0_0_15px_rgba(var(--primary-rgb),0.3)]" />
+                        <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-primary animate-pulse">Da um tempo safado, estou registrando sua ação...</p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <AnimatePresence>
                 {feedback && (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className={`absolute inset-0 z-20 flex items-center justify-center p-4 text-center backdrop-blur-md ${
-                            feedback.type === 'success' ? 'bg-green-500/20 text-green-400' : 
-                            feedback.type === 'stamina' ? 'bg-yellow-500/20 text-yellow-400' : 
-                            'bg-red-500/20 text-red-400'
-                        }`}
+                        className={`absolute inset-0 z-20 flex items-center justify-center p-4 text-center backdrop-blur-md ${feedback.type === 'success' ? 'bg-green-500/20 text-green-400' :
+                            feedback.type === 'stamina' ? 'bg-yellow-500/20 text-yellow-400' :
+                                'bg-red-500/20 text-red-400'
+                            }`}
                         onClick={(e) => {
                             e.stopPropagation();
                             setFeedback(null);
@@ -182,6 +228,7 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                                             </span>
                                         </div>
                                     )}
+
                                     {feedback.variations.experience !== 0 && feedback.variations.experience !== undefined && (
                                         <div className={`flex items-center gap-1.5 ${feedback.variations.experience < 0 ? 'text-red-500' : 'text-green-500'}`}>
                                             <span className="w-2 h-2 rounded-full bg-purple-500"></span>
@@ -227,33 +274,33 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                 )}
             </AnimatePresence>
 
-            <CardBody className="flex flex-row items-center justify-between p-6 gap-6">
+            <CardBody className={`flex flex-col md:flex-row md:flex-nowrap items-center justify-between ${isSmall ? 'p-2 gap-2' : 'p-6 gap-6'}`}>
                 {action.actionImage && (
-                    <div className="flex-shrink-0 w-32 h-32 rounded-lg overflow-hidden border border-white/5">
+                    <div className={`w-full h-auto max-h-[120px] md:w-32 md:h-32 flex-shrink-0 rounded-lg overflow-hidden border border-white/5 order-first md:order-none flex justify-center bg-black/40`}>
                         <img
-                            src={`/actions/images/${action.actionImage}?v=${new Date().getTime()}`}
+                            src={`/actions/images/${action.actionImage}`}
                             alt={action.title}
-                            className="w-full h-full object-cover"
+                            className="h-auto w-auto max-h-[120px] max-w-full object-contain md:object-cover md:h-full md:w-full"
                         />
                     </div>
                 )}
-                <div className="flex-1 space-y-4">
+                <div className="flex-1 w-full md:w-auto space-y-2 min-w-[200px]">
                     <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                            <h3 className={`font-bold text-xl text-white group-hover:text-primary transition-colors`}>
+                            <h3 className={`font-bold ${isSmall ? 'text-base' : 'text-xl'} text-white group-hover:text-primary transition-colors`}>
                                 {action.title}
                             </h3>
                             {isLoading && (
-                                <span className="flex h-2 w-2">
+                                <span className="flex h-2 w-2 relative">
                                     <span className={`animate-ping absolute inline-flex h-2 w-2 rounded-full bg-primary opacity-75`}></span>
                                     <span className={`relative inline-flex rounded-full h-2 w-2 bg-primary`}></span>
                                 </span>
                             )}
                         </div>
-                        <p className="text-sm text-gray-400 leading-relaxed">{action.description}</p>
+                        <p className={`${isSmall ? 'text-[10px]' : 'text-sm'} text-gray-400 leading-relaxed`}>{action.description}</p>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-mono text-gray-500">
+                    <div className={`flex flex-wrap items-center ${isSmall ? 'gap-x-3 gap-y-1 text-[10px]' : 'gap-x-6 gap-y-2 text-xs'} font-mono text-gray-500`}>
                         {stamina !== 0 && (
                             <div className="flex items-center gap-1.5">
                                 <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
@@ -265,13 +312,19 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                         {xpReward !== undefined && xpReward !== 0 && (
                             <div className="flex items-center gap-1.5">
                                 <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-                                <span>{formatValue(xpReward, hasXpVariation)} Respeito</span>
+                                <span className="whitespace-nowrap">{formatValue(xpReward, hasXpVariation)} Respeito</span>
+                            </div>
+                        )}
+                        {action.specialAction === 'VOLUNTARY_WORK' && (
+                            <div className="flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                                <span>-5% Respeito Total</span>
                             </div>
                         )}
                         {hpReward !== 0 && (
                             <div className="flex items-center gap-1.5">
                                 <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                                <span className={hpReward < 0 && (user?.activeAvatar?.currentLife ?? 0) < Math.abs(hpReward) ? 'text-red-500 font-bold' : ''}>
+                                <span className={`${hpReward < 0 && (user?.activeAvatar?.currentLife ?? 0) < Math.abs(hpReward) ? 'text-red-500 font-bold' : ''} whitespace-nowrap`}>
                                     {formatValue(hpReward, hasHpVariation)} HP
                                 </span>
                             </div>
@@ -296,18 +349,18 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                                 <span>{tempSteGain > 0 ? '+' : ''}{tempSteGain} DIS</span>
                             </div>
                         )}
-                        {action.lostHpFailure !== undefined && action.lostHpFailure !== 0 && (
+                        {!hideRequirements && action.lostHpFailure !== undefined && action.lostHpFailure !== 0 && (
                             <div className="flex items-center gap-1.5 text-red-400/80">
                                 <span className="w-2 h-2 rounded-full bg-red-600"></span>
-                                <span>
+                                <span className="whitespace-nowrap">
                                     {hasLostHpFailureVariation ? '≈' : ''}-{riskPercentage > 50 ? action.lostHpFailure * 3 : action.lostHpFailure} HP (falha)
                                 </span>
                             </div>
                         )}
-                        {action.canBeArrested && (
+                        {!hideRequirements && action.canBeArrested && (
                             <div className="flex items-center gap-1.5 text-orange-400/80">
                                 <span className="w-2 h-2 rounded-full bg-orange-600"></span>
-                                <span>
+                                <span className="whitespace-nowrap">
                                     {riskPercentage > 50 ? '15' : '5'}m Cadeia (falha)
                                 </span>
                             </div>
@@ -315,7 +368,7 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                     </div>
 
                     {!hideRequirements && requirements.length > 0 && (
-                        <div className="flex flex-row gap-2">
+                        <div className="flex flex-row gap-2 pt-1">
                             {requirements.map((req, idx) => (
                                 <Tooltip
                                     key={idx}
@@ -325,7 +378,7 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                                     placement="bottom"
                                 >
                                     <div
-                                        className={`w-8 h-8 rounded flex items-center justify-center text-xs font-bold shadow-sm ring-1 ${req.bg} ${req.color} ${req.ring}`}
+                                        className={`w-8 h-8 rounded flex items-center justify-center text-[10px] font-bold shadow-sm ring-1 ${req.bg} ${req.color} ${req.ring}`}
                                     >
                                         {req.value}
                                     </div>
@@ -335,7 +388,7 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                     )}
                 </div>
 
-                <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-row md:flex-col items-center justify-between md:justify-center w-full md:w-auto gap-2 pt-2 md:pt-0 border-t border-white/5 md:border-t-0 mt-2 md:mt-0">
                     {!hideRequirements && (
                         <>
                             <Tooltip
@@ -347,20 +400,20 @@ export function ActionCard({ action, actionCount = 1 }: ActionCardProps) {
                                     size="sm"
                                     variant="flat"
                                     color={riskPercentage <= 10 ? "success" : riskPercentage <= 25 ? "warning" : "danger"}
-                                    className={`font-bold font-mono ${riskPercentage > 50 ? "animate-pulse border border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" : ""}`}
+                                    className={`font-bold font-mono h-5 min-h-5 text-[10px] ${riskPercentage > 50 ? "animate-pulse border border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" : ""}`}
                                 >
                                     RISCO: {riskPercentage}%
                                 </Chip>
                             </Tooltip>
                             {riskPercentage > 50 && (
-                                <div className="text-[10px] text-red-500 font-bold uppercase tracking-tighter animate-bounce">
+                                <div className="text-[10px] text-red-500 font-bold uppercase tracking-tighter animate-bounce hidden md:block">
                                     Punição 3x
                                 </div>
                             )}
                         </>
                     )}
                     {moneyReward !== undefined && moneyReward !== 0 && (
-                        <div className={`text-2xl font-bold ${moneyReward > 0 ? 'text-green-500' : (user?.activeAvatar?.money ?? 0) < Math.abs(moneyReward) ? 'text-red-600' : 'text-red-500'}`}>
+                        <div className={`${isSmall ? 'text-sm' : 'text-base md:text-2xl'} font-bold ${moneyReward > 0 ? 'text-green-500' : (user?.activeAvatar?.money ?? 0) < Math.abs(moneyReward) ? 'text-red-600' : 'text-red-500'}`}>
                             R$ {formatMoneyValue(moneyReward, hasMoneyVariation)}
                         </div>
                     )}

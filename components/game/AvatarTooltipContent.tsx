@@ -2,9 +2,8 @@
 
 import { Avatar, Card, CardBody, Spinner } from "@heroui/react";
 import { useEffect, useState } from "react";
-import titlesData from "@/public/avatars/titles.json";
 import { useGame } from "@/context/GameContext";
-import { formatMoney } from "@/lib/game-utils";
+import { formatMoney, getAvatarTitle } from "@/lib/game-utils";
 
 interface AvatarData {
     story?: string;
@@ -13,7 +12,8 @@ interface AvatarData {
     level: number;
     money: number;
     picture: string;
-    focus: string;
+    hacking: number;
+    work: number;
 }
 
 interface AvatarTooltipContentProps {
@@ -34,10 +34,6 @@ export function AvatarTooltipContent({ avatarId }: AvatarTooltipContentProps) {
                 setIsLoading(true);
             }
             
-            // A lógica pedida:
-            // 1ª vez: busca e guarda (se não tem cache)
-            // 2ª vez: recupera do cache e atualiza em background (forceRefresh)
-            // 3ª vez: exibe dados atualizados
             const shouldRefresh = hasCache && visitCount === 1;
             
             const data = await getAvatarData(avatarId, shouldRefresh);
@@ -50,23 +46,8 @@ export function AvatarTooltipContent({ avatarId }: AvatarTooltipContentProps) {
         };
         loadData();
         return () => { isMounted = false; };
-    }, [avatarId, getAvatarData]); // Removido avatarCache das dependências para evitar loops ou re-execuções desnecessárias
+    }, [avatarId, getAvatarData]);
 
-    const getTitle = (avatarData: AvatarData) => {
-        const focus = avatarData.focus || 'both';
-        const titles = (titlesData as any)[focus];
-        
-        if (!titles) return "Iniciante";
-        const value = Number(avatarData.level) || 0;
-        const thresholds = Object.keys(titles).map(Number).sort((a, b) => a - b);
-        
-        if (value >= thresholds[thresholds.length - 1]) {
-            return titles[thresholds[thresholds.length - 1]];
-        }
-
-        const nextThreshold = thresholds.find(t => t > value);
-        return nextThreshold ? titles[nextThreshold] : "Iniciante";
-    };
 
     if (isLoading && !avatar) {
         return (
@@ -100,7 +81,7 @@ export function AvatarTooltipContent({ avatarId }: AvatarTooltipContentProps) {
                     
                     <div className="flex flex-col">
                         <h3 className="font-bold text-sm text-white leading-tight">{avatar.name}</h3>
-                        <p className="text-[9px] text-primary font-mono uppercase tracking-tighter">{getTitle(avatar)}</p>
+                        <p className="text-[9px] text-primary font-mono uppercase tracking-tighter">{getAvatarTitle(avatar.level, avatar.hacking, avatar.work)}</p>
                         <p className="text-green-400 font-bold font-mono text-[11px]">
                             R$ {formatMoney(avatar.money)}
                         </p>

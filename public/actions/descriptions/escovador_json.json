@@ -1,0 +1,26 @@
+{
+  "success": [
+    "Você mapeou todos os campos do JSON de 50MB sem errar um único tipo. Sua RAM e sua mente resistiram.",
+    "O 'de/para' manual funcionou e o navegador não explodiu. Milagre técnico!",
+    "Você descobriu que 90% do JSON eram dados repetidos e sugeriu uma otimização épica.",
+    "O servidor aguentou a pressão do processamento. Você é o mestre da otimização!",
+    "Você criou um script em 5 minutos que fez o trabalho de 5 horas de mapeamento manual.",
+    "O JSON foi domado. Agora os dados fluem como um rio cristalino no sistema.",
+    "O Tech Lead perguntou como você conseguiu processar aquilo sem estourar o heap. Magia.",
+    "Você encontrou o erro de digitação no campo #45.321 do JSON. Olho de lince!",
+    "A memória RAM do servidor chegou a 99%, mas não passou disso. Vitória apertada!",
+    "O objeto gigante foi fatiado e processado em lotes. Engenharia de elite!"
+  ],
+  "failure": [
+    "O JSON era tão grande que o VS Code travou e você perdeu 1 hora de mapeamento.",
+    "Você esqueceu de tratar um campo opcional e o sistema explodiu com NullPointerException.",
+    "A memória RAM do servidor acabou e você derrubou o ambiente de produção.",
+    "O navegador do cliente derreteu ao tentar renderizar a tabela com os dados.",
+    "Você confundiu 'String' com 'Integer' no campo #12.000 e corrompeu o banco.",
+    "O JSON tinha uma estrutura circular. O processamento entrou em loop infinito e o servidor fumegou.",
+    "Você tentou abrir o arquivo no Notepad e o computador reiniciou sozinho.",
+    "O mapeamento 'de/para' virou um 'de/lugar-nenhum' após você se perder nos colchetes.",
+    "São 50MB de puro caos. Você começou a ver chaves { } em todo lugar.",
+    "O arquivo sumiu da sua máquina antes de você terminar o commit. O destino te odeia."
+  ]
+}

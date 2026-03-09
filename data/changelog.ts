@@ -7,6 +7,115 @@ export interface ChangelogItem {
 
 export const CHANGELOG_DATA: ChangelogItem[] = [
     {
+        version: "0.3.0",
+        title: "Configuração inicial do PWA e adição de 8 novas atividades.",
+        date: "31/01/2026",
+        items: [
+            "Working: 4 novas atividades para execução entre nivel 20 e 30~.",
+            "Hacking: 4 novas atividades para execução entre nivel 20 e 30~.",
+            "FrontEnd: Configuração inicial do PWA.",
+        ]
+    },
+    {
+        version: "0.2.9",
+        title: "Conversão de imagens para WEBP e redução drastica de chamadas entre back e front.",
+        date: "31/01/2026",
+        items: [
+            "Bugfix: Redução drastica de chamadas entre back e front.",
+            "Bugfix: Ajustadas ações com presos variaveis para exibir os preços corretamente.",
+            "FrontEnd: Conversão de todas imagens para WEBP.",
+            "Dr. Hoo Lee Sheet: Ajustado bug que não calculava a chance de falha das seringas" +
+            "Dr. Hoo Lee Sheet: Redução do custo base das seringas para 100000.",
+            "Backend/FrontEnd: Simplificação do cálculo de preços dinâmicos, agora feito exclusivamente no backend.",
+            "Backend/FrontEnd: Otimização da execução de ações para retornar e atualizar o valor da ação em tempo real via 'variations', eliminando necessidade de recarregar a lista."
+        ]
+    },
+    {
+        version: "0.2.8",
+        title: "Sistema de 'PROCURADO' e melhorias visuais.",
+        date: "30/01/2026",
+        items: [
+            "GameMechanic: Implementado o conceito de 'PROCURADO', representado por estrelas acima do saldo do jogador.",
+            "UI: Adicionado componente WantedStars para exibição visual do nível de procurado (1-5 estrelas).",
+            "UI: Integração do sistema de estrelas no UserProfileCard.",
+            "UI: Ajustado posicionamento das estrelas de procurado para não afetar o alinhamento central do dinheiro.",
+            "API: Renomeado \`wanted\` para \`wantedLevel\` (0-100) na interface Avatar para compatibilidade com backend real.",
+            "Backend: Adicionado \`wantedLevel\` (0-100) no model Avatar, DTO AvatarResponseDTO e migração DB (V3).",
+            "GameMechanic: Removido cálculo frontend de freedomCost (500*level); agora usa timeoutCost do backend em Avatar. Backend: Adicionado campo/migração V4__add_timeout_cost_to_avatar.sql e mapeamento em AvatarResponseDTO.",
+            "UX: Acordeões (Work, Hacking, Training): agora usuário pode minimizar todos quando não locked pelo nível, persistindo estado fechado.",
+            "UX: JailPage agora exibe ações JAIL mesmo quando o usuário não está preso (para reduzir wantedLevel voluntariamente).",
+            "GameMechanic: Nova ação JAIL 'Trabalho Voluntário': custa 5% respeito total + 50 HP, recompensa -50 wantedLevel.",
+            "UX: JailPage agora permite executar ações JAIL durante detenção (Trabalho Voluntário visível).",
+            "Backend: Migração DB V5 + lógica special em performAction + timeout conditional permite ações locais durante timeout.",
+            "Security: Alterado redirect automático de 403 de '/logout' para '/' (root), pois rota /logout não existe.",
+            "UI: Exibição explícita de '-5% Respeito' no card da ação 'Trabalho Voluntário' para melhor clareza.",
+            "UI: Reaproveitada a correção que remove o highlight/borda branca ao abrir a modal de onboarding (focus:outline-none).",
+            "Conteúdo: Adicionados textos de sucesso irônicos para a ação 'Trabalho Voluntário' (limpeza de pracinha sob supervisão policial).",
+            "UX: Melhoria na imersão do sistema de ações da prisão."
+        ]
+    },
+    {
+        version: "0.2.7",
+        title: "Novas tarefas e melhorias de UX.",
+        date: "29/01/2026",
+        items: [
+            "GameMechanic: Adicionadas novas ações e tarefas em diversas categorias.",
+            "UX: Implementada persistência do estado dos acordeões (Work, Hacking, Training) via cookies.",
+            "UX: Restrição de nível para abertura de abas de atividades, garantindo progressão lógica.",
+            "UX: Notificação visual (ponto pulsante) no Helldit quando há novas mensagens não lidas.",
+            "Security: Limpeza completa de dados locais (localStorage e cookies) ao realizar logout.",
+            "UI: Refinamentos visuais na OnboardingModal e remoção de artefatos gráficos.",
+            "UI: Destaque visual aprimorado para a seleção de avatar no onboarding.",
+            "Code: Centralização da lógica de títulos e foco do avatar em utilitários globais.",
+            "Cleanup: Remoção de comentários redundantes e limpeza geral do código-fonte.",
+            "UX: Garantia de que dados locais 'morram' automaticamente após um período de inatividade, aumentando a segurança em dispositivos compartilhados.",
+            "UI: Adicionados indicadores de carregamento (Spinner) em todas as páginas de atividades (Work, Hacking, Training, Market, Pichow, Hospital, Jail).",
+            "UX: Implementadas mensagens de carregamento personalizadas e bem-humoradas para melhorar a experiência do usuário durante a espera.",
+            "UI: Padronização das cores dos Spinners de acordo com a temática de cada página."
+        ]
+    },
+    {
+        version: "0.2.6",
+        title: "Reformulação do onboarding e pequenas melhorias.",
+        date: "29/01/2026",
+        items: [
+            "UX: Onboarding se tornou uma modal e não uma pagina a parte, tornando a transação entre criar personagem e jogar mais suave.",
+            "UI: Adicionando loading na execução das tarefas.",
+            "UI: Removido o refresh de pagina ao sair da prisão/hospital.",
+            "Dr. Hoo Lee Sheet: Não aparece mais para quem esta internado no hospital.",
+            "UI: Os valores de recompensa e custo exibidos nos cards de ação agora se ajustam automaticamente ao limite máximo que o avatar pode executar (baseado em Stamina e Dinheiro), caso o valor do batch seja superior.",
+        ]
+    },{
+        version: "0.2.5",
+        title: "Novo Sistema: Dr. Hoo Lee Sheet",
+        date: "28/01/2026",
+        items: [
+            "Dr. Hoo Lee Sheet: Implementada lógica de visibilidade (10% de chance) controlada pelo backend com recálculo a cada 10 minutos.",
+            "Dr. Hoo Lee Sheet: Implementados preços dinâmicos que aumentam 50% a cada compra, com persistência individual por avatar.",
+            "Dr. Hoo Lee Sheet: Adicionado novo componente DrStrange.tsx com movimento aleatório e opção de fixar posição.",
+        ]
+    },
+    {
+        version: "0.2.4",
+        title: "Bugfixes e ajustes na UI.",
+        date: "27/01/2026",
+        items: [
+            "UI: Redução de 15% no tamanho vertical do card do usuário (UserProfileCard) para melhor aproveitamento de tela.",
+            "UI: Ajuste de paddings, gaps e tamanhos de ícones/avatares para um layout mais compacto.",
+            "UI: Redução significativa do espaço entre a barra superior (Topbar) e o card do usuário.",
+            "UI: Redução do espaço entre o card do usuário e o conteúdo das tarefas.",
+            "UI: Adicionando os valores dos batchs nos cookies.",
+            "UX: O menu de navegação lateral/inferior agora é fixo (sticky) junto com o card do usuário, facilitando a navegação em páginas longas.",
+            "Layout: Otimização de containers e espaçamentos no dashboard principal.",
+            "Bugfix: Corrigida impossibilidade de usar a tecla de espaço e selecionar texto nos inputs de onboarding.",
+            "Infra: Atualização do HeroUI para a versão 2.8.7.",
+            "Bugfix: Melhoria na estabilidade dos componentes de UI.",
+            "UI: Removido o contorno (focus ring) branco indesejado nos campos de entrada (Input e Textarea) ao focar.",
+            "UI: Ajustado seletor de quantidade de ações (batch field) para aceitar valores entre 0 e 99 em todas as abas.",
+            "UX: A página agora volta para o topo automaticamente ao trocar de aba no dashboard."
+        ]
+    },
+    {
         version: "0.2.3",
         title: "Pequenos ajustes de UI, rework completo da aba de treinamentos.",
         date: "24/01/2026",

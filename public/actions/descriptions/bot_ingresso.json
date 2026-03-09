@@ -1,0 +1,26 @@
+{
+  "success": [
+    "O script comprou 50 ingressos em 2 segundos. O Cambaio Digital vai render muito hoje!",
+    "Você burlou a fila virtual e já está no checkout enquanto milhares esperam.",
+    "O bot detectou a abertura das vendas antes do site atualizar para os humanos.",
+    "Você agora tem o código de barras de 10 ingressos VIP. A Taylor Swift que te aguarde (ou quem pagar o triplo).",
+    "Sucesso! Você automatizou o preenchimento dos dados do cartão e não errou um dígito.",
+    "O sistema anti-bot do site é uma piada para o seu script em Python.",
+    "Você conseguiu ingressos para a pista premium. O lucro vai ser maior que o seu salário.",
+    "O bot rodou liso em 5 instâncias diferentes. Dominação total da fila!",
+    "Você já recebeu o e-mail de confirmação. O mundo chora, você lucra.",
+    "Ingressos garantidos! Agora é só postar no grupo de fãs e ver os lances subirem."
+  ],
+  "failure": [
+    "O sistema de detecção de bots te pegou e baniu seu CPF de todas as compras futuras.",
+    "A Polícia Federal está investigando cambismo digital e seu IP está no topo da lista.",
+    "O script bugou e comprou 100 ingressos no cartão de crédito da sua avó. Ela vai te matar!",
+    "O site caiu bem na hora do checkout e você perdeu todos os ingressos da reserva.",
+    "O 'Cambaio Digital' é crime e você recebeu uma intimação judicial por e-mail.",
+    "Você esqueceu de configurar o proxy e o site bloqueou toda a sua rede doméstica.",
+    "O bot comprou ingressos para o show errado. Agora você tem 20 entradas para o 'Festival de Berrante'.",
+    "A operadora do cartão bloqueou a transação por suspeita de fraude. O sonho acabou.",
+    "Você foi denunciado por um fã revoltado e agora seu nome está sendo exposto no Twitter.",
+    "O script demorou tanto para resolver o Captcha que os ingressos esgotaram."
+  ]
+}

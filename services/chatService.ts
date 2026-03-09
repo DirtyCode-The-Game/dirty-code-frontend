@@ -30,17 +30,12 @@ class ChatWebSocketService {
             connectHeaders: {
                 Authorization: `Bearer ${token}`
             },
-            debug: (str) => {
-                console.log('STOMP: ' + str);
-            },
             reconnectDelay: 5000,
             heartbeatIncoming: 4000,
             heartbeatOutgoing: 4000,
         });
 
         this.client.onConnect = (frame) => {
-            console.log('Connected: ' + frame);
-            
             // Subscrever para mensagens em tempo real
             this.client?.subscribe('/topic/global-messages', (message) => {
                 if (message.body && this.onMessageReceived) {
@@ -53,7 +48,6 @@ class ChatWebSocketService {
             this.client?.subscribe('/app/global-messages', (message) => {
                 if (message.body && this.onMessageReceived) {
                     const parsedMessages = JSON.parse(message.body);
-                    console.log(message.body);
                     this.onMessageReceived(parsedMessages);
                 }
             });

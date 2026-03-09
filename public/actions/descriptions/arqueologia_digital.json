@@ -1,0 +1,26 @@
+{
+  "success": [
+    "Você encontrou um comentário de 1998 explicando como o sistema funciona. Raro!",
+    "O código em COBOL não quebrou quando você olhou pra ele. Sucesso!",
+    "Você empurrou 500GB de lixo pra AWS e agora é problema do Jeff Bezos.",
+    "A migração terminou e o sistema ainda liga. Ninguém sabe o porquê.",
+    "Você desenterrou uma função que ninguém usava e ela salvou o dia.",
+    "O tapete da Amazon é grande o suficiente para esconder todo esse legado.",
+    "Arqueologia concluída: você encontrou o bug original e fingiu que não viu.",
+    "O sistema de 1985 agora roda num container. Modernidade pura (sqn).",
+    "Você convenceu o cliente de que o erro era uma 'feature histórica'.",
+    "A nuvem aceitou o caos. O boleto vai chegar, mas o sistema tá lá."
+  ],
+  "failure": [
+    "Você removeu um comentário e o servidor da empresa pegou fogo.",
+    "O código de 1985 acordou e começou a deletar seus arquivos pessoais.",
+    "Você tentou migrar o banco e descobriu que ele era feito de arquivos .txt.",
+    "A Amazon recusou seu código por 'atentado violento à lógica'.",
+    "O lixo que você empurrou pra baixo do tapete voltou e te deu um tapa.",
+    "Você ficou preso num loop infinito escrito em Fortran por um estagiário de 1992.",
+    "O sistema caiu e o único backup está em uma fita magnética mofada.",
+    "Você descobriu que o 'sistema' era na verdade três estagiários indianos num chat.",
+    "O código legado é tão ruim que o compilador começou a chorar.",
+    "A migração falhou. Agora o sistema só fala grego antigo e trava."
+  ]
+}

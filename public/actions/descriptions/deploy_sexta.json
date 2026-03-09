@@ -1,0 +1,26 @@
+{
+  "success": [
+    "O pipeline ficou verde às 17:58! Você fechou o notebook e saiu correndo antes que alguém notasse.",
+    "O deploy foi tão suave que você até desconfiou. Mas os logs estão limpos!",
+    "O cliente não ligou. O Tech Lead apareceu no Slack só para dar um emoji de 'joinha'.",
+    "Você corrigiu um conflito de merge bizarro nos últimos segundos. Herói da sexta!",
+    "A aplicação subiu e o consumo de memória até diminuiu. Mágica de sexta-feira.",
+    "Nenhum alerta no Sentry. Você pode finalmente começar seu final de semana em paz.",
+    "O deploy em sexta-feira 13 foi um sucesso. Você é oficialmente imune a maldições de TI.",
+    "Você configurou um rollback automático que não precisou ser usado. Precaução é tudo.",
+    "O pipeline demorou 15 minutos, mas terminou com um 'Success' brilhante.",
+    "Você sobreviveu ao deploy solitário. Segunda-feira você pede um aumento."
+  ],
+  "failure": [
+    "O pipeline ficou vermelho e o site começou a retornar 500. O desespero bateu.",
+    "Seu celular tocou. Era o cliente. Eram 18:05. O final de semana acabou.",
+    "O Tech Lead sumiu e você descobriu que não tem permissão de escrita no banco de produção.",
+    "Um 'console.log' esquecido travou o renderizador no navegador do CEO.",
+    "Você tentou dar rollback e descobriu que o backup estava corrompido.",
+    "O pipeline travou em 99% e ficou lá por 2 horas. Você está preso na empresa.",
+    "A branch de 'hotfix' tinha mais bugs que a branch principal.",
+    "Você derrubou o serviço de autenticação. Ninguém mais consegue trabalhar (nem você).",
+    "O 'deploy' sobrescreveu o banco de dados de homologação com lixo. Parabéns.",
+    "São 21:00, você está sozinho na empresa e a única coisa que funciona é a cafeteira."
+  ]
+}

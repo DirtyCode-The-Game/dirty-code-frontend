@@ -1,0 +1,26 @@
+{
+  "success": [
+    "Você digitou um código elegante sob o olhar julgador do colega. Pura pressão.",
+    "O outro dev só deu um 'hmm' de aprovação. Hoje você é um gênio.",
+    "Vocês dois concordaram que o código do sênior era lixo. Amizade selada.",
+    "O 'driver' e o 'navigator' estão em perfeita sincronia. Nem parece TI.",
+    "Você encontrou um bug enquanto o outro dev piscava. Olho de águia!",
+    "A sessão de Pair acabou sem ninguém sair no soco. Vitória!",
+    "Vocês resolveram o problema em 10 minutos e passaram 50 fofocando.",
+    "O colega aprendeu um atalho novo com você. Respeito conquistado.",
+    "O código funcionou de primeira. O sogro no carona ficaria orgulhoso.",
+    "Sintaxe perfeita, lógica impecável e zero julgamento silencioso."
+  ],
+  "failure": [
+    "Você errou um ponto e vírgula e sentiu o desprezo emanando do colega.",
+    "O outro dev começou a suspirar forte cada vez que você erra o atalho.",
+    "Você tentou explicar sua lógica e percebeu que nem você entende.",
+    "O colega tomou o teclado de você por pura impaciência. Humilhação.",
+    "Vocês passaram 2 horas discutindo se usam aspas simples ou duplas.",
+    "O sogro no carona (seu colega) puxou o freio de mão da sua lógica.",
+    "Você digitou 'git push' na branch errada sob o olhar de terror do parceiro.",
+    "O julgamento silencioso ficou tão alto que você começou a suar frio.",
+    "Você esqueceu como se escreve 'function' na frente do maior especialista do time.",
+    "O Pair virou um monólogo técnico onde você só balança a cabeça e chora."
+  ]
+}

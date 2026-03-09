@@ -1,0 +1,26 @@
+{
+  "success": [
+    "A senha era '123456'. O vizinho é um gênio da segurança e você agora tem Wi-Fi grátis!",
+    "Você conseguiu quebrar o WPA2 dele em apenas 4 horas. O notebook quase derreteu, mas valeu a pena.",
+    "Além do Wi-Fi, você descobriu que ele compartilha uma pasta na rede com todas as fotos das férias dele.",
+    "O vizinho usa a mesma senha para o Wi-Fi e para o Netflix. Hoje tem maratona de série grátis!",
+    "Você encontrou o histórico de buscas dele. É hora de praticar um pouco de 'engenharia social' (ou chantagem).",
+    "O sinal dele é melhor que o seu antigo plano de 10 megas. Vida de hacker é vida boa.",
+    "Você agora controla o roteador dele. O primeiro passo é mudar o DNS e coletar umas senhas.",
+    "O bruteforce terminou exatamente quando seu 4G acabou. Sincronia perfeita!",
+    "Você descobriu que ele tem uma impressora na rede. Imprimiu uma caveira só para dar medo.",
+    "Wi-Fi liberado e ele nem desconfia. Você é o fantasma da rede local."
+  ],
+  "failure": [
+    "O vizinho instalou um sistema de detecção de intrusão e te bloqueou. A internet acabou.",
+    "A polícia bateu na porta perguntando por que seu IP está tentando invadir o roteador do lado.",
+    "Você foi pego tentando instalar um sniffer na rede dele. O vizinho é sargento da reserva.",
+    "Seu notebook superaqueceu rodando o dicionário de senhas e a placa-mãe foi pro saco.",
+    "O vizinho trocou a senha para 'PF_VAI_TE_PEGAR'. Acho que ele percebeu algo.",
+    "Você baixou um dicionário de senhas que na verdade era um vírus. Perdeu todos os seus arquivos.",
+    "O sinal caiu no meio do processo e você corrompeu o firmware do seu próprio adaptador Wi-Fi.",
+    "A conta de luz veio o triplo por causa do notebook rodando a noite toda. Crime não compensa.",
+    "Você tentou chantagear o vizinho e descobriu que ele trabalha na divisão de crimes cibernéticos.",
+    "O vizinho usa uma senha de 32 caracteres aleatórios. Você vai levar 500 anos para quebrar."
+  ]
+}
