@@ -238,7 +238,7 @@ export function JailPage() {
                                     </svg>
 
                                     <p className="text-gray-400 text-sm text-center">
-                                        Você não pode realizar ações enquanto estiver internado. Curte teu tempo com mais 50 pessoas ai.
+                                        Você não pode realizar ações enquanto estiver preso. Curte teu tempo com mais 50 pessoas ai.
                                     </p>
                                 </div>
 
